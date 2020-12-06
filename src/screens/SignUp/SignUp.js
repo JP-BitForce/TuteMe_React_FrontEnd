@@ -13,6 +13,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
+import NavigationIcon from '@material-ui/icons/Navigation';
 
 import './SignUp.css'
 
@@ -28,6 +29,10 @@ class SignUp extends Component {
         promoChecked:false,
         passwordMatchError:null,
         emailError:null
+    }
+
+    handleHomeRoute = () => {
+        window.location.replace('/')
     }
 
     checkPasswordMatch = () => {
@@ -134,7 +139,7 @@ class SignUp extends Component {
                         <Card className = "signUp_card">
                             <Card.Body>
                             <Row>
-                                <span className = "already_member">Already a member ? <a href="#">SIGN IN</a> </span>
+                                <span className = "already_member">Already a member ? <a href="/signIn">SIGN IN</a> </span>
                             </Row>
 
                             <Card.Title className = "signUp_from_title">Sign Up</Card.Title>
@@ -199,7 +204,7 @@ class SignUp extends Component {
                             <Grid container className = "signIn">
                                 <Grid item xs></Grid>
                                 <Grid item>
-                                    <Link href="#" variant="body2">
+                                    <Link href="/signIn" variant="body2">
                                         {"Already a member? Sign In"}
                                     </Link>
                                 </Grid>
@@ -208,6 +213,19 @@ class SignUp extends Component {
                             <Row className = "terms_condition_root">
                                 <span className = "terms_condition">By signing up, I agreed to</span>
                                 <Link href = "#" variant="body1">Terms & Conditions</Link>
+                            </Row>
+
+                            <Row className = "home_btn">
+                                <Col>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        startIcon={<NavigationIcon  />}
+                                        onClick = {this.handleHomeRoute}
+                                    >
+                                    Home
+                                    </Button>
+                                </Col>  
                             </Row>
 
                             </Form>

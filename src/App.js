@@ -1,16 +1,28 @@
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import AppBar from './components/App Bar/AppBar'
-import SignUp from './screens/SignUp/SignUp'
-import SignIn from './screens/SignIn/SignIn'
+import {BrowserRouter,Route,Switch} from 'react-router-dom'
+import routes from './route/routes'
 
 function App() {
   return (
-    <div className="App">
-      <SignIn/>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Switch>
+          {
+            routes.data.map((route,i)=>{
+              return route.type === "/" ?
+              (
+                <Route exact path = {route.path} component={route.component} key = {i}/>
+              ):
+              (
+                <Route path = {route.path} component={route.component} key = {i}/>
+              )
+            })
+          }
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 }
 

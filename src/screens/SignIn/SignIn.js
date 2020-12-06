@@ -24,6 +24,10 @@ class SignIn extends Component {
         password:null
     }
 
+    handleHomeRoute = () => {
+        window.location.replace('/')
+    }
+
     handleSubmit = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
@@ -69,7 +73,7 @@ class SignIn extends Component {
                         <Card className = "signIn_card">
                             <Card.Body>
                                 <Row>
-                                    <span className = "not_member">Not a member ? <a href="#">SIGN UP</a> </span>
+                                    <span className = "not_member">Not a member ? <a href="/signUp">SIGN UP</a> </span>
                                 </Row>
 
                                 <Card.Title className = "signIn_from_title">Sign In</Card.Title>
@@ -118,6 +122,7 @@ class SignIn extends Component {
                                         variant="contained"
                                         color="secondary"
                                         startIcon={<NavigationIcon  />}
+                                        onClick = {this.handleHomeRoute}
                                     >
                                     Home
                                     </Button>
