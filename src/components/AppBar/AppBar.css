@@ -1,3 +1,4 @@
 .appBar_div_root {
     flex-grow: 1;
+    background-color: transparent;
 }

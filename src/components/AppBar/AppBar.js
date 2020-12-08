@@ -3,7 +3,6 @@ import './AppBar.css'
 
 //Boostrap
 import Navbar from 'react-bootstrap/Navbar'
-import Nav from 'react-bootstrap/Nav'
 
 //Material-UI
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,6 +10,27 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import { emphasize, withStyles } from '@material-ui/core/styles';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Chip from '@material-ui/core/Chip';
+import HomeIcon from '@material-ui/icons/Home';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+const StyledBreadcrumb = withStyles((theme) => ({
+    root: {
+      backgroundColor: theme.palette.grey[100],
+      height: theme.spacing(3),
+      color: theme.palette.grey[800],
+      fontWeight: theme.typography.fontWeightRegular,
+      '&:hover, &:focus': {
+        backgroundColor: theme.palette.grey[300],
+      },
+      '&:active': {
+        boxShadow: theme.shadows[1],
+        backgroundColor: emphasize(theme.palette.grey[300], 0.12),
+      },
+    },
+  }))(Chip);
 
 const AppBar = () => {
     const [auth,setAuth] = useState(false)
@@ -23,19 +43,38 @@ const AppBar = () => {
         window.location.replace('/signUp')
     }
 
+    const handleClick = () => {
+
+    }
+
     return (
         <div className = "appBar_div_root">
-            <Navbar bg="light" variant="light">
+            <Navbar fixed="top" >
                 <Toolbar>
-                    <IconButton edge="start" aria-label="drawer">
+                    <IconButton edge="start" aria-label="drawer" style = {{color:'white'}}>
                         <MenuIcon />
                     </IconButton>
 
-                    <Nav className="mr-auto">
-                        <Nav.Link href="/">Home</Nav.Link>
-                        <Nav.Link href="#features">Features</Nav.Link>
-                        <Nav.Link href="#pricing">Pricing</Nav.Link>
-                    </Nav>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <StyledBreadcrumb
+                            component="a"
+                            href="/"
+                            label="Home"
+                            icon={<HomeIcon fontSize="small" />}
+                        />
+                        <StyledBreadcrumb 
+                            component="a" 
+                            href="#" 
+                            label="Catalog" 
+                            onClick={handleClick} 
+                        />
+                        <StyledBreadcrumb
+                            label="Accessories"
+                            deleteIcon={<ExpandMoreIcon />}
+                            onClick={handleClick}
+                            onDelete={handleClick}
+                        />
+                    </Breadcrumbs>
                 </Toolbar>
 
                 <Navbar.Collapse className="justify-content-end">
@@ -43,8 +82,8 @@ const AppBar = () => {
                         auth ? <Navbar.Text>Signed in as: <a href="#profile">Mark Otto</a></Navbar.Text> :
                         (
                         <ButtonGroup size="large" variant="text" aria-label="large outlined primary button group">
-                            <Button className = "auth" onClick = {handleLoginRoute}>LOGIN</Button>
-                            <Button onClick = {handleSignUpRoute}>SIGN UP</Button>
+                            <Button className = "auth" onClick = {handleLoginRoute} style = {{color:'white'}}>LOGIN</Button>
+                            <Button onClick = {handleSignUpRoute} style = {{color:'white'}}>SIGN UP</Button>
                         </ButtonGroup>
                         )
                     }
