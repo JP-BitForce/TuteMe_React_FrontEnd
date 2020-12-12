@@ -17,11 +17,15 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 
 import './SignIn.css'
 
+import InputField from '../../components/Input/InputField'
+import PasswordInput from '../../components/PasswordInput/PasswordInput'
+
 class SignIn extends Component {
     state = {
         validated:false,
         email:null,
-        password:null
+        password:null,
+        type:"password"
     }
 
     handleHomeRoute = () => {
@@ -43,23 +47,12 @@ class SignIn extends Component {
         })
     }
 
-    renderInputField = (type,name,value,onChange,max,placeholder) => {
-        return (
-            <Form.Group>
-                <Form.Control
-                    type = {type}
-                    name = {name}
-                    value = {value} 
-                    onChange = {onChange}
-                    required
-                    maxLength = {max}
-                    placeholder = {placeholder}
-                />
-                <Form.Control.Feedback type="invalid">
-                    {placeholder} name can't be empty
-                </Form.Control.Feedback>
-            </Form.Group>
-        )
+    handleVisibility = () => {
+        if(this.state.type === "password") {
+            this.setState({ type:"text" })
+        } else {
+            this.setState({ type:"password" })
+        }
     }
 
     render() {
@@ -84,24 +77,30 @@ class SignIn extends Component {
                                 >
                                 <Row>
                                     <Col>
-                                        { this.renderInputField("email", "email", this.state.email, this.handleCommonTypeInputChange, 320, "Email")}
+                                        <InputField 
+                                            type = "email"
+                                            name = "email"
+                                            value = { this.state.email }
+                                            onChange = { this.handleCommonTypeInputChange }
+                                            max = { 320 }
+                                            placeholder = "Email"
+                                        />
                                     </Col>
                                 </Row>
 
                                 <Row>
                                     <Col>
-                                        { this.renderInputField("password", "password", this.state.password, this.handleCommonTypeInputChange, 20, "Password")}
+                                        <PasswordInput 
+                                            type = { this.state.type }
+                                            name = "password"
+                                            value = { this.state.password }
+                                            onChange = { this.handleCommonTypeInputChange }
+                                            max = { 30 }
+                                            placeholder = "Password"  
+                                            onClick = { this.handleVisibility } 
+                                        />
                                     </Col>
                                 </Row>
-
-                                <Grid container>
-                                    <Grid item xs></Grid>
-                                    <Grid item>
-                                        <Link href="#" variant="body2">
-                                            {"Forgot Password"}
-                                        </Link>
-                                    </Grid>
-                                </Grid>
 
                                 <Row className = "submit_btn">
                                     <Col>
@@ -116,11 +115,21 @@ class SignIn extends Component {
                                     </Col>
                                 </Row>
 
-                                <Row className = "home_btn">
+                                <Grid container style = {{marginTop:'2%'}}>
+                                    <Grid item xs></Grid>
+                                    <Grid item>
+                                        <Link href="#" variant="body2">
+                                            {"Forgot Password"}
+                                        </Link>
+                                    </Grid>
+                                </Grid>
+
+                                <Row className = "home_btn" style = {{marginTop:'5%'}}>
                                     <Col>
                                     <Button
                                         variant="contained"
                                         color="secondary"
+                                        fullWidth
                                         startIcon={<NavigationIcon  />}
                                         onClick = {this.handleHomeRoute}
                                     >

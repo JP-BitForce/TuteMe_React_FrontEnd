@@ -3,7 +3,7 @@
 }
 
 .signIn_image {
-    background-image: url(../../assets/images/signUp3.jpg);
+    background-image: url(../../assets/images/register.jpg);
     background-repeat: no-repeat;
     background-position: center;
     min-height: 100vh;
@@ -40,5 +40,13 @@
 }
 
 .home_btn {
-    margin-top: 10%;
+    margin-top: 15%;
+}
+
+.fa-eye-slash {
+    width: 15px;
+}
+
+.fa-eye {
+    width: 15px;
 }

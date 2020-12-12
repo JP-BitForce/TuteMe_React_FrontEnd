@@ -17,6 +17,9 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 
 import './SignUp.css'
 
+import InputField from '../../components/Input/InputField'
+import PasswordInput from '../../components/PasswordInput/PasswordInput'
+
 class SignUp extends Component {
     state = {
         validated:false,
@@ -28,7 +31,8 @@ class SignUp extends Component {
         confirmPassword:null,
         promoChecked:false,
         passwordMatchError:null,
-        emailError:null
+        emailError:null,
+        type:"password"
     }
 
     handleHomeRoute = () => {
@@ -93,6 +97,14 @@ class SignUp extends Component {
         })
     }
 
+    handleVisibility = () => {
+        if(this.state.type === "password") {
+            this.setState({ type:"text" })
+        } else {
+            this.setState({ type:"password" })
+        }
+    }
+
     renderCheckBox = (checked, onChange, label) => {
         return (
             <Form.Group>
@@ -107,26 +119,6 @@ class SignUp extends Component {
           </Form.Group>
         )
     }
-
-    renderInputField = (type,name,value,onChange,max,placeholder) => {
-        return (
-            <Form.Group>
-                <Form.Control
-                    type = {type}
-                    name = {name}
-                    value = {value} 
-                    onChange = {onChange}
-                    required
-                    maxLength = {max}
-                    placeholder = {placeholder}
-                />
-                <Form.Control.Feedback type="invalid">
-                    {placeholder} name can't be empty
-                </Form.Control.Feedback>
-            </Form.Group>
-        )
-    }
-
 
     render() {
         return (
@@ -151,34 +143,77 @@ class SignUp extends Component {
                             >
                             <Row>
                                 <Col sm={6}>
-                                    { this.renderInputField("text", "firstName", this.state.firstName, this.handleCommonTypeInputChange, 20, "First Name")}
+                                    <InputField 
+                                        type = "text"
+                                        name = "firstName"
+                                        value = { this.state.firstName }
+                                        onChange = { this.handleCommonTypeInputChange }
+                                        max = { 20 }
+                                        placeholder = "First Name"
+                                    />
                                 </Col>
                                 <Col sm={6}>
-                                    { this.renderInputField("text", "lastName", this.state.lastName, this.handleCommonTypeInputChange, 20, "Last Name")}
+                                    <InputField 
+                                        type = "text"
+                                        name = "lastName"
+                                        value = { this.state.lastName }
+                                        onChange = { this.handleCommonTypeInputChange }
+                                        max = { 20 }
+                                        placeholder = "Last Name"
+                                    />
                                 </Col>
                             </Row>
 
                             <Row>
                                 <Col>
-                                    { this.renderInputField("text", "dob", this.state.dob, this.handleCommonTypeInputChange, 10, "Date of Birth")}
+                                    <InputField 
+                                        type = "text"
+                                        name = "dob"
+                                        value = { this.state.dob }
+                                        onChange = { this.handleCommonTypeInputChange }
+                                        max = { 10 }
+                                        placeholder = "Date of Birth"
+                                    />
                                 </Col>
                             </Row>
 
                             <Row>
                                 <Col>
-                                    { this.renderInputField("email", "email", this.state.email, this.handleCommonTypeInputChange, 320, "Email")}
+                                    <InputField 
+                                        type = "email"
+                                        name = "email"
+                                        value = { this.state.email }
+                                        onChange = { this.handleCommonTypeInputChange }
+                                        max = { 320 }
+                                        placeholder = "Email"
+                                    />
                                 </Col>
                             </Row>
 
                             <Row>
                                 <Col>
-                                    { this.renderInputField("password", "password", this.state.password, this.handleCommonTypeInputChange, 20, "Password")}
+                                    <InputField 
+                                        type = "password"
+                                        name = "password"
+                                        value = { this.state.password }
+                                        onChange = { this.handleCommonTypeInputChange }
+                                        max = { 30 }
+                                        placeholder = "Password"
+                                    />
                                 </Col>
                             </Row>
 
                             <Row>
                                 <Col>
-                                    { this.renderInputField("password", "confirmPassword", this.state.confirmPassword, this.handleCommonTypeInputChange, 20, "Confirm Password")}
+                                    <PasswordInput 
+                                        type = { this.state.type }
+                                        name = "confirmPassword"
+                                        value = { this.state.confirmPassword }
+                                        onChange = { this.handleCommonTypeInputChange }
+                                        max = { 30 }
+                                        placeholder = "Confirm Password"  
+                                        onClick = { this.handleVisibility } 
+                                    />
                                 </Col>
                             </Row>
 
@@ -220,6 +255,7 @@ class SignUp extends Component {
                                     <Button
                                         variant="contained"
                                         color="secondary"
+                                        fullWidth
                                         startIcon={<NavigationIcon  />}
                                         onClick = {this.handleHomeRoute}
                                     >
