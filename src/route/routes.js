@@ -1,6 +1,7 @@
 import SignIn from '../screens/SignIn/SignIn'
 import SignUp from '../screens/SignUp/SignUp'
 import LandingPage from '../screens/LandingPage/LandingPage'
+import ForgotPassword from '../screens/ForwardPassword/ForgotPassword'
 
 const routes = {
     data: [
@@ -23,6 +24,13 @@ const routes = {
         path: "/",
         component: LandingPage,
         type: "main",
+        children: [],
+      },
+      {
+        name: "ForgotPassword",
+        path: "/forgotPassword",
+        component: ForgotPassword,
+        type: "",
         children: [],
       }
     ]

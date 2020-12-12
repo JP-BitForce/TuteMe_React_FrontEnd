@@ -47,6 +47,18 @@ class SignIn extends Component {
         })
     }
 
+    validateEmail = () => {
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const result = pattern.test(this.state.email);
+        if (!result) {
+            this.setState({
+              emailError: "Enter a valid email address",
+            });
+        } 
+
+        return result
+    }
+
     handleVisibility = () => {
         if(this.state.type === "password") {
             this.setState({ type:"text" })
@@ -118,7 +130,7 @@ class SignIn extends Component {
                                 <Grid container style = {{marginTop:'2%'}}>
                                     <Grid item xs></Grid>
                                     <Grid item>
-                                        <Link href="#" variant="body2">
+                                        <Link href="/forgotPassword" variant="body2">
                                             {"Forgot Password"}
                                         </Link>
                                     </Grid>

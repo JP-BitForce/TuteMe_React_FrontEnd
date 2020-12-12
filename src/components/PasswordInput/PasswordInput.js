@@ -23,18 +23,18 @@ const PasswordInput = ({type, name, value, onChange, max, placeholder, onClick})
                         maxLength={max}
                         placeholder = {placeholder}
                     />
-                    
+
                     <InputGroup.Append onClick={onClick}>
                         <InputGroup.Text className="password-toggle__span">
                             {
-                                type === "text" ? <img src={visibility} className = "fa-eye-slash"/> : 
+                                type === "password" ? <img src={visibility} className = "fa-eye-slash"/> : 
                                 <img src={visibility_off} className = "fa-eye"/>
                             }
                         </InputGroup.Text>
                     </InputGroup.Append>
 
                     <Form.Control.Feedback type="invalid">
-                        {placeholder} name can't be empty
+                        {placeholder} can't be empty
                     </Form.Control.Feedback>
                 </InputGroup>
             </Col>
