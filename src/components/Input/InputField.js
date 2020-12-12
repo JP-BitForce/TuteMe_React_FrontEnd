@@ -16,7 +16,7 @@ const InputField = ({type, name, value, onChange, max, placeholder}) => {
                 placeholder = {placeholder}
             />
             <Form.Control.Feedback type="invalid">
-                {placeholder} name can't be empty
+                {placeholder} can't be empty
             </Form.Control.Feedback>
         </Form.Group>
     )

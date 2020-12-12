@@ -11,7 +11,7 @@ function App() {
         <Switch>
           {
             routes.data.map((route,i)=>{
-              return route.type === "/" ?
+              return route.type === "main" ?
               (
                 <Route exact path = {route.path} component={route.component} key = {i}/>
               ):
