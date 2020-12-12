@@ -1,6 +1,5 @@
 import React from 'react'
 
-//Boostrap
 import AppBar from '../../components/AppBar/AppBar'
 
 //Material-UI

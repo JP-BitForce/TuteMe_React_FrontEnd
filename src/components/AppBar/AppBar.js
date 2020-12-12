@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import './AppBar.css'
 
 //Boostrap
@@ -35,6 +35,28 @@ const StyledBreadcrumb = withStyles((theme) => ({
 const AppBar = () => {
     const [auth,setAuth] = useState(false)
 
+    const [scrolled,setScrolled]= useState(false);
+
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      if(offset > 450 ) {
+        setScrolled(true);
+      }
+      else {
+        setScrolled(false);
+      }
+    } 
+
+    useEffect(() => {
+      window.addEventListener('scroll',handleScroll)
+    })
+  
+    let x=['appBar_div_root'];
+
+    if(scrolled){
+      x.push('scrolled');
+    }
+
     const handleLoginRoute = () => {
         window.location.replace('/signIn')
     }
@@ -49,7 +71,7 @@ const AppBar = () => {
 
     return (
         <div className = "appBar_div_root">
-            <Navbar fixed="top" >
+            <Navbar fixed="top" className={x.join(" ")} >
                 <Toolbar>
                     <IconButton edge="start" aria-label="drawer" style = {{color:'white'}}>
                         <MenuIcon />
