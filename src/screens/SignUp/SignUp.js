@@ -19,6 +19,7 @@ import './SignUp.css'
 
 import InputField from '../../components/Input/InputField'
 import PasswordInput from '../../components/PasswordInput/PasswordInput'
+import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
 
 class SignUp extends Component {
     state = {
@@ -202,7 +203,10 @@ class SignUp extends Component {
                                     />
                                 </Col>
                             </Row>
-
+                            {
+                                this.state.password ? <PasswordStrength value = { this.state.password } min = { 5 }/> : null
+                            }
+                            
                             <Row>
                                 <Col>
                                     <PasswordInput 

@@ -20,6 +20,7 @@ import './ForgotPassword.css'
 
 import InputField from '../../components/Input/InputField'
 import PasswordInput from '../../components/PasswordInput/PasswordInput'
+import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
 
 class ForgotPassword extends Component {
     state = {
@@ -224,9 +225,12 @@ class ForgotPassword extends Component {
                         name = "password"
                         value = { this.state.password }
                         onChange = { this.handleCommonTypeInputChange }
-                        max = { 6 }
+                        max = { 30 }
                         placeholder = "Password"
                     />
+                    {
+                        this.state.password ? <PasswordStrength value = { this.state.password } min = { 5 }/> : null
+                    }
 
                     <PasswordInput 
                         type = { this.state.type }
