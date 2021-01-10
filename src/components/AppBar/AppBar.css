@@ -6,5 +6,78 @@
 .scrolled {
     top: 0;
     left: 0;
-    background-color: silver;
-  }
+    background-color: lightseagreen;
+}
+
+.mobile_bar {
+    background-color: lightseagreen;
+}
+
+.menu_icon_block {
+    width: 20%;
+}
+
+.mobile_drawer_block {
+    height: 100%;
+    width: 40vh;
+}
+
+.mobile_drawer_logo_block {
+    height: 18vh;
+    margin-top: 30%;
+    padding: 5%;
+    display: flex;
+    flex-direction: row;
+}
+
+.mobile_drawer_logo_div{
+    width: 10vh;
+}
+
+.mobile_drawer_logo {
+    background-image: url(../../assets/images/logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 10vh;
+    height: 10vh;
+    background-size: cover;
+}
+
+.mobile_drawer_logo_content {
+    width: 30vh;
+    display: flex;
+    flex-direction: column;
+    margin-left: 2%;
+}
+
+.mobile_drawer_logo_content_01 {
+    font-size: 4vh;
+    padding: 2%;
+    font-weight: bold;
+}
+
+.mobile_drawer_logo_content_02 {
+    font-size: 2vh;
+    padding: 2%;
+}
+
+.mobile_drawer_seperator {
+    width: 90%;
+    margin-left: 5%;
+    height: 2px;
+    background-color: lightseagreen;
+}
+
+.mobile_drawer_list_block {
+    width: 40vh;
+    height: 50vh;
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile_drawer_list_footer {
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+}

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 
 //Boostrap
 import Card from 'react-bootstrap/Card'
-import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -13,13 +12,14 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
-import NavigationIcon from '@material-ui/icons/Navigation';
 
 import './SignUp.css'
 
 import InputField from '../../components/Input/InputField'
 import PasswordInput from '../../components/PasswordInput/PasswordInput'
 import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
+import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
+import RegisterMobilePanel from '../../components/RegisterMobilePanel/RegisterMobilePanel'
 
 class SignUp extends Component {
     state = {
@@ -33,7 +33,25 @@ class SignUp extends Component {
         promoChecked:false,
         passwordMatchError:null,
         emailError:null,
-        type:"password"
+        type:"password",
+        mobileView:false,
+        loading:false
+    }
+
+    componentDidMount() {
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
+    }
+    
+    resize() {
+        let mobileView = (window.innerWidth <= 850);
+        this.setState({
+            mobileView: mobileView
+        })
+    }
+    
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resize.bind(this));
     }
 
     handleHomeRoute = () => {
@@ -121,47 +139,39 @@ class SignUp extends Component {
         )
     }
 
-    render() {
+    renderForm = () => {
         return (
-            <Grid container component="main" className = "signUp_root">
-                <CssBaseline />
-                <Grid item xs={false} sm={4} md={5} className = "signUp_image"/>
+            <Card.Body>
+                    <Row>
+                        <span className = "already_member">Already a member ? <a href="/signIn">SIGN IN</a> </span>
+                    </Row>
 
-                <Grid item xs={12} sm={8} md={7} component={Paper} elevation={6} square>
-                    <div className = "signUp_paper" >
-                        <Card className = "signUp_card">
-                            <Card.Body>
-                            <Row>
-                                <span className = "already_member">Already a member ? <a href="/signIn">SIGN IN</a> </span>
-                            </Row>
-
-                            <Card.Title className = "signUp_from_title">Sign Up</Card.Title>
-                            </Card.Body>
-                            <Form
-                                onSubmit={this.handleSubmit}
-                                noValidate
-                                validated={this.state.validated}
-                            >
-                            <Row>
-                                <Col sm={6}>
-                                    <InputField 
-                                        type = "text"
-                                        name = "firstName"
-                                        value = { this.state.firstName }
-                                        onChange = { this.handleCommonTypeInputChange }
-                                        max = { 20 }
-                                        placeholder = "First Name"
-                                    />
-                                </Col>
-                                <Col sm={6}>
-                                    <InputField 
-                                        type = "text"
-                                        name = "lastName"
-                                        value = { this.state.lastName }
-                                        onChange = { this.handleCommonTypeInputChange }
-                                        max = { 20 }
-                                        placeholder = "Last Name"
-                                    />
+                    <Card.Title className = "signUp_from_title">Sign Up</Card.Title>
+                    <Form
+                        onSubmit={this.handleSubmit}
+                        noValidate
+                        validated={this.state.validated}
+                    >
+                        <Row>
+                            <Col sm={6}>
+                                <InputField 
+                                    type = "text"
+                                    name = "firstName"
+                                    value = { this.state.firstName }
+                                    onChange = { this.handleCommonTypeInputChange }
+                                    max = { 20 }
+                                    placeholder = "First Name"
+                                />
+                            </Col>
+                            <Col sm={6}>
+                                <InputField 
+                                    type = "text"
+                                    name = "lastName"
+                                    value = { this.state.lastName }
+                                    onChange = { this.handleCommonTypeInputChange }
+                                    max = { 20 }
+                                    placeholder = "Last Name"
+                                />
                                 </Col>
                             </Row>
 
@@ -250,27 +260,44 @@ class SignUp extends Component {
                             </Grid>
 
                             <Row className = "terms_condition_root">
-                                <span className = "terms_condition">By signing up, I agreed to</span>
+                                <span className = "terms_condition"> By signing up, I agreed to </span> 
                                 <Link href = "#" variant="body1">Terms & Conditions</Link>
                             </Row>
+                    </Form>
+            </Card.Body>
+        )
+    }
 
-                            <Row className = "home_btn">
-                                <Col>
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        fullWidth
-                                        startIcon={<NavigationIcon  />}
-                                        onClick = {this.handleHomeRoute}
-                                    >
-                                    Home
-                                    </Button>
-                                </Col>  
-                            </Row>
+    render() {
+        return (
+            <Grid container component="main" className = "signUp_image">
+                <CssBaseline />
+                <Grid item xs={false} sm={4} md={5}>
+                    {
+                        !this.state.mobileView ? <RegisterLeftPanel tag ="signup"/> : null
+                    }
+                </Grid>
 
-                            </Form>
-                        </Card>
-                    </div>
+                <Grid item xs={12} sm={8} md={7} elevation={6} square>
+                    {
+                        this.state.mobileView ? 
+                        <Paper className = "signUp_paper-mobile" elevation ={5}>
+                            <div className = "login_card-mobile">
+                                <RegisterMobilePanel/>
+                                {
+                                    this.renderForm()
+                                }
+                            </div>
+                        </Paper>
+                        :
+                        <Paper className = "login_paper" elevation ={5}>
+                            <div className = "login_card">
+                                {
+                                    this.renderForm()
+                                }
+                            </div>
+                        </Paper>
+                    }
                 </Grid>
             </Grid>
         )

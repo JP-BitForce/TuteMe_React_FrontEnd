@@ -84,17 +84,23 @@ const AppBar = () => {
                             label="Home"
                             icon={<HomeIcon fontSize="small" />}
                         />
-                        <StyledBreadcrumb 
+                        <StyledBreadcrumb
                             component="a" 
                             href="#" 
-                            label="Catalog" 
-                            onClick={handleClick} 
+                            onClick={handleClick}
+                            label="One Step" 
                         />
                         <StyledBreadcrumb
                             label="Accessories"
                             deleteIcon={<ExpandMoreIcon />}
                             onClick={handleClick}
                             onDelete={handleClick}
+                        />
+                        <StyledBreadcrumb 
+                            component="a" 
+                            href="#" 
+                            label="About us" 
+                            onClick={handleClick} 
                         />
                     </Breadcrumbs>
                 </Toolbar>

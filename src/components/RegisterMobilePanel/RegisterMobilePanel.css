@@ -1,0 +1,33 @@
+.welcome_panel {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-text {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome_logo {
+    background-image: url(../../assets/images/logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 10vh;
+    height: 10vh;
+    background-size: cover;
+}
+
+.welcome_message01 {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.welcome_message02 {
+    font-size: 10px;
+    opacity: 0.8;
+}

@@ -1,13 +1,10 @@
-.signUp_root {
-    height: 100vh,
-}
-
 .signUp_image {
-    background-image: url(../../assets/images/register.jpg);
+    background-image: url(../../assets/images/register10.jpg);
     background-repeat: no-repeat;
     background-position: center;
     min-height: 100vh;
     background-size: cover;
+    width: 100%;
 }
 
 .signUp_from_title {
@@ -20,6 +17,17 @@
     display: 'flex';
     flex-direction: 'column';
     align-items: 'center';
+    justify-content: center;
+}
+
+.signUp_paper-mobile {
+    display: 'flex';
+    flex-direction: 'column';
+    width: 90%;
+    height: 95%;
+    margin-top: 5%;
+    margin-left: 5%;
+    align-items: center;
     justify-content: center;
 }
 
