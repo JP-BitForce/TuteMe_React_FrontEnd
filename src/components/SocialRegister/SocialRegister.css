@@ -1,0 +1,50 @@
+.social_conatiner {
+    margin-top: 15%;
+}
+
+.social_divider {
+    display: flex;
+    flex-direction: column;
+}
+
+.social_divider_or {
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #716f73;
+    font-size: 15px;
+}
+
+.social_register {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.social_block {
+    margin-left: 5%;
+    align-items: center;
+    justify-content: center;
+}
+
+.google_paper {
+    padding: 12%;
+    border-bottom-left-radius: 20%;
+}
+
+.login-google {
+    background-image: url(../../assets/images/google.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 5vh;
+    height: 5vh;
+    background-size: cover;
+}
+
+.login-fb {
+    background-image: url(../../assets/images/facebook.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 5vh;
+    height: 5vh;
+    background-size: cover;
+}

@@ -1,0 +1,64 @@
+.signUp_image {
+    background-image: url(../../assets/images/register10.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    background-size: cover;
+    width: 100%;
+}
+
+.signUp_from_title {
+    font-size: 4vh;
+    font-weight: bold;
+    margin-top: 5%;
+}
+
+.signUp_paper {
+    display: 'flex';
+    flex-direction: 'column';
+    align-items: 'center';
+    justify-content: center;
+}
+
+.signUp_paper-mobile {
+    display: 'flex';
+    flex-direction: 'column';
+    width: 90%;
+    height: 95%;
+    margin-top: 5%;
+    margin-left: 5%;
+    align-items: center;
+    justify-content: center;
+}
+
+.signUp_card {
+    padding: 5%;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 2%;
+}
+
+.already_member {
+    font-size: large;
+}
+
+.signIn {
+    margin-top: 5%;
+}
+
+.terms_condition_root {
+    margin-top: 4%;
+}
+
+.terms_condition {
+   font-size: larger;
+   margin-right: 1ch;
+}
+
+.submit_btn {
+    margin-top: 5%;
+}
+
+.home_btn {
+    margin-top: 2%;
+}
