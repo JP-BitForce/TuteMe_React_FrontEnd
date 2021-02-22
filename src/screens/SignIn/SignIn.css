@@ -1,15 +1,17 @@
-.signIn_image {
-    background-image: url(../../assets/images/register10.jpg);
-    background-repeat: no-repeat;
-    background-position: center;
-    min-height: 100vh;
-    background-size: cover;
-    width: 100%;
+.sign_in_root {
+    display: flex;
+    height: 100vh;
 }
 
-.card_root {
-    align-items: center;
-    justify-content: center;
+.sign_in_left {
+    background-image: url(../../assets/images/register/signin.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.sign_in_right {
+    padding: 3%;
 }
 
 .not_member {

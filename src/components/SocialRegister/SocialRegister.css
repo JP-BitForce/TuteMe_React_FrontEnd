@@ -26,11 +26,6 @@
     justify-content: center;
 }
 
-.google_paper {
-    padding: 12%;
-    border-bottom-left-radius: 20%;
-}
-
 .login-google {
     background-image: url(../../assets/images/google.png);
     background-repeat: no-repeat;

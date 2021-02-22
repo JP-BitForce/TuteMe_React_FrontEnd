@@ -1,0 +1,31 @@
+{
+    "headers":{
+        "1": [
+            "Learn Anytime.",
+            "Anywhere."
+        ],
+
+        "2": [
+            "Digital Learning"
+        ]
+
+    },
+
+    "description":{
+        "1":"The Online Learning Consortium™ (OLC) is a collaborative community of higher education leaders and innovators, dedicated to advancing quality digital teachingand learning experiences designed to reach and engage the modern learner – anyone, anywhere, anytime.",
+        "2":"Since our founding in 1999, we’ve become the go-to source for everything related to digital learning. Thousands of educators rely on The Online Learning Consortium for expert guidance, professional development and resources to help them excel in digital learning."
+    },
+
+    "cardHeader": "New Approaches to Enhance Digital Teaching/Learning Programs",
+
+    "cardHeaderSubTitles": [
+        "Hundreds of courses designed to help educators",
+        "worldwide strengthen teaching strategies, delivery methods and learning activities"
+    ],
+
+    "cards": [
+        { "header": "STUDENTS", "img": "1", "text": "Leading from the conceptual to the implementation of online learning best practices, is offered as a sequence of one foundation course , followed by elective courses and creation or revision of an online course under the guidance of a mentor."},
+        { "header": "TEACHERS", "img": "2", "text": "Leading from the conceptual to the implementation of online learning best practices, is offered as a sequence of one foundation course , followed by elective courses and creation or revision of an online course under the guidance of a mentor."},
+        { "header": "ONLINE COURSES", "img": "3", "text": "Leading from the conceptual to the implementation of online learning best practices, is offered as a sequence of one foundation course , followed by elective courses and creation or revision of an online course under the guidance of a mentor."}
+    ]
+}

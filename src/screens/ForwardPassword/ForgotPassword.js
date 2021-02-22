@@ -9,7 +9,6 @@ import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
-import Button from '@material-ui/core/Button';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
@@ -19,6 +18,7 @@ import InputField from '../../components/Input/InputField'
 import PasswordInput from '../../components/PasswordInput/PasswordInput'
 import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
 import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
+import CustomButton from '../../components/Button/CustomButton'
 
 class ForgotPassword extends Component {
     state = {
@@ -177,14 +177,7 @@ class ForgotPassword extends Component {
                         : null
                     }
 
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                    >
-                    Send Reset Code
-                    </Button>
+                    <CustomButton label = "Send Reset Code" type="submit" fullWidth/>
                 </Form>
             </div>
         )
@@ -211,14 +204,7 @@ class ForgotPassword extends Component {
                         placeholder = "Code"
                     />
 
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                    >
-                    Confirm Reset Code
-                    </Button>
+                    <CustomButton label = "Confirm Reset Code" type="submit" fullWidth/>
                 </Form>
             </div>
         )
@@ -266,14 +252,7 @@ class ForgotPassword extends Component {
                         : null
                     }
 
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                    >
-                    Reset
-                    </Button>
+                    <CustomButton label = "Reset" type="submit" fullWidth/>
                 </Form>
             </div>
         )
@@ -330,36 +309,33 @@ class ForgotPassword extends Component {
         )
     }
 
+    renderDesktopView = () => {
+        return (
+            <Grid container component="main" className = "forgot_password_root">
+                <CssBaseline />
+                <Grid item xs={false} sm={4} md={7} className = "forgot_password_left">
+                    <RegisterLeftPanel tag ="forgot-password"/>
+                </Grid>
+                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square className = "forgot_password_right">
+                    { this.renderForm() }
+                </Grid>
+            </Grid>
+        )
+    }
+
+    renderMobileView = () => {
+        return (
+            <Paper className = "login_paper-mobile" elevation ={5}>
+                <div className = "login_card-mobile">
+                    { this.renderForm() }
+                </div>
+            </Paper>
+        )
+    }
+
     render() {
         return (
-            <Grid container component="main" className = "forgot_password_image">
-                <CssBaseline />
-                <Grid item xs={false} sm={4} md={5}>
-                    {
-                        !this.state.mobileView ? <RegisterLeftPanel tag ="forgot-password"/> : null
-                    }
-                </Grid>
-                <Grid item xs={12} sm={8} md={7} elevation={6} square className = "card_root">
-                    {
-                        this.state.mobileView ? 
-                        <Paper className = "login_paper-mobile" elevation ={5}>
-                            <div className = "login_card-mobile">
-                                {
-                                    this.renderForm()
-                                }
-                            </div>
-                        </Paper>
-                        :
-                        <Paper className = "forgot_password_paper" elevation ={5}>
-                            <div className = "forgot_password_card">
-                                {
-                                    this.renderForm()
-                                }
-                            </div>
-                        </Paper>
-                    }
-                </Grid>  
-            </Grid>
+            !this.state.mobileView ? this.renderDesktopView() : this.renderMobileView()
         )
     }
 }

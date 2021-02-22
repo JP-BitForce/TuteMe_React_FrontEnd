@@ -1,0 +1,27 @@
+{
+    "link":[
+        {
+            "header": "LEGAL",
+            "children": ["Terms & Conditions", "Privacy Policy"]
+        },
+        {
+            "header": "US",
+            "children": ["About us", "Contact us"]
+        }
+    ],
+
+    "social_content":[
+        {
+            "content":"Facebook", 
+            "style": "fa fa-facebook"
+        },
+        {
+            "content":"Twitter", 
+            "style": "fa fa-twitter"
+        },
+        {
+            "content":"Instagram", 
+            "style": "fa fa-instagram"
+        }
+    ]
+}

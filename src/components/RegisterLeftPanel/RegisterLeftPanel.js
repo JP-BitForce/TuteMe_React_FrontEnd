@@ -43,7 +43,7 @@ const RegisterLeftPanel = ({tag}) => {
 
     const renderForgotpasswordMessages = () => {
         return (
-            <div className = "login_paper_left-text">
+            <div className = "login_paper_left-text forgot-password-text">
                 <IconButton aria-label="goole" onClick = {handleHomeRoute}>
                     <div className = "logo"/>
                 </IconButton>
