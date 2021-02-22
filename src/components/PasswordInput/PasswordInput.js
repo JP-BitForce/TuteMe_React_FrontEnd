@@ -27,8 +27,10 @@ const PasswordInput = ({type, name, value, onChange, max, placeholder, onClick})
                     <InputGroup.Append onClick={onClick}>
                         <InputGroup.Text className="password-toggle__span">
                             {
-                                type === "password" ? <img src={visibility} className = "fa-eye-slash"/> : 
-                                <img src={visibility_off} className = "fa-eye"/>
+                                type === "password" ? 
+                                <img src={visibility} className = "fa-eye-slash" alt = "visible"/> 
+                                : 
+                                <img src={visibility_off} className = "fa-eye" alt = "visibility_off"/>
                             }
                         </InputGroup.Text>
                     </InputGroup.Append>

@@ -3,7 +3,6 @@ import React from 'react'
 import Row from "react-bootstrap/Row";
 
 import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
 
 import './SocialRegister.css'
 
@@ -16,18 +15,14 @@ const SocialRegister = () => {
             <Row className = "social_register">
                 <div className = "social_block">
                     <IconButton aria-label="goole">
-                        <Paper className = "google_paper">
-                            <div className = "login-google"/>
-                        </Paper>
+                        <div className = "login-google"/>
                     </IconButton>
                     <span className = "social-btn-label">Google</span>
                 </div>
                             
                 <div className = "social_block">
                     <IconButton aria-label="goole">
-                        <Paper className = "google_paper">
-                            <div className = "login-fb"/>
-                        </Paper>
+                        <div className = "login-fb"/>
                     </IconButton>
                     <span className = "social-btn-label">Facebook</span>
                 </div>

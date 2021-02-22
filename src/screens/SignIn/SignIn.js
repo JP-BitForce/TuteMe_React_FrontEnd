@@ -11,7 +11,6 @@ import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
-import Button from '@material-ui/core/Button';
 
 import './SignIn.css'
 
@@ -20,6 +19,7 @@ import PasswordInput from '../../components/PasswordInput/PasswordInput'
 import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
 import RegisterMobilePanel from '../../components/RegisterMobilePanel/RegisterMobilePanel'
 import SocialRegister from '../../components/SocialRegister/SocialRegister'
+import CustomButton from '../../components/Button/CustomButton'
 
 class SignIn extends Component {
     state = {
@@ -135,14 +135,7 @@ class SignIn extends Component {
 
                         <Row className = "submit_btn">
                             <Col>
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                >
-                                Sign In
-                                </Button>
+                                <CustomButton label = "Sign-In" type="submit" fullWidth/>
                             </Col>
                         </Row>
 
@@ -161,38 +154,34 @@ class SignIn extends Component {
         )
     }
 
-    render() {
+    renderMobileView = () => {
         return (
-            <Grid container component="main" className = "signIn_image">
-                <CssBaseline />
-                <Grid item xs={false} sm={4} md={5}>
-                    {
-                        !this.state.mobileView ? <RegisterLeftPanel tag ="signin"/> : null
-                    }
-                </Grid>
+            <Paper className = "login_paper-mobile" elevation ={5}>
+                <div className = "login_card-mobile">
+                    <RegisterMobilePanel/>
+                    { this.renderForm() }
+                </div>
+            </Paper>
+        )
+    }
 
-                <Grid item xs={12} sm={8} md={7} elevation={6} square className = "card_root">
-                {
-                        this.state.mobileView ? 
-                        <Paper className = "login_paper-mobile" elevation ={5}>
-                            <div className = "login_card-mobile">
-                                <RegisterMobilePanel/>
-                                {
-                                    this.renderForm()
-                                }
-                            </div>
-                        </Paper>
-                        :
-                        <Paper className = "login_paper" elevation ={5}>
-                            <div className = "login_card">
-                                {
-                                    this.renderForm()
-                                }
-                            </div>
-                        </Paper>
-                    }
+    renderDesktopView = () => {
+        return (
+            <Grid container component="main" className = "sign_in_root">
+                <CssBaseline />
+                <Grid item xs={false} sm={4} md={7} className = "sign_in_left">
+                    <RegisterLeftPanel tag ="signin"/>
+                </Grid>
+                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square className = "sign_in_right">
+                    { this.renderForm() }
                 </Grid>
             </Grid>
+        )
+    }
+
+    render() {
+        return (
+            !this.state.mobileView ? this.renderDesktopView() : this.renderMobileView()
         )
     }
 }
