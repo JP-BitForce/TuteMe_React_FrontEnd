@@ -10,6 +10,13 @@
     height: 360vh
 }
 
+@media(max-width: 574px) {
+    .landing_content {
+        width: 100%;
+        height: 420vh
+    }
+}
+
 .landing_content_top {
     width: 100%;
     height: 100vh;
@@ -22,7 +29,7 @@
 .landing_content_top_left {
     display: flex;
     flex-direction: column;
-    padding-top: 10%;
+    padding-top: 8%;
     margin-left: 50%;
 }
 
@@ -39,13 +46,15 @@
     font-size: 8vh;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: bold;
+    text-align: right;
+    margin-right: 4%;
 }
 
 .header_content_02 {
-    font-size: 2.3vh;
-    padding: 3%;
+    font-size: 2.1vh;
     text-align: left;
-    margin-top: 5%;
+    margin: 4% 2% 4% 0;
+    font-weight: bold;
 }
 
 .header_section_btn {
@@ -54,6 +63,9 @@
     margin-top: 2%;
     padding: 2%;
     margin-bottom: 3%;
+    width: 40%;
+    align-self: flex-end;
+    margin-right: 2%;
 }
 
 .landing_content_bottom {
@@ -125,7 +137,7 @@ h1::before {
 }
 
 .features-left div:hover h4, .features-right div:hover h4{
-	color: #202020;
+	color: #e91e63;
     cursor: pointer;
 }
 
@@ -150,13 +162,18 @@ h1::before {
 	text-align: center;
 }
 
+@media(max-width: 574px) {
+    .appmockup{
+        display: none;
+    }
+}
+
 .content_paper {
     display: flex;
     flex-direction: row;
     margin-bottom: 4%;
     width: 100%;
-    /* box-shadow: 1px 1px 1px 1px rgb(185, 183, 183);
-    padding: 1%; */
+    margin-top: 8%;
 }
 
 .content_paper_left {
@@ -173,11 +190,28 @@ h1::before {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    padding: 5%;
 }
 
 .content_description {
-    padding: 8%;
+    padding: 5%;
+    text-align: justify;
+}
+
+.learn_more_container {
+    width: 100%;
+    align-items: flex-end;
+    justify-content: flex-end;
+    display: flex;
+}
+
+.learn_more {
+    margin-right: 5%;
+    font-weight: bold;
+}
+
+.learn_more:hover {
+    cursor: pointer;
+    color: #e91e63;
 }
 
 .content_header {
@@ -193,5 +227,4 @@ h1::before {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    padding: 5%;
 }

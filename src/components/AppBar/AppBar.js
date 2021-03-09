@@ -1,11 +1,30 @@
-import React from 'react'
+import React, {useState} from 'react'
 
-import DesktopBar from './DesktopBar'
-import MobileBar from './MobileBar'
+//Boostrap
+import Navbar from 'react-bootstrap/Navbar'
+import Button from 'react-bootstrap/Button'
+import Nav from 'react-bootstrap/Nav'
+
+import HomeIcon from '@material-ui/icons/Home';
+import WhatshotIcon from '@material-ui/icons/Whatshot';
+import GrainIcon from '@material-ui/icons/Grain';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton';
 
 import './AppBar.css'
 
-const AppBar = ({mobileView}) => {
+const AppBar = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+    const auth = false
+
+    const nav = [
+      {label:"Home", href:"/", icon: <HomeIcon className = "icon" />},
+      {label:"Features", href:"/", icon: <GrainIcon className = "icon" />},
+      {label:"Breadcrumb", href:"/", icon: <WhatshotIcon className = "icon" />},
+    ];
+
     const handleLoginRoute = () => {
         window.location.replace('/signIn')
     }
@@ -14,20 +33,72 @@ const AppBar = ({mobileView}) => {
         window.location.replace('/signUp')
     }
 
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(false)
+    }
+
     return (
         <div className = "appBar_div_root">
-            {
-              !mobileView ? 
-                <DesktopBar
-                  handleLoginRoute = { handleLoginRoute }
-                  handleSignUpRoute = { handleSignUpRoute }
-                /> 
-                : 
-                <MobileBar
-                  handleLoginRoute = { handleLoginRoute }
-                  handleSignUpRoute = { handleSignUpRoute }
-                />
-            }
+          <Navbar collapseOnSelect expand="lg" fixed="top" className="appbar">
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="mr-auto">
+                {
+                  nav.map(item => {
+                    const {label, href, icon} = item
+                    return (
+                      <Nav.Link href = {href}> {icon} {label} </Nav.Link>
+                    )
+                  })
+                }
+              </Nav>
+            </Navbar.Collapse>
+
+            <Navbar.Collapse className="justify-content-end">
+                <div className = "section_desktop">
+                  {
+                    !auth && (
+                      <div className = "setion_desktop_container">
+                        <Button variant="outline-primary" onClick = {handleLoginRoute}> SIGN IN </Button>
+                        <div className = "horizontal_seperator"/>
+                        <Button variant="outline-primary" onClick = {handleSignUpRoute}> SIGN UP </Button>
+                        <div className = "horizontal_seperator"/>
+                      </div>
+                    )
+                  }
+                </div>
+            </Navbar.Collapse>
+            <div className = "section_mobile">
+              <IconButton aria-label="display more actions" edge="end" color="inherit" onClick = {handleClick}>
+                <MoreIcon />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                {
+                    auth ? (
+                      <>
+                        <MenuItem>PROFILE</MenuItem>
+                        <MenuItem>LOGOUT</MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <MenuItem onClick = {handleLoginRoute}>SIGN IN</MenuItem>
+                        <MenuItem onClick = {handleSignUpRoute}>SIGN UP</MenuItem>
+                      </>
+                    )
+                }
+              </Menu>      
+            </div>
+          </Navbar>
         </div>
     )
 }

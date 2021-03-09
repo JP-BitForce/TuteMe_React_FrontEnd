@@ -62,8 +62,8 @@ const Content = () => {
                 <div className = "content_description">
                     { ContentJson.description[id] }
                 </div>
-                <div>
-                    <AnimatedButton label = "Learn More"/>
+                <div className = "learn_more_container">
+                   <span className = "learn_more">Learn More</span>
                 </div>
             </div>
         )
@@ -136,15 +136,13 @@ const Content = () => {
     return (
         <div className = "landing_content">
             <div className = "landing_content_top">
-
                 <div className = "landing_content_top_left">
                     <span className = "header_content_01">{headerJson.mainContent}</span>
-                    <span className = "header_content_02">{headerJson.subContent02}</span>
                     <div className = "header_section_btn">
                         <Button label = "GET STARTED"/>
                     </div>
+                    <span className = "header_content_02">{headerJson.context}</span>
                 </div>
-
                 <Paper className = "landing_content_bottom" elevation={5}>
                     { renderDetailSection() }
                     { renderfeatureSection() }
