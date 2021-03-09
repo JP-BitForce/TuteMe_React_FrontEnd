@@ -29,7 +29,7 @@ const DesktopBar = ({handleLoginRoute, handleSignUpRoute}) => {
               {
                 nav.map(item => {
                   return (
-                    <Link color="inherit" href= {item.href} className = "link" style = {{color:"white"}}>
+                    <Link color="inherit" href= {item.href} className = "link">
                       {item.icon}  {item.label}
                     </Link>
                   )
@@ -38,9 +38,9 @@ const DesktopBar = ({handleLoginRoute, handleSignUpRoute}) => {
             </Breadcrumbs>
           </Toolbar>
           <Navbar.Collapse className="justify-content-end">
-            <Button variant="outline-light" onClick = {handleLoginRoute}> SIGN IN </Button>
+            <Button variant="outline-primary" onClick = {handleLoginRoute}> SIGN IN </Button>
             <div className = "horizontal_seperator"/>
-            <Button variant="outline-light" onClick = {handleSignUpRoute}> SIGN UP</Button>
+            <Button variant="outline-primary" onClick = {handleSignUpRoute}> SIGN UP</Button>
             <div className = "horizontal_seperator"/>
           </Navbar.Collapse>
         </Navbar>

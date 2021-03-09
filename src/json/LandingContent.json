@@ -1,19 +1,19 @@
 {
     "headers":{
-        "1": [
+        "content-1": [
             "Learn Anytime.",
             "Anywhere."
         ],
 
-        "2": [
+        "content-2": [
             "Digital Learning"
         ]
 
     },
 
     "description":{
-        "1":"The Online Learning Consortium™ (OLC) is a collaborative community of higher education leaders and innovators, dedicated to advancing quality digital teachingand learning experiences designed to reach and engage the modern learner – anyone, anywhere, anytime.",
-        "2":"Since our founding in 1999, we’ve become the go-to source for everything related to digital learning. Thousands of educators rely on The Online Learning Consortium for expert guidance, professional development and resources to help them excel in digital learning."
+        "content-1":"The Online Learning Consortium™ (OLC) is a collaborative community of higher education leaders and innovators, dedicated to advancing quality digital teachingand learning experiences designed to reach and engage the modern learner – anyone, anywhere, anytime.",
+        "content-2":"Since our founding in 1999, we’ve become the go-to source for everything related to digital learning. Thousands of educators rely on The Online Learning Consortium for expert guidance, professional development and resources to help them excel in digital learning."
     },
 
     "cardHeader": "New Approaches to Enhance Digital Teaching/Learning Programs",
@@ -27,5 +27,41 @@
         { "header": "STUDENTS", "img": "1", "text": "Leading from the conceptual to the implementation of online learning best practices, is offered as a sequence of one foundation course , followed by elective courses and creation or revision of an online course under the guidance of a mentor."},
         { "header": "TEACHERS", "img": "2", "text": "Leading from the conceptual to the implementation of online learning best practices, is offered as a sequence of one foundation course , followed by elective courses and creation or revision of an online course under the guidance of a mentor."},
         { "header": "ONLINE COURSES", "img": "3", "text": "Leading from the conceptual to the implementation of online learning best practices, is offered as a sequence of one foundation course , followed by elective courses and creation or revision of an online course under the guidance of a mentor."}
+    ],
+
+    "features_left": [
+        {
+            "header":"Ultimate Design",
+            "src":"features-icon-1",
+            "para":"This is a paragraph. Click here to add  and edit your own text here."
+        },
+        {
+            "header":"Always Free",
+            "src":"features-icon-2",
+            "para":"This is a paragraph. Click here to add  and edit your own text here."
+        },
+        {
+            "header":"Fast to Take Photo",
+            "src":"features-icon-3",
+            "para":"This is a paragraph. Click here to add  and edit your own text here."
+        }
+    ],
+
+    "features_right": [
+        {
+            "header":"Give Amazing Effects",
+            "src":"features-icon-4",
+            "para":"This is a paragraph. Click here to add  and edit your own text here."
+        },
+        {
+            "header":"Take Your Time",
+            "src":"features-icon-5",
+            "para":"This is a paragraph. Click here to add  and edit your own text here."
+        },
+        {
+            "header":"Animate Your Photos",
+            "src":"features-icon-6",
+            "para":"This is a paragraph. Click here to add  and edit your own text here."
+        }
     ]
 }

@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react'
 
 import AppBar from '../../components/AppBar/AppBar'
-import Carousels from '../../components/Carousel/Carousels'
-import LandingContent from '../../components/LandingContent/LandingContent'
 import Footer from '../../components/Footer/Footer'
+import Content from './Content'
 
 import './LandingPage.css'
 
@@ -22,10 +21,9 @@ const LandingPage = () => {
 
     return (
         <div className = "landing_root_div">
-            <Carousels mobileView = {mobileView}/>
             <AppBar mobileView = {mobileView}/>
-            <LandingContent mobileView = {mobileView}/>
-            <Footer mobileView = {mobileView}/>
+            <Content/>
+            <Footer/>
         </div>
     )
 }

@@ -4,7 +4,8 @@
 }
 
 .sign_in_left {
-    background-image: url(../../assets/images/register/signin.jpg);
+    /* background-image: url(../../assets/images/register/signin.jpg); */
+    background-image: url('../../assets/images/landing page/150.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

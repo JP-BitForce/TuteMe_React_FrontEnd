@@ -5,10 +5,6 @@ import './RegisterLeftPanel.css'
 
 const RegisterLeftPanel = ({tag}) => {
 
-    const handleHomeRoute = () => {
-        window.location.replace('/')
-    }
-
     const renderMessagesRoot = () => {
         switch(tag) {
             case "signin" : return renderSignInMessages()
@@ -20,9 +16,6 @@ const RegisterLeftPanel = ({tag}) => {
     const renderSignInMessages = () => {
         return (
             <div className = "login_paper_left-text">
-                <IconButton aria-label="goole" onClick = {handleHomeRoute}>
-                    <div className = "logo"/>
-                </IconButton>
                 <span className = "login_paper_left_message01">Welcome back</span>
                 <span className = "login_paper_left_message02">Please Login to your continue</span>
             </div>
@@ -32,9 +25,6 @@ const RegisterLeftPanel = ({tag}) => {
     const renderSignUpMessages = () => {
         return (
             <div className = "login_paper_left-text">
-                <IconButton aria-label="goole" onClick = {handleHomeRoute}>
-                    <div className = "logo"/>
-                </IconButton>
                 <span className = "login_paper_left_message01">Register with us!</span>
                 <span className = "login_paper_left_message02">Join now to be a part of the revolution!</span>
             </div>
@@ -44,9 +34,6 @@ const RegisterLeftPanel = ({tag}) => {
     const renderForgotpasswordMessages = () => {
         return (
             <div className = "login_paper_left-text forgot-password-text">
-                <IconButton aria-label="goole" onClick = {handleHomeRoute}>
-                    <div className = "logo"/>
-                </IconButton>
                 <span className = "login_paper_left_message01">Forgot Password ?</span>
                 <span className = "login_paper_left_message02">Follow this steps to reset your credentials</span>
             </div>
