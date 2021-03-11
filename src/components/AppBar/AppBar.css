@@ -31,6 +31,13 @@
     .section_desktop {
         display: none;
     }
+
+    .appbar {
+        top: 0;
+        left: 0;
+        background-color: white;
+    }
+    
 }
 
 .section_mobile {
@@ -41,4 +48,8 @@
     .section_mobile {
         display: none;
     }
+}
+
+.grow {
+    flex-grow: 1;
 }

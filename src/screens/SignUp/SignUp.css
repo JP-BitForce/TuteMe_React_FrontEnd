@@ -4,8 +4,7 @@
 }
 
 .sign_up_left {
-    /* background-image: url(../../assets/images/register/signup.jpg); */
-    background-image: url('../../assets/images/landing page/150.jpg');
+    background-image: url('../../assets/images/landing page/theme.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

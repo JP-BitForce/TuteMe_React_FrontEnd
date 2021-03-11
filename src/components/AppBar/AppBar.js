@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
 
 import './AppBar.css'
 
@@ -21,8 +22,9 @@ const AppBar = () => {
 
     const nav = [
       {label:"Home", href:"/", icon: <HomeIcon className = "icon" />},
-      {label:"Features", href:"/", icon: <GrainIcon className = "icon" />},
-      {label:"Breadcrumb", href:"/", icon: <WhatshotIcon className = "icon" />},
+      {label:"All Courses", href:"/", icon: <GrainIcon className = "icon" />},
+      {label:"Staffs", href:"/", icon: <WhatshotIcon className = "icon" />},
+      {label:"Contact", href:"/", icon: <InboxIcon className = "icon" />},
     ];
 
     const handleLoginRoute = () => {
@@ -51,7 +53,7 @@ const AppBar = () => {
                   nav.map(item => {
                     const {label, href, icon} = item
                     return (
-                      <Nav.Link href = {href}> {icon} {label} </Nav.Link>
+                      <Nav.Link href = {href} style = {{fontWeight:'bold'}}> {icon} {label} </Nav.Link>
                     )
                   })
                 }

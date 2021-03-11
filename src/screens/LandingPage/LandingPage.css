@@ -7,24 +7,25 @@
 
 .landing_content {
     width: 100%;
-    height: 360vh
+    height: 400vh
 }
 
 @media(max-width: 574px) {
     .landing_content {
         width: 100%;
-        height: 420vh
+        height: 550vh
     }
 }
 
 .landing_content_top {
     width: 100%;
     height: 100vh;
-    background-image: url('../../assets/images/landing page/150.jpg');
+    background-image: url('../../assets/images/landing page/theme.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
 }
+
 
 .landing_content_top_left {
     display: flex;
@@ -96,6 +97,34 @@ h1::before {
     margin-bottom: 80px;
 	color: #6b6868;
     padding: 1%;
+}
+
+.detail_cards {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2%;
+    background-color: #f8f9fa;
+}
+
+.details_card {
+    width: 30%;
+    margin-left: 2.5%;
+}
+
+@media(max-width: 574px) {
+    .detail_cards {
+        display: flex;
+        flex-direction: column;
+        padding: 2%;
+    }
+
+    .details_card {
+        width: 90%;
+        margin-left: 2.5%;
+        margin-top: 1%;
+    }
 }
 
 .container{
@@ -173,7 +202,7 @@ h1::before {
     flex-direction: row;
     margin-bottom: 4%;
     width: 100%;
-    margin-top: 8%;
+    margin-top: 5%;;
 }
 
 .content_paper_left {
@@ -184,13 +213,6 @@ h1::before {
     justify-content: center;
 }
 
-.content_paper_right_1 {
-    width: 40%;
-    background-image: url('../../assets/images/landing page/10088.jpg');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-}
 
 .content_description {
     padding: 5%;
@@ -221,10 +243,22 @@ h1::before {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.content_paper_right_2 {
-    width: 40%;
-    background-image: url('../../assets/images/landing page/feature_3.png');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+
+.section_count {
+    width: 90%;
+    margin-left: 5%;
+    box-shadow: 1px 1px 1px  rgb(185, 183, 183);
+    background-color: rgba(255, 255, 255, .15);  
+    backdrop-filter: blur(4px);
+    margin-bottom: 2%;
+    align-items: center;
+    justify-content: space-around;
+    padding: 2%;
+    display: flex;
+    flex-direction: row;
+}
+
+.course_grid_container {
+    padding: 1%;
+    margin-bottom: 2%;
 }
