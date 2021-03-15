@@ -4,6 +4,7 @@ import SideBar from '../../components/SideBar/SideBar'
 import TopBar from './TopBar'
 
 import Profile from '../Profile/Profile'
+import Chat from '../My Chat/MyChat'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -53,8 +54,46 @@ const GettingStarted = () => {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+    const [active, setItemActive] = useState({
+      HOME: true,
+      COURSES: false,
+      ONE_STEP: false,
+      TRUSTED_TUTORS: false,
+      MY_CHATS: false,
+      MY_PROFILE: false
+    })
+
+    const [subItemActive, setSubItemActive] = useState({
+        MY_COURSES: false,
+        ONLINE_COURSES: false,
+        VIEW_QAs: false,
+        NEW: false
+    })
   
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const handleSidebarItemOnClick = (name, value) => {
+      setItemActive({
+        HOME: false,
+        COURSES: false,
+        ONE_STEP: false,
+        TRUSTED_TUTORS: false,
+        MY_CHATS: false,
+        MY_PROFILE: false,
+        [name]: value
+      })
+    }
+    
+    const handleSidebarSubItemOnClick = (name, value) => {
+      setSubItemActive({
+        MY_COURSES: false,
+        ONLINE_COURSES: false,
+        VIEW_QAs: false,
+        NEW: false,
+        [name]: value
+      })
+    }
+    
 
     const handleDrawerToggle = () => {
       setMobileOpen(!mobileOpen);
@@ -68,10 +107,14 @@ const GettingStarted = () => {
       setMobileMoreAnchorEl(event.currentTarget);
     };
 
+    const handleSignOut = () => {
+      
+    }
+
     const handleSearch = () => {
 
     }
-  
+
     const renderPermanentDrawer = () => {
         return (
           <Hidden xsDown implementation="css">
@@ -80,9 +123,17 @@ const GettingStarted = () => {
               variant="permanent"
               open
             >
-              <SideBar/>
+              <SideBar 
+                itemOnClick = {handleSidebarItemOnClick} 
+                subItemOnClick = {handleSidebarSubItemOnClick}
+                active = {active}
+                subItemActive = {subItemActive}
+              />
               <div className = "grow"/>
               <Divider/>
+              <div button onClick = {handleSignOut} className = "list_item_div sign_out_div ">
+                  <span>SIGN-OUT</span>
+              </div>
             </Drawer>
           </Hidden>
         )
@@ -99,9 +150,17 @@ const GettingStarted = () => {
                   classes = {{ paper: classes.drawerPaper }}
                   ModalProps={{ keepMounted: true }}
               >
-                <SideBar/>
+                <SideBar 
+                  itemOnClick = {handleSidebarItemOnClick} 
+                  subItemOnClick = {handleSidebarSubItemOnClick}
+                  active = {active}
+                  subItemActive = {subItemActive}
+                />
                 <div className = "grow"/>
                 <Divider/>
+                <div button onClick = {handleSignOut} className = "list_item_div sign_out_div ">
+                  <span>SIGN-OUT</span>
+                </div>
               </Drawer>
           </Hidden>
         )
@@ -126,7 +185,19 @@ const GettingStarted = () => {
   
           <main className={classes.content}>
               <div className={classes.toolbar} />
-              <Profile/>
+              { 
+                active["HOME"] ? null 
+                :
+                active["COURSES"] ? null
+                :
+                active["ONE_STEP"] ? null
+                :
+                active["TRUSTED_TUTORS"] ? null
+                :
+                active["MY_CHATS"] ? <Chat/>
+                :
+                active["MY_PROFILE"] && <Profile/>  
+              }
           </main>
       </div>
     );
