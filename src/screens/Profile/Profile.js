@@ -161,10 +161,10 @@ class Profile extends Component {
         )
     }
 
-    render() {
+    renderStudentProfile = () => {
         return (
-            <div className = "profile_root">
-               <Paper elevation = {3} square>
+            <div>
+                <Paper elevation = {3} square>
                     <Grid container spacing={3}>
                         <img src={ProfileImage} alt="Avatar" class="avatar"/>
                         <Grid item xs={2}/>
@@ -193,7 +193,7 @@ class Profile extends Component {
                         </Paper>
                     </div>
                     <div className = "profile_edit">
-                    <Tabs defaultActiveKey="password" id="uncontrolled-tab-example">
+                    <Tabs defaultActiveKey="interests" id="uncontrolled-tab-example">
                         <Tab eventKey="edit" title="Edit">
                             { this.renderEditTab() }
                         </Tab>
@@ -206,6 +206,14 @@ class Profile extends Component {
                         </Tabs>
                     </div>
                </div>
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <div className = "profile_root">
+               { this.renderStudentProfile() }
             </div>
         )
     }
