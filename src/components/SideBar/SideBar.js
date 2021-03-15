@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React  from 'react'
 
 
 //Material-UI
@@ -12,51 +12,14 @@ import Divider from '@material-ui/core/Divider';
 import json from '../../json/Sidebar.json'
 import './SideBar.css'
 
-const SideBar = () => {
-    const [active, setItemActive] = useState({
-        HOME: true,
-        COURSES: false,
-        ONE_STEP: false,
-        TRUSTED_TUTORS: false,
-        MY_CHATS: false,
-        MY_PROFILE: false
-    })
-
-    const [subItemActive, setSubItemActive] = useState({
-        MY_COURSES: false,
-        ONLINE_COURSES: false,
-        VIEW_QAs: false,
-        NEW: false
-    })
-
-    const handleSetActive = (name, value) => {
-        setItemActive({
-            HOME: false,
-            COURSES: false,
-            ONE_STEP: false,
-            TRUSTED_TUTORS: false,
-            MY_CHATS: false,
-            MY_PROFILE: false,
-            [name]: value
-        })
-    }
-
-    const handleSubItemSetActive = (name, value) => {
-        setSubItemActive({
-            MY_COURSES: false,
-            ONLINE_COURSES: false,
-            VIEW_QAs: false,
-            NEW: false,
-            [name]: value
-        })
-    }
+const SideBar = ({itemOnClick, subItemOnClick, active, subItemActive}) => {
 
     const handleOnClick = (label) => {
-        handleSetActive(label,!active[label])
+        itemOnClick(label,!active[label])
     }
 
     const handleSubItemOnClick = (label) => {
-        handleSubItemSetActive(label,!subItemActive[label])
+        subItemOnClick(label,!subItemActive[label])
     }
 
     const renderListItem = (label, id) => {
@@ -121,6 +84,7 @@ const SideBar = () => {
                         ) 
                     })
                 }
+                <Divider />
                 </List>
             </div>
         </div>
