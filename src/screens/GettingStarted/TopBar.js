@@ -21,6 +21,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MenuIcon from '@material-ui/icons/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
+import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 
 const drawerWidth = 210;
 
@@ -62,6 +63,10 @@ const TopBar = ({
 }) => {
     const classes = useStyles();
 
+    const handleBackOnPress = () => {
+      window.location.replace('/')
+    }
+
     const renderIconButton = (onClick, icon) => {
         return (
           <Nav.Link onClick = {onClick} className = "icon_btn">{icon}</Nav.Link>
@@ -71,7 +76,7 @@ const TopBar = ({
     const renderMenuItem = (content, icon, title) => {
         return (
           <MenuItem>
-                <Batch content = {content} icon = {icon} />
+                <Batch content = {content} icon = {icon}/>
                 <p>{title}</p>
           </MenuItem>
         )
@@ -106,6 +111,7 @@ const TopBar = ({
                 </IconButton>
 
                 <div className={classes.sectionDesktop}>
+                    <ChipButton label = "back" icon = { <ArrowBackIos />} handleClick = {handleBackOnPress}/>
                     { renderIconButton(handleSearch, <SearchIcon />) }
                     <Form inline>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2" />
