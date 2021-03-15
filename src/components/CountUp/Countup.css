@@ -1,0 +1,38 @@
+.countup_root {
+    display: flex;
+    flex-direction: row;
+}
+
+.counter_block {
+    display: flex;
+    flex-direction: column;
+}
+
+.count_img_src {
+    width: 100px;
+    height: 100px;
+}
+
+.counter_span {
+    font-size: 50px;
+}
+
+.counter_tilte  {
+    font-weight: bold;
+}
+
+@media(max-width: 574px) {
+    .count_img_src {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .counter_span {
+        font-size: 20px;
+    }
+
+    .counter_tilte  {
+        font-weight: bold;
+        font-size: 8px;
+    }
+}

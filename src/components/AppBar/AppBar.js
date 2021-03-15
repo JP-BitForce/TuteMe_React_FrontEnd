@@ -1,61 +1,33 @@
-import React, {useState, useEffect} from 'react'
-import './AppBar.css'
+import React, {useState} from 'react'
 
 //Boostrap
 import Navbar from 'react-bootstrap/Navbar'
+import Button from 'react-bootstrap/Button'
+import Nav from 'react-bootstrap/Nav'
 
 //Material-UI
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { emphasize, withStyles } from '@material-ui/core/styles';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Chip from '@material-ui/core/Chip';
-import HomeIcon from '@material-ui/icons/Home';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-const StyledBreadcrumb = withStyles((theme) => ({
-    root: {
-      backgroundColor: theme.palette.grey[100],
-      height: theme.spacing(3),
-      color: theme.palette.grey[800],
-      fontWeight: theme.typography.fontWeightRegular,
-      '&:hover, &:focus': {
-        backgroundColor: theme.palette.grey[300],
-      },
-      '&:active': {
-        boxShadow: theme.shadows[1],
-        backgroundColor: emphasize(theme.palette.grey[300], 0.12),
-      },
-    },
-  }))(Chip);
+import MoreIcon from '@material-ui/icons/MoreVert';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import HomeIcon from '@material-ui/icons/Home';
+import WhatshotIcon from '@material-ui/icons/Whatshot';
+import GrainIcon from '@material-ui/icons/Grain';
+
+import './AppBar.css'
 
 const AppBar = () => {
-    const [auth,setAuth] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null);
+    const auth = false
 
-    const [scrolled,setScrolled]= useState(false);
-
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      if(offset > 450 ) {
-        setScrolled(true);
-      }
-      else {
-        setScrolled(false);
-      }
-    } 
-
-    useEffect(() => {
-      window.addEventListener('scroll',handleScroll)
-    })
-  
-    let x=['appBar_div_root'];
-
-    if(scrolled){
-      x.push('scrolled');
-    }
+    const nav = [
+      {label:"Home", href:"/", icon: <HomeIcon className = "icon" />},
+      {label:"All Courses", href:"/", icon: <GrainIcon className = "icon" />},
+      {label:"Staffs", href:"/", icon: <WhatshotIcon className = "icon" />},
+      {label:"Contact", href:"/", icon: <InboxIcon className = "icon" />},
+    ];
 
     const handleLoginRoute = () => {
         window.location.replace('/signIn')
@@ -65,52 +37,72 @@ const AppBar = () => {
         window.location.replace('/signUp')
     }
 
-    const handleClick = () => {
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
 
+    const handleClose = () => {
+      setAnchorEl(false)
     }
 
     return (
         <div className = "appBar_div_root">
-            <Navbar fixed="top" className={x.join(" ")} >
-                <Toolbar>
-                    <IconButton edge="start" aria-label="drawer" style = {{color:'white'}}>
-                        <MenuIcon />
-                    </IconButton>
+          <Navbar collapseOnSelect expand="lg" fixed="top" className="appbar">
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="mr-auto">
+                {
+                  nav.map(item => {
+                    const {label, href, icon} = item
+                    return (
+                      <Nav.Link href = {href} style = {{fontWeight:'bold'}}> {icon} {label} </Nav.Link>
+                    )
+                  })
+                }
+              </Nav>
+            </Navbar.Collapse>
 
-                    <Breadcrumbs aria-label="breadcrumb">
-                        <StyledBreadcrumb
-                            component="a"
-                            href="/"
-                            label="Home"
-                            icon={<HomeIcon fontSize="small" />}
-                        />
-                        <StyledBreadcrumb 
-                            component="a" 
-                            href="#" 
-                            label="Catalog" 
-                            onClick={handleClick} 
-                        />
-                        <StyledBreadcrumb
-                            label="Accessories"
-                            deleteIcon={<ExpandMoreIcon />}
-                            onClick={handleClick}
-                            onDelete={handleClick}
-                        />
-                    </Breadcrumbs>
-                </Toolbar>
-
-                <Navbar.Collapse className="justify-content-end">
-                    {
-                        auth ? <Navbar.Text>Signed in as: <a href="#profile">Mark Otto</a></Navbar.Text> :
-                        (
-                        <ButtonGroup size="large" variant="text" aria-label="large outlined primary button group">
-                            <Button className = "auth" onClick = {handleLoginRoute} style = {{color:'white'}}>LOGIN</Button>
-                            <Button onClick = {handleSignUpRoute} style = {{color:'white'}}>SIGN UP</Button>
-                        </ButtonGroup>
-                        )
-                    }
-                </Navbar.Collapse>
-            </Navbar>
+            <Navbar.Collapse className="justify-content-end">
+                <div className = "section_desktop">
+                  {
+                    !auth && (
+                      <div className = "setion_desktop_container">
+                        <Button variant="outline-primary" onClick = {handleLoginRoute}> SIGN IN </Button>
+                        <div className = "horizontal_seperator"/>
+                        <Button variant="outline-primary" onClick = {handleSignUpRoute}> SIGN UP </Button>
+                        <div className = "horizontal_seperator"/>
+                      </div>
+                    )
+                  }
+                </div>
+            </Navbar.Collapse>
+            <div className = "section_mobile">
+              <IconButton aria-label="display more actions" edge="end" color="inherit" onClick = {handleClick}>
+                <MoreIcon />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                {
+                    auth ? (
+                      <>
+                        <MenuItem>PROFILE</MenuItem>
+                        <MenuItem>LOGOUT</MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <MenuItem onClick = {handleLoginRoute}>SIGN IN</MenuItem>
+                        <MenuItem onClick = {handleSignUpRoute}>SIGN UP</MenuItem>
+                      </>
+                    )
+                }
+              </Menu>      
+            </div>
+          </Navbar>
         </div>
     )
 }

@@ -1,0 +1,66 @@
+.login_paper_left {
+    width: 100%;
+    height: 90%;
+    margin-top: 8%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.login_paper_left-text {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 60%;
+}
+
+.login_paper_left_message01 {
+    font-size: 55px;
+    font-weight: bold;
+}
+
+.login_paper_left_message02 {
+    font-size: 20px;
+    opacity: 0.8;
+}
+
+.follow-us {
+    margin-top: 5%;
+    width: 100%;
+    height: 15%;
+}
+
+.follow-us-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.login_paper_left_message03 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.logo {
+    background-image: url(../../assets/images/logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 10vh;
+    height: 10vh;
+    background-size: cover;
+}
+
+.social-btn-label {
+    opacity: 0.6;
+}
+
+.login-ins {
+    background-image: url(../../assets/images/instagram.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 5vh;
+    height: 5vh;
+    background-size: cover;
+}
