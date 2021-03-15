@@ -37,6 +37,10 @@
         left: 0;
         background-color: white;
     }
+
+    .desktop_section {
+        display: none;
+    }
     
 }
 
@@ -48,8 +52,4 @@
     .section_mobile {
         display: none;
     }
-}
-
-.grow {
-    flex-grow: 1;
 }

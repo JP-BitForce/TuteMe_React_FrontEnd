@@ -10,7 +10,6 @@ import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
 
 import json from '../../json/Sidebar.json'
-
 import './SideBar.css'
 
 const SideBar = () => {
@@ -106,7 +105,7 @@ const SideBar = () => {
                     aria-labelledby="nested-list-subheader"
                     subheader={
                         <ListSubheader component="div" id="nested-list-subheader">
-                            Nested List Items
+                            <div className = "logo_div"/>
                         </ListSubheader>
                     }
                 >
