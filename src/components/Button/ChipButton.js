@@ -5,7 +5,7 @@ import Chip from '@material-ui/core/Chip';
 
 const StyledButton = withStyles((theme) => ({
     root: {
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
         height: theme.spacing(5),
         color: 'white',
         fontWeight: 'bold',
@@ -15,7 +15,8 @@ const StyledButton = withStyles((theme) => ({
         },
         marginTop:'1%',
         marginBottom: '1%',
-        width: "100%"
+        width: "100%",
+        cursor:'pointer'
       },
 }))(Chip);
 
@@ -23,8 +24,8 @@ const ChipButton = ({label,handleClick,icon}) => {
     return (
         <StyledButton
             label= {label}
-            deleteIcon={icon}
             onClick={handleClick}
+            icon={icon}
         />
     )
 }

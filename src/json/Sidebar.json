@@ -1,0 +1,41 @@
+{
+    "nav": [
+        {
+            "label": "HOME",
+            "id":"HOME",
+            "subNav":[]
+        },
+        {
+            "label":"COURSES",
+            "id":"COURSES", 
+            "subNav":[
+                {"label" : "MY COURSES", "id" : "MY_COURSES"},
+                {"label" : "ONLINE-COURSES", "id" : "ONLINE_COURSES"}
+            ]
+        },
+        {
+            "label":"ONE-STEP",
+            "id":"ONE_STEP",  
+            "subNav":[
+                {"label" : "VIEW QAs", "id" : "VIEW_QAs"},
+                {"label" : "NEW", "id" : "NEW"}
+                
+            ]
+        },
+        {
+            "label":"TRUSTED-TUTORS",
+            "id":"TRUSTED_TUTORS",  
+            "subNav":[]
+        },
+        {
+            "label":"MY CHATS",
+            "id":"MY_CHATS",  
+            "subNav":[]
+        },
+        {
+            "label":"MY PROFILE",
+            "id":"MY_PROFILE",  
+            "subNav":[]
+        }
+    ]
+}

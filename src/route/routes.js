@@ -2,6 +2,7 @@ import SignIn from '../screens/SignIn/SignIn'
 import SignUp from '../screens/SignUp/SignUp'
 import LandingPage from '../screens/LandingPage/LandingPage'
 import ForgotPassword from '../screens/ForwardPassword/ForgotPassword'
+import GettingStarted from '../screens/GettingStarted/GettingStarted'
 
 const routes = {
     data: [
@@ -30,6 +31,13 @@ const routes = {
         name: "ForgotPassword",
         path: "/forgotPassword",
         component: ForgotPassword,
+        type: "",
+        children: [],
+      },
+      {
+        name: "Getting-Started",
+        path: "/gettingStarted",
+        component: GettingStarted,
         type: "",
         children: [],
       }

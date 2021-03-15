@@ -1,27 +1,35 @@
 {
     "link":[
         {
-            "header": "LEGAL",
-            "children": ["Terms & Conditions", "Privacy Policy"]
+            "header": "Company",
+            "children": ["about us", "contact us", "our services", "privacy policy"]
         },
         {
-            "header": "US",
-            "children": ["About us", "Contact us"]
+            "header": "Get Help",
+            "children": ["FAQ", "returns", "Materials", "Payment options"]
+        },
+        {
+            "header": "Features",
+            "children": ["Online Courses", "Chat", "One-Step", "Feedback Provider"]
         }
     ],
 
     "social_content":[
         {
             "content":"Facebook", 
-            "style": "fa fa-facebook"
+            "style": "fab  fa-facebook"
         },
         {
             "content":"Twitter", 
-            "style": "fa fa-twitter"
+            "style": "fab  fa-twitter"
         },
         {
             "content":"Instagram", 
-            "style": "fa fa-instagram"
+            "style": "fab fa-instagram"
+        },
+        {
+            "content":"linkedIn", 
+            "style": "fab  fa-linkedin"
         }
     ]
 }
