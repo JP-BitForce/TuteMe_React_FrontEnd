@@ -1,4 +1,9 @@
-.card {
-    /* width: 40%;
-    margin-left: 2%; */
+.card_body_contents {
+    text-align: left;
+    font-size: medium;
+}
+
+.card_footer {
+    display: flex;
+    justify-content: space-between;
 }

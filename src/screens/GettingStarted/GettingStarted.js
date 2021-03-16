@@ -5,6 +5,7 @@ import TopBar from './TopBar'
 
 import Profile from '../Profile/Profile'
 import Chat from '../My Chat/MyChat'
+import TrustedTutors from '../Tutors/TrustedTutors'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -192,7 +193,7 @@ const GettingStarted = () => {
                 :
                 active["ONE_STEP"] ? null
                 :
-                active["TRUSTED_TUTORS"] ? null
+                active["TRUSTED_TUTORS"] ? <TrustedTutors/>
                 :
                 active["MY_CHATS"] ? <Chat/>
                 :
