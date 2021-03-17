@@ -6,6 +6,8 @@ import TopBar from './TopBar'
 import Profile from '../Profile/Profile'
 import Chat from '../My Chat/MyChat'
 import TrustedTutors from '../Tutors/TrustedTutors'
+import MyCourses from '../Courses/MyCourses'
+import OnlineCourses from '../Courses/OnlineCourses'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -65,7 +67,7 @@ const GettingStarted = () => {
     })
 
     const [subItemActive, setSubItemActive] = useState({
-        MY_COURSES: false,
+        MY_COURSES: true,
         ONLINE_COURSES: false,
         VIEW_QAs: false,
         NEW: false
@@ -189,7 +191,8 @@ const GettingStarted = () => {
               { 
                 active["HOME"] ? null 
                 :
-                active["COURSES"] ? null
+                active["COURSES"] ? 
+                  subItemActive["MY_COURSES"] ? <MyCourses/> : <OnlineCourses/>
                 :
                 active["ONE_STEP"] ? null
                 :
