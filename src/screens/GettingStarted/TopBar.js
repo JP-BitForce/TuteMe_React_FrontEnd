@@ -1,12 +1,6 @@
 import React from 'react'
 
 import Batch from '../../components/Badge/BadgeButton'
-import ChipButton from '../../components/Button/ChipButton'
-
-//Boostarp
-import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
-import Nav from 'react-bootstrap/Nav'
 
 //Material-UI
 import AppBar from '@material-ui/core/AppBar';
@@ -15,13 +9,16 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MenuIcon from '@material-ui/icons/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import SearchIcon from '@material-ui/icons/Search';
-import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
+
+import back_arrow from '../../assets/images/undo.png'
+import profile from '../../assets/images/Profile/avatar.png'
 
 const drawerWidth = 210;
 
@@ -49,6 +46,22 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       display: 'flex',
     },
+    '&:hover, &:focus': {
+      cursor:"pointer"
+    },
+  },
+
+  profile: {
+    marginLeft: "1%",
+    '&:hover, &:focus': {
+      cursor:"pointer"
+    },
+  },
+
+  goBack: {
+    '&:hover, &:focus': {
+      cursor:"pointer"
+    },
   },
 
 }));
@@ -58,19 +71,12 @@ const TopBar = ({
     mobileMoreAnchorEl, 
     isMobileMenuOpen, 
     handleMobileMenuClose, 
-    handleMobileMenuOpen,
-    handleSearch
+    handleMobileMenuOpen
 }) => {
     const classes = useStyles();
 
     const handleBackOnPress = () => {
       window.location.replace('/')
-    }
-
-    const renderIconButton = (onClick, icon) => {
-        return (
-          <Nav.Link onClick = {onClick} className = "icon_btn">{icon}</Nav.Link>
-        )
     }
 
     const renderMenuItem = (content, icon, title) => {
@@ -110,12 +116,16 @@ const TopBar = ({
                     <MenuIcon />
                 </IconButton>
 
-                <div className={classes.sectionDesktop}>
-                    <ChipButton label = "back" icon = { <ArrowBackIos />} handleClick = {handleBackOnPress}/>
-                    { renderIconButton(handleSearch, <SearchIcon />) }
-                    <Form inline>
-                        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                    </Form>
+                <div className = {classes.goBack} onClick = {handleBackOnPress}>
+                  <Tooltip title="go back" aria-label="back">
+                    <Avatar src = {back_arrow}/>
+                  </Tooltip>
+                </div>
+
+                <div className = {classes.profile}>
+                  <Tooltip title="Profile" aria-label="back">
+                    <Avatar src = {profile}/>
+                  </Tooltip>
                 </div>
 
                 <div className = "grow"/>
