@@ -5,8 +5,6 @@ import ChatCard from './ChatCard'
 import CustomButton from '../../components/Button/CustomButton'
 
 //Boostarp
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Card from 'react-bootstrap/Card'
 
 //Material-UI
@@ -116,11 +114,10 @@ class MyChat extends Component {
         return (
             <Card className = "people_card">
                 <Card.Body>
-                    <Card.Body>
-                        <ListItemText primary="PEOPLE YOU MAY KNOW"/>
-                        <List
-                            aria-labelledby="main"
-                        >
+                    <ListItemText primary="PEOPLE YOU MAY KNOW"/>
+                    <List
+                        aria-labelledby="main"
+                    >
                         {
                             this.dummayPeople.map(item => {
                                 return (
@@ -128,32 +125,16 @@ class MyChat extends Component {
                                 )
                             })
                         }
-                        </List>
-                    </Card.Body>
+                    </List>
                 </Card.Body>
             </Card>
-        )
-    }
-
-    renderRoot = () => {
-        return(
-            <div>
-                <Row>
-                    <Col sm={9}>
-                        { this.renderChatContainer() }
-                    </Col>
-                    <Col sm={3}>
-                        { this.renderPeopleBox() }
-                    </Col>
-                </Row>
-            </div>
         )
     }
 
     render() {
         return (
             <div className = "my_chat_root">
-                { this.renderRoot( )}
+                { this.renderChatContainer() }
             </div>
         )
     }

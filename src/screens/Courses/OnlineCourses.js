@@ -5,6 +5,7 @@ import CourseCard from '../../components/Card/CourseCard'
 import Modal from '../../components/Modal/Modal'
 import CourseCategories from './CourseCategories'
 
+//Material-UI
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -102,7 +103,7 @@ class OnlineCourses extends Component {
     renderCategoryItem = (item) => {
         const {category,src} = item
         return (
-            <Grid item xs={6} sm={3}>
+            <Grid item xs={6} sm={6} md={3}>
                 <Paper elevation = {5}>
                     <div 
                         onClick={()=>this.onCategorySelect(item)}
@@ -148,7 +149,7 @@ class OnlineCourses extends Component {
                             this.dummyCourses.map(item => {
                                 const {src, name, by, rating} = item
                                 return (
-                                    <Grid item xs={6} sm={3}>
+                                    <Grid item xs={6} sm={6} md={3}>
                                         <Paper elevation = {3}>
                                             <CourseCard
                                                 src = {src}
@@ -177,7 +178,7 @@ class OnlineCourses extends Component {
                     <div className = "courses_category_container">
                         <Grid container spacing={3}>
                             {
-                                this.dummyCourseCategories.slice(0,8).map(item => this.renderCategoryItem(item))
+                                    this.dummyCourseCategories.slice(0,8).map(item => this.renderCategoryItem(item))
                             }
                         </Grid>
                         <div className = "more_category">

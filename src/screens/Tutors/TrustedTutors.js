@@ -101,7 +101,7 @@ class TrustedTutors extends Component {
     renderCategoryItem = (item) => {
         const {title,src} = item
         return (
-            <Grid item xs={6} sm={2}>
+            <Grid item xs={6} sm={6} md={3}>
                 <Paper elevation = {5}>
                     <div 
                         onClick={()=>this.onCategorySelect(item)}
@@ -145,7 +145,7 @@ class TrustedTutors extends Component {
                     {
                         this.dummyTutors.map((item,index) => {
                             return (
-                                <Grid item xs={6} sm={3}>
+                                <Grid item xs={6} sm={6} md={3}>
                                     <Paper elevation = {3}>
                                         <TutorCard 
                                             media={item.src} 

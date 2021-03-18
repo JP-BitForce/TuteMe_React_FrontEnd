@@ -25,7 +25,7 @@ const CourseCard = ({src, title, by, rating, onClick}) => {
             </div>
          </Card.Body>
         <CardActions>
-            <Button size="small" color="primary" onClick={onClick}>Learn More</Button>
+            <Button size="small" color="primary" onClick={onClick}>View</Button>
         </CardActions> 
     </Card>
   );
