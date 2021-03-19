@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Batch from '../../components/Badge/BadgeButton'
-import ChipButton from '../../components/Button/ChipButton'
+// import ChipButton from '../../components/Button/ChipButton'
 
 //Boostarp
 import Form from 'react-bootstrap/Form'

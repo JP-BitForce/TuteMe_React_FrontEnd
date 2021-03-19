@@ -25,6 +25,7 @@ import Divider from '@material-ui/core/Divider';
 
 import ProfileImage from '../../assets/images/Profile/avatar.png'
 import './Profile.css'
+import Interest from "../../components/Card/MyInterestCard/CardView"
 
 class Profile extends Component {
     state = {
@@ -198,7 +199,7 @@ class Profile extends Component {
                             { this.renderEditTab() }
                         </Tab>
                         <Tab eventKey="interests" title="My Interests">
-                            
+                          <div style={{backgroundColor:"white"}}> <Interest/></div> 
                         </Tab>
                         <Tab eventKey="password" title="Change Password">
                             { this.renderPasswordTab() }

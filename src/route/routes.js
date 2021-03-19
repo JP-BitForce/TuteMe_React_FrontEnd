@@ -3,6 +3,7 @@ import SignUp from '../screens/SignUp/SignUp'
 import LandingPage from '../screens/LandingPage/LandingPage'
 import ForgotPassword from '../screens/ForwardPassword/ForgotPassword'
 import GettingStarted from '../screens/GettingStarted/GettingStarted'
+import InterestCard from '../components/Card/MyInterestCard/InterestCard'
 
 const routes = {
     data: [
@@ -38,6 +39,13 @@ const routes = {
         name: "Getting-Started",
         path: "/gettingStarted",
         component: GettingStarted,
+        type: "",
+        children: [],
+      },
+      {
+        name: "Interest-Card",
+        path: "/interestCard",
+        component: InterestCard,
         type: "",
         children: [],
       }
