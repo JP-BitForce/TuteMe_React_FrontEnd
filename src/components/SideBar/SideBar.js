@@ -1,128 +1,133 @@
-import React, {useState} from 'react'
-
+import React, {useState}  from 'react'
 
 //Material-UI
 import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { makeStyles } from '@material-ui/core/styles';
 
-import json from '../../json/Sidebar.json'
+import routes from '../../route/sideBarRoutes'
 import './SideBar.css'
 
-const SideBar = () => {
-    const [active, setItemActive] = useState({
-        HOME: true,
-        COURSES: false,
-        ONE_STEP: false,
-        TRUSTED_TUTORS: false,
-        MY_CHATS: false,
-        MY_PROFILE: false
-    })
+const useStyles = makeStyles((theme) => ({
+    root: {
+      width: '100%',
+      maxWidth: 360,
+    },
+    nested: {
+      paddingLeft: theme.spacing(5),
+    },
+    listItem: {
+        color: "white",
+        fontSize:'1.1em',
+        fontFamily: [
+            'Gill Sans',
+            'Gill Sans MT',
+            'Calibri',
+            'Trebuchet MS',
+            'sans-serif'
+        ].join(','),
+    },
+    subItems: {
+        color: "white",
+        fontSize:'0.9em',
+        fontFamily: [
+            'Gill Sans',
+            'Gill Sans MT',
+            'Calibri',
+            'Trebuchet MS',
+            'sans-serif'
+        ].join(','),
+    },
+    active: {
+        backgroundColor: "#555"
+    },
+}));
 
-    const [subItemActive, setSubItemActive] = useState({
-        MY_COURSES: false,
-        ONLINE_COURSES: false,
-        VIEW_QAs: false,
-        NEW: false
-    })
+const SideBar = ({itemOnClick, active}) => {
+    const classes = useStyles()
+    const [open, setOpen] = useState("")
 
-    const handleSetActive = (name, value) => {
-        setItemActive({
-            HOME: false,
-            COURSES: false,
-            ONE_STEP: false,
-            TRUSTED_TUTORS: false,
-            MY_CHATS: false,
-            MY_PROFILE: false,
-            [name]: value
-        })
+    const handleSetOpen = (id) => {
+        console.log(open, id)
+        if (open === id) {
+            setOpen("")
+            return
+        }
+        setOpen(id)
     }
 
-    const handleSubItemSetActive = (name, value) => {
-        setSubItemActive({
-            MY_COURSES: false,
-            ONLINE_COURSES: false,
-            VIEW_QAs: false,
-            NEW: false,
-            [name]: value
-        })
+    const handleOnClick = (id) => {
+        itemOnClick(id)
     }
 
-    const handleOnClick = (label) => {
-        handleSetActive(label,!active[label])
-    }
-
-    const handleSubItemOnClick = (label) => {
-        handleSubItemSetActive(label,!subItemActive[label])
-    }
-
-    const renderListItem = (label, id) => {
+    const navItem = (label, id) => {
         return (
-            <div button onClick = {() => handleOnClick(id)} className = { active[id] ? "list_item_div active" : "list_item_div"}>
-               <span>{label}</span>
-            </div>
+            <ListItem button key={label} onClick={() => handleOnClick(id)} className = {active === id && classes.active}>
+                <ListItemText classes={{primary:classes.listItem}} primary={label} />
+            </ListItem>
         )
     }
 
-    const renderListWithSubItem = (label, open, subItems, id) => {
+    const navsubItem = (label, subItems, id) => {
         return (
-            <>
-                <div button onClick = {() => handleOnClick(id)} className = { active[id] ? "list_item_div active" : "list_item_div"}>
-                    <span>{label}</span>
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </div>
-
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div">
+            <div>
+                <ListItem button key={label} onClick={() => {handleSetOpen(id)}}>
+                    <ListItemText classes={{primary:classes.listItem}} primary={label}/>
+                    { open === id ? <ExpandLess color="secondary"/> : <ExpandMore color="secondary"/> }
+                </ListItem>
+                <Collapse in={open === id} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
                         {
                             subItems.map(item => {
-                                const {label, id} = item
+                                const {name, id} = item
                                 return (
-                                    <div 
+                                    <ListItem 
                                         button 
-                                        onClick = {() => handleSubItemOnClick(id)} 
-                                        className = { subItemActive[id] ? "list_sub_item_div sub_item_active" : "list_sub_item_div"}
+                                        onClick={() => handleOnClick(id)}
+                                        className={
+                                            [ classes.nested, active === id && classes.active]
+                                        } 
                                     >
-                                        <span>{label}</span>
-                                    </div>
+                                        <ListItemText 
+                                            classes={{primary:classes.subItems}} 
+                                            primary={name} 
+                                        />
+                                    </ListItem>
                                 )
                             })
                         }
                     </List>
                 </Collapse>
-            </>
+            </div>
+        )
+    }
+
+    const renderNavigations = () => {
+        const userRole = "USER_STUDENT"
+        return (
+            <List className={classes.root}>
+                {
+                    routes.filter(({acceptUserRole}) => acceptUserRole === userRole).map((item)=> {
+                        const {name, children, id} = item
+                        return (
+                            children.length > 0 ? 
+                            navsubItem(name, children, id)
+                            :
+                            navItem(name, id)
+                        )
+                    })
+                }
+            </List>
         )
     }
 
     return (
         <div className = "sidebar_root">
-            <div className = "sidebar">
-                <List
-                    component="nav"
-                    aria-labelledby="nested-list-subheader"
-                    subheader={
-                        <ListSubheader component="div" id="nested-list-subheader">
-                            <div className = "logo_div"/>
-                        </ListSubheader>
-                    }
-                >
-                 <Divider />
-                {
-                    json.nav.map(item => {
-                        const {label, subNav, id} = item
-                        return (
-                        item.subNav.length > 0 ? 
-                            renderListWithSubItem(label, active[id], subNav, id) 
-                            : 
-                            renderListItem(label, id)
-                        ) 
-                    })
-                }
-                </List>
-            </div>
+            { renderNavigations() }
         </div>
     )
 }

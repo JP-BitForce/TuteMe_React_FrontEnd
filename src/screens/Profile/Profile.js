@@ -22,6 +22,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import CameraIcon from '@material-ui/icons/PhotoCamera';
 
 import ProfileImage from '../../assets/images/Profile/avatar.png'
 import './Profile.css'
@@ -76,8 +77,8 @@ class Profile extends Component {
     renderRowItems = (child1, child2) => {
         return (
             <Row>
-                <Col sm={6}> {child1} </Col>
-                <Col sm={6}> {child2} </Col>
+                <Col xs={6} sm={6} md={6}> {child1} </Col>
+                <Col xs={6} sm={6} md={6}> {child2} </Col>
             </Row>
         )
     }
@@ -94,7 +95,7 @@ class Profile extends Component {
 
     renderBio = (bio) => {
         return (
-            <List style = {{display:"flex",flexDirection:"column"}}>
+            <List style = {{display:"flex",flexDirection:"column", padding:"2%"}}>
                 <span className = "bio_header">BIO</span>
                 <span className = "bio_content">{bio}</span>
             </List>
@@ -162,52 +163,50 @@ class Profile extends Component {
         )
     }
 
+    renderProfilePic = () => {
+        return (
+            <div className="profile_image_container">
+                <img src={ProfileImage} alt="Avatar" className="avatar"/>
+                <div className="overlay">
+                    <CameraIcon/>
+                </div>
+            </div>
+        )
+    }
+
     renderStudentProfile = () => {
         return (
-            <div>
-                <Paper elevation = {3} square>
-                    <Grid container spacing={3}>
-                        <img src={ProfileImage} alt="Avatar" class="avatar"/>
-                        <Grid item xs={2}/>
-                        <Grid item xs={4}>
-                            <div className = "profile_title_block">
-                                <span className = "user_title">Rogers Steve</span>
-                                <span className = "user_coun">New York. USA</span>
-                            </div>
-                        </Grid>
-                        <Grid item xs = {7}/>
-                    </Grid>
-               </Paper>
-
-               <div className = "profile_content">
-                    <div className = "profile_details">
-                        <Paper elevation = {3} square>
-                            <div className = "details_content">
-                                <Typography gutterBottom variant="h6" component="h1">
-                                        GENERAL INFORMATION
-                                </Typography>
-                                { this.renderBasicInformation() }
-                                <Divider/>
-                                {this.renderBio("This is a bio")}
-                                <ChipButton label = "Delete My Account"/>
-                            </div>
-                        </Paper>
-                    </div>
-                    <div className = "profile_edit">
-                    <Tabs defaultActiveKey="interests" id="uncontrolled-tab-example">
-                        <Tab eventKey="edit" title="Edit">
-                            { this.renderEditTab() }
-                        </Tab>
-                        <Tab eventKey="interests" title="My Interests">
-                          <div style={{backgroundColor:"white"}}> <Interest/></div> 
-                        </Tab>
-                        <Tab eventKey="password" title="Change Password">
-                            { this.renderPasswordTab() }
-                        </Tab>
+            <Grid container spacing={1}>
+                <Grid item xs={12} sm={12} md={4}>
+                    <Paper elevation = {3} square style={{padding:"3%"}}>
+                        <div className = "pro_head">
+                            {this.renderProfilePic()}
+                            <Typography gutterBottom variant="h6" component="h1">
+                                GENERAL INFORMATION
+                            </Typography>
+                        </div>
+                        { this.renderBasicInformation() }
+                        <Divider/>
+                        {this.renderBio("This is a bio")}
+                        <ChipButton label = "Delete My Account"/>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} sm={12} md={8}>
+                    <Paper elevation = {3} square style={{padding:"3%"}}>
+                        <Tabs defaultActiveKey="password" id="uncontrolled-tab-example">
+                            <Tab eventKey="edit" title="Edit">
+                                { this.renderEditTab() }
+                            </Tab>
+                            <Tab eventKey="interests" title="My Interests">
+                                
+                            </Tab>
+                            <Tab eventKey="password" title="Change Password">
+                                { this.renderPasswordTab() }
+                            </Tab>
                         </Tabs>
-                    </div>
-               </div>
-            </div>
+                    </Paper>
+                </Grid>
+            </Grid>
         )
     }
 

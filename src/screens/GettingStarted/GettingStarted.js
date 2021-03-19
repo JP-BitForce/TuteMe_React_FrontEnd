@@ -4,6 +4,10 @@ import SideBar from '../../components/SideBar/SideBar'
 import TopBar from './TopBar'
 
 import Profile from '../Profile/Profile'
+import Chat from '../My Chat/MyChat'
+import TrustedTutors from '../Tutors/TrustedTutors'
+import MyCourses from '../Courses/MyCourses'
+import OnlineCourses from '../Courses/OnlineCourses'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -38,13 +42,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
-
   toolbar: theme.mixins.toolbar,
 
 }));
@@ -53,8 +50,13 @@ const GettingStarted = () => {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+    const [active, setActiveItem] = useState("HOME")
   
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    
+    const handleSetActiveItem = (id) => {
+      setActiveItem(id)
+    }
 
     const handleDrawerToggle = () => {
       setMobileOpen(!mobileOpen);
@@ -68,10 +70,10 @@ const GettingStarted = () => {
       setMobileMoreAnchorEl(event.currentTarget);
     };
 
-    const handleSearch = () => {
-
+    const handleSignOut = () => {
+      
     }
-  
+
     const renderPermanentDrawer = () => {
         return (
           <Hidden xsDown implementation="css">
@@ -80,9 +82,14 @@ const GettingStarted = () => {
               variant="permanent"
               open
             >
-              <SideBar/>
+              <div className={classes.toolbar} />
+              <Divider/>
+              <SideBar itemOnClick = {handleSetActiveItem} active = {active}/>
               <div className = "grow"/>
               <Divider/>
+              <div button onClick = {handleSignOut} className = "list_item_div sign_out_div ">
+                  <span>SIGN-OUT</span>
+              </div>
             </Drawer>
           </Hidden>
         )
@@ -99,9 +106,12 @@ const GettingStarted = () => {
                   classes = {{ paper: classes.drawerPaper }}
                   ModalProps={{ keepMounted: true }}
               >
-                <SideBar/>
+                <SideBar itemOnClick = {handleSetActiveItem} active = {active}/>
                 <div className = "grow"/>
                 <Divider/>
+                <div button onClick = {handleSignOut} className = "list_item_div sign_out_div ">
+                  <span>SIGN-OUT</span>
+                </div>
               </Drawer>
           </Hidden>
         )
@@ -116,7 +126,6 @@ const GettingStarted = () => {
             isMobileMenuOpen = {isMobileMenuOpen}
             handleMobileMenuClose = {handleMobileMenuClose}
             handleMobileMenuOpen = {handleMobileMenuOpen}
-            handleSearch = {handleSearch}
           />
 
           <nav className={classes.drawer} aria-label="mailbox folders">
@@ -126,7 +135,21 @@ const GettingStarted = () => {
   
           <main className={classes.content}>
               <div className={classes.toolbar} />
-              <Profile/>
+              { 
+                active === "HOME" ? null 
+                :
+                active === "MY_COURSES" ? <MyCourses/>
+                :
+                active === "ONLINE_COURSES" ? <OnlineCourses/>
+                :
+                active === "ONE_STEP" ? null
+                :
+                active === "TRUSTED_TUTORS" ? <TrustedTutors/>
+                :
+                active === "MY_CHATS" ? <Chat/>
+                :
+                active === "MY_PROFILE"  && <Profile/>  
+              }
           </main>
       </div>
     );
