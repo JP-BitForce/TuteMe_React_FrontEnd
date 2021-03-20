@@ -13,9 +13,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     maxWidth: 360,
   },
-  color: {
-    background: 'linear-gradient(45deg, #FE6B8B 20%, #FF8E53 90%)'
-  }
 }));
 
 const People = ({name}) => {

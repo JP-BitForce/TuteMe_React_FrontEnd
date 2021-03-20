@@ -4,6 +4,7 @@ import Loading from '../../components/Loading/Loading'
 import CourseCard from '../../components/Card/CourseCard'
 import CustomButton from '../../components/Button/CustomButton'
 import InputFeild from '../../components/Input/InputField'
+import Header from '../../components/Header/Header'
 
 //Boostarp
 import Card from 'react-bootstrap/Card'
@@ -25,6 +26,9 @@ import maths from '../../assets/images/courses/maths.png'
 import bio from '../../assets/images/courses/bio.png'
 import musical from '../../assets/images/courses/musical.png'
 import accounting from '../../assets/images/courses/accounting.png'
+import headerImg from '../../assets/images/Course/course.jpg'
+import certificate from '../../assets/images/Course/certificate.png'
+import prizing from '../../assets/images/Course/prizing.png'
 import './Courses.css'
 
 class MyCourses extends Component {
@@ -56,6 +60,11 @@ class MyCourses extends Component {
         {src:reactnative, des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
         {src:javascript, des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
         {src:maths, des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
+    ]
+
+    cards = [
+        {src : certificate, title : "Certificate Courses", description :"The automated process all your website tasks."},
+        {src : prizing, title : "Prizing courses ",  description :"The automated process all your website tasks."},
     ]
 
     handleSearch = () => {
@@ -125,7 +134,7 @@ class MyCourses extends Component {
     renderCourses = () => {
         return (
             <main>
-                <Paper elevation = {3} style = {{padding:"3%"}}>
+                <Paper elevation = {1} style = {{padding:"3%"}}>
                     <Grid container spacing={2} justify="flex-end">
                         <Grid item>
                             <InputFeild
@@ -173,9 +182,6 @@ class MyCourses extends Component {
     renderCoursesRoot = () => {
         return (
             <div className = "my_courses_container">
-                <div className = "courses_category_header_container">
-                    <span className = "courses_category_title">Explore Courses</span>
-                </div>
                 { this.renderCourses() }
             </div>
         )
@@ -193,6 +199,11 @@ class MyCourses extends Component {
         const {loading} = this.state
         return (
             <div className = "my_courses_root">
+                <Header 
+                    title = "EXPLORE COURSES" 
+                    src = {headerImg}
+                    cards = {this.cards}
+                />
                 {
                     loading ? 
                     <Loading open = {loading} />

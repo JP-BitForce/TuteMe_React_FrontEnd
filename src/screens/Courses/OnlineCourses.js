@@ -4,6 +4,7 @@ import Loading from '../../components/Loading/Loading'
 import CourseCard from '../../components/Card/CourseCard'
 import Modal from '../../components/Modal/Modal'
 import CourseCategories from './CourseCategories'
+import Header from '../../components/Header/Header'
 
 //Material-UI
 import Paper from '@material-ui/core/Paper';
@@ -20,6 +21,9 @@ import bio from '../../assets/images/courses/bio.png'
 import musical from '../../assets/images/courses/musical.png'
 import accounting from '../../assets/images/courses/accounting.png'
 import music_2 from '../../assets/images/courses/music_2.png'
+import headerImg from '../../assets/images/Course/course.jpg'
+import certificate from '../../assets/images/Course/certificate.png'
+import prizing from '../../assets/images/Course/prizing.png'
 import './Courses.css'
 
 class OnlineCourses extends Component {
@@ -51,6 +55,11 @@ class OnlineCourses extends Component {
         {src:music_2, des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
         {src:javascript, des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
         {src:maths, des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
+    ]
+
+    cards = [
+        {src : certificate, title : "Certificate Courses", description :"The automated process all your website tasks."},
+        {src : prizing, title : "Prizing courses ",  description :"The automated process all your website tasks."},
     ]
 
     handleCategoryModalOk = () => {
@@ -173,7 +182,7 @@ class OnlineCourses extends Component {
             <div className = "online_courses_container">
                 <div className = "online_courses_category_root">
                     <div className = "courses_category_header_container">
-                        <span className = "courses_category_title">Browse Our Online Courses</span>
+                        <span className = "courses_category_title">Top Categories</span>
                     </div>
                     <div className = "courses_category_container">
                         <Grid container spacing={3}>
@@ -198,6 +207,11 @@ class OnlineCourses extends Component {
         const {loading} = this.state
         return (
             <div className = "online_courses_root">
+                <Header 
+                    title = "BROWSE ONLINE COURSES" 
+                    src = {headerImg}
+                    cards = {this.cards}
+                />
                 {
                     loading ? 
                     <Loading open = {loading} />

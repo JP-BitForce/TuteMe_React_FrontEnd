@@ -1,0 +1,18 @@
+{
+    "header_content_1": "ONLINE EDUCATION",
+    "header_content_2": "We provide an easy path for students to jump in and begin learning about any subject that they choose",
+    "main_section_1":{
+        "header": "Who We Are",
+        "subContent_1" : "Even the all-powerful Pointing has no control about the blind texts",
+        "subContent_2" : "Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar."
+    },
+    "main_section_2":{
+        "header" : "Awesome Feature",
+        "subHeader": "Replenish man have thing gathering lights yielding shall you",
+        "contents": [
+            {"title": "Scholarship Facility", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
+            {"title": "Certifications", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
+            {"title": "Offers & Discounts", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."}
+        ]
+    }
+}

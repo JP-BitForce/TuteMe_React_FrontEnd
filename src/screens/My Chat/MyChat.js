@@ -17,6 +17,9 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import Avatar from '@material-ui/core/Avatar';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 
 import './Chat.css'
 
@@ -131,11 +134,50 @@ class MyChat extends Component {
         )
     }
 
+    renderPeopleAlert = () => {
+        return (
+            <div>
+                <Typography variant="h6" gutterBottom>
+                    PEOPLE YOU MAY KNOW
+                </Typography>
+                <List
+                        aria-labelledby="main"
+                    >
+                        {
+                            this.dummayPeople.map(item => {
+                                return (
+                                    <People name = {item}/>
+                                )
+                            })
+                        }
+                    </List>
+            </div>
+        )
+    }
+
+    renderRoot = () => {
+        return (
+            <Container maxWidth="lg">
+                <main className = "chat_root">
+                    <Grid container spacing={5}>
+                        <Grid item xs={12} md={9}>
+                            {this.renderChatContainer()}
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            {this.renderPeopleAlert()}
+                        </Grid>
+                    </Grid>
+                </main>
+            </Container>
+        )
+    }
+
     render() {
         return (
-            <div className = "my_chat_root">
-                { this.renderChatContainer() }
-            </div>
+            <React.Fragment>
+                <CssBaseline />
+                {this.renderRoot()}
+            </React.Fragment>
         )
     }
 }
