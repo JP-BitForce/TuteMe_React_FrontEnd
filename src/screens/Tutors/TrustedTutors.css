@@ -59,42 +59,6 @@ span {
     padding: 2%;
 }
 
-.category_icon_wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.category_icon_wrapper span {
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.category_icon {
-    border: 2px solid #818181;
-    box-sizing: border-box;
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.category_icon_wrapper:hover {
-    cursor: pointer;
-}
-
-.category_icon_src {
-    height: 80px;
-    height: 80px;
-}
-
-.selected_category_icon {
-    background-color: #2c333a;
-    border-color: #f9a83e;
-}
 
 .trusted_tutors_list_root {
     margin: 3%;

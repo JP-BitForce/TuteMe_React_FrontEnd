@@ -9,21 +9,22 @@ import Blog from './Blog'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
 
-import instructor from '../../assets/images/Home/instructor.svg'
-import life_time from '../../assets/images/Home/life_time.svg'
-import courses from '../../assets/images/Home/courses.svg'
-import who_we from '../../assets/images/Home/blog2.jpg'
+import instructor from '../../assets/images/Home/experts.png'
+import life_time from '../../assets/images/Home/life_time.png'
+import courses_plus from '../../assets/images/Home/courses_plus.png'
 import headerImg from '../../assets/images/Home/header.jpg'
-import event1 from '../../assets/images/Home/event3.jpg'
-import event2 from '../../assets/images/Home/event4.jpg'
+import event1 from '../../assets/images/Home/event1.jpg'
+import event2 from '../../assets/images/Home/event2.jpg'
 import blog from '../../assets/images/Home/blog.jpg'
 import blog1 from '../../assets/images/Home/blog1.jpg'
 import blog2 from '../../assets/images/Home/blog2.jpg'
-import certificate from '../../assets/images/Home/certificates.png'
-import discount from '../../assets/images/Home/discount.png'
-import scholar from '../../assets/images/Home/scholar.png'
+import offer from '../../assets/images/Home/offer.png'
+import regular_lessons from '../../assets/images/Home/regular_lessons.png'
+import certificattion from '../../assets/images/Home/certificate.png'
+import scholarship from '../../assets/images/Home/scholarship.png'
+import certificate_people from '../../assets/images/Home/certificate_people.png'
+import creative_lessons from '../../assets/images/Home/creative_lessons.png'
 
 import json from '../../json/Home.json'
 import './Home.css'
@@ -32,7 +33,7 @@ class Home extends Component {
 
     cards = [
         {src : instructor, title : "Expert instructors", description :"The automated process all your website tasks."},
-        {src : courses, title : "100+ courses ",  description :"The automated process all your website tasks."},
+        {src : courses_plus, title : "100+ courses ",  description :"The automated process all your website tasks."},
         {src : life_time, title : "Life time access", description :"The automated process all your website tasks."}
     ]
 
@@ -44,12 +45,12 @@ class Home extends Component {
     ]
 
     features = {
-        "Certifications": certificate,
-        "Offers & Discounts": discount,
-        "Scholarship Facility": scholar,
-        "Creative Lessons": scholar,
-        "Regular Classes": discount,
-        "Certified Teachers": certificate
+        "Certifications": certificattion,
+        "Offers & Discounts": offer,
+        "Scholarship Facility": scholarship,
+        "Creative Lessons": creative_lessons,
+        "Regular Classes": regular_lessons,
+        "Certified Teachers": certificate_people
     }
     
 
@@ -66,36 +67,28 @@ class Home extends Component {
 
     renderSection1 = () => {
         return (
-            <Grid container>
-                <Grid item md={6}>
-                    <img src = {who_we} alt = "who are we" className = "main_who_img"/>
-                </Grid>
-                <Grid item md={6}>
-                    <Paper elevation = {3}>
-                    <div className = "section_1_info_container">
-                        <h4>{json.main_section_1.header}</h4>
+            <section className = "section_1_ftc">
+                <div className = "section_1_container">
+                    <div className = "section_1_content_container">
+                        <h1>{json.main_section_1.header}</h1>
                         <span>{json.main_section_1.subContent_2}</span>
-                        <div className = "section_1_counts">
-                            <Grid container>
-                                {
-                                    this.counts.map(item => {
-                                        return (
-                                            <Grid item xs={6} md={6} sm={6} style = {{marginBottom:"5%"}}>
-                                                <div className = "column">
-                                                    <span className = "section_1_count_span">{item.count}</span>
-                                                </div>
-                                                <span className = "section_1_count_label">{item.label}</span>
-                                            </Grid>
-                                        )
-                                    })
-                                }
-                            </Grid> 
-                        </div>                              
                     </div>
-                    </Paper>
-                </Grid>
-                <Grid item md={1}/>
-            </Grid>
+                    <div className = "row">
+                        {
+                            this.counts.map(item => {
+                                return (
+                                    <Grid item xs={6} md={3} sm={6} style = {{marginBottom:"5%"}}>
+                                        <div className = "column">
+                                            <span className = "section_1_count_span">{item.count}</span>
+                                            <span className = "section_1_count_label">{item.label}</span>
+                                        </div>
+                                    </Grid>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </section>
         )
     }
 
@@ -196,13 +189,13 @@ class Home extends Component {
                 <div className = "main_content_section_2">
                     { this.renderSection2() }
                 </div>
-                <div className = "main_content_section_3">
+                <div className = "main_content_section_3 parallax">
                     { this.renderSection3() }
                 </div>
                 <div className = "main_content_section_4">
                     { this.renderSection4() }
                 </div>
-                <div className = "main_content_section_5">
+                <div className = "main_content_section_5 parallax">
                     { this.renderSection5() }
                 </div>
             </div>

@@ -6,6 +6,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+import './Header.css'
+
 const useStyles = makeStyles({
     root: props => ({
         width: "100%",
@@ -30,7 +32,7 @@ const Header = ({title, src, cards}) => {
                 <Paper elevation = {3} style = {{padding:"3%", borderRadius:"10px"}}>
                     <div className = "header_card_container">
                         <div className = "img_container">
-                            <img src = {src} alt = {title} className = "card_img"/>
+                            <img src = {src} alt = {title} className = "header_card_img"/>
                         </div>
                         <div className = "descriptive_container">
                             <span className="textPrimary">{title}</span>

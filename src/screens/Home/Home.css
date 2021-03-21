@@ -1,34 +1,6 @@
-.header_overlay {
-    position: 'absolute';
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    background-color: rgba(0,0,0,.3);
-}
-
-.header_content {
-    padding: 10%;
-    text-align: left;
-}
-
-.header_card_container {
-    display: flex;
-    flex-direction: row;
-    padding: 2%;
-}
-
-.descriptive_container {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    margin-left: 5%;
-}
-
 .textPrimary {
     font-family: "Mulish",sans-serif;
-    color:  #6610f2;
-    font-weight: bold;
+    font-weight: 550;
     font-size: 1.2rem;
 }
 
@@ -44,40 +16,73 @@
     margin-top: 8%;
 }
 
-/* section 1 start*/
+.parallax {
+    position: relative;
+    z-index: 0;
+    background-image: url(../../assets/images/Home/who.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    position: relative;
+    width: 100%;
+    display: block;
+}
 
+/* section 1 start*/
 .main_content_section_1 {
     display: flex;
     flex-direction: row;
     margin-bottom: 4%;
 }
 
-.main_who_img {
-    width: 800px;
-    height: 500px;
+.section_1_ftc {
+    position: relative;
+    z-index: 0;
+    background-image: url(../../assets/images/Home/who.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    position: relative;
+    width: 100%;
+    display: block;
 }
 
-.section_1_info_container {
+.section_1_container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+    margin-top: 3%;
+}
+
+.section_1_content_container {
     text-align: left;
-    margin-top: 5%;
-    padding: 4%;
+    padding: 2%;
 }
 
-.section_1_info_container h4 {
-    font-family: "Mulish",sans-serif;
-    text-transform: uppercase;
-    color: #555;
-    margin-bottom: 4%;
+.section_1_content_container h1 {
+    color: white;
+    font-size: 2.5rem;
 }
 
-.section_1_info_container span {
-    font-size: 0.9rem;
-    color: rgb(136, 135, 135);
-    font-family: "Mulish",sans-serif;
-}
-
-.section_1_counts {
-    margin-top: 4%;
+.section_1_content_container span {
+    font-size: 1.2rem;
+    color: rgb(255, 255, 255);
 }
 
 .column {
@@ -85,22 +90,23 @@
     flex-direction: column;
 }
 
-.column span {
-    color: #843bfa;
-    font-size: 2.4rem;
+.section_1_count_span {
+    color: white;
+    font-size: 2.8rem;
     font-weight: 700;
 }
 
 .section_1_count_label {
     text-transform: uppercase;
-    color: #555;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgb(209, 205, 205);
 }
 /* section 1 end*/
 
 
 /* section 2 start*/
 .main_content_section_2 {
-    /* margin-top: 1%; */
     margin-bottom: 5%;
     padding: 2%;
 }
@@ -121,15 +127,12 @@
     font-family: "Poppins", Arial, sans-serif;
     font-weight: 600;
 }
-
-
 /* section 2 end*/
 
 
 /* start of section 3*/
 .main_content_section_3 {
-    background-color: #002347;
-    padding: 2%;
+    padding: 1%;
 }
 
 .section_3_header_title {
@@ -138,7 +141,7 @@
 }
 
 .section_3_content {
-    padding: 2%;
+    padding: 1%;
 }
 
 .event_card {
@@ -310,7 +313,7 @@
 .blog_schedule{
     text-align: center !important;
     display: inline-block;
-    background: #6610f2;
+    background-image: linear-gradient(45deg, #FE6B8B 20%, #FF8E53 90%);
     padding: 0.5rem !important;
 }
 
@@ -367,14 +370,6 @@
     text-align: left;
 }
 
-.blog_description span {
-    line-height: 1.2;
-    font-size: 1.2rem;
-    margin-bottom: 16px;
-    font-family: "Poppins", Arial, sans-serif;
-    text-transform: uppercase;
-}
-
 .blog_description p {
     font-family: "Poppins", Arial, sans-serif;
     color: #555;
@@ -414,8 +409,7 @@
 
 /* start of section 5*/
 .main_content_section_5 {
-    background: #002347;
-    padding: 100px 0;
+    padding: 4%;
 }
 
 .subscribe_newsletter {
@@ -438,7 +432,7 @@
 }
 
 .subscribe_newsletter p {
-    color: #555;
+    color: rgb(221, 218, 218);
 }
 
 .newsletter_form {

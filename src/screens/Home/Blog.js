@@ -30,7 +30,7 @@ const Blog = ({details, onClick}) => {
                     </div>
                 </div>
                 <div className = "blog_description">
-                    <span>{title}</span>
+                    <span className = "textPrimary">{title}</span>
                     <p>{content}</p>
                 </div>
                 <CardActions>
