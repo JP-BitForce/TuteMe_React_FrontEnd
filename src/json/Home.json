@@ -7,12 +7,29 @@
         "subContent_2" : "Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar."
     },
     "main_section_2":{
-        "header" : "Awesome Feature",
+        "header" : "What We Offer",
         "subHeader": "Replenish man have thing gathering lights yielding shall you",
         "contents": [
             {"title": "Scholarship Facility", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
             {"title": "Certifications", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
-            {"title": "Offers & Discounts", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."}
+            {"title": "Offers & Discounts", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
+            {"title": "Creative Lessons", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
+            {"title": "Regular Classes", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
+            {"title": "Certified Teachers", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."}
         ]
+    },
+    "main_section_3": {
+
+    },
+    "main_section_4": {
+        "subTitle": "Separated they live in a small river named Duden flows by their place and supplies it with the necessary regelialia",
+        "blog":[
+            {"title": "Build your Dream Software", "des": "Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar."},
+            {"title": "Build your Dream Software", "des": "A small river named Duden flows by their place and supplies it with the necessary regelialia."},
+            {"title": "Build your Dream Software", "des": "A small river named Duden flows by their place and supplies it with the necessary regelialia."}
+        ]
+    },
+    "main_section_5": {
+        "newsletter_text": "Your domain control panel is designed for ease-of-use and allows for all aspects of yours"
     }
 }

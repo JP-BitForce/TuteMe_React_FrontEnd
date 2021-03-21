@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     }
 })
 
-const Header = ({title, subTitle, src, cards}) => {
+const Header = ({title, src, cards}) => {
     const styles = useStyles({img:src})
 
     const renderHeaderCard = (src, title, description) => {
@@ -52,7 +52,6 @@ const Header = ({title, subTitle, src, cards}) => {
                         <Typography component="h1" variant="h3" gutterBottom color="textSecondary">
                             {title}
                         </Typography>
-                        <span className="textSecondary">{subTitle}</span>
                     </div>
                     </Grid>
                     <Grid container spacing={4} style={{padding:"3%"}} item md={12}>

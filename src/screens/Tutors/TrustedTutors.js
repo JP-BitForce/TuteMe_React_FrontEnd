@@ -4,6 +4,7 @@ import Loading from '../../components/Loading/Loading'
 import TutorCard from '../../components/Card/TutorCard'
 import Modal from '../../components/Modal/Modal'
 import TutorCategories from './TutorCategories'
+import Header from '../../components/Header/Header'
 
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
@@ -21,6 +22,8 @@ import tutor1 from '../../assets/images/dummy tutors/1.jpg'
 import tutor2 from '../../assets/images/dummy tutors/2.jpg'
 import tutor3 from '../../assets/images/dummy tutors/3.jpg'
 import tutor4 from '../../assets/images/dummy tutors/4.jpg'
+import headerImg from '../../assets/images/tutors/header.jpg'
+import instructor from '../../assets/images/tutors/instructor.svg'
 import './TrustedTutors.css'
 
 class TrustedTutors extends Component {
@@ -47,6 +50,10 @@ class TrustedTutors extends Component {
         {src:tutor2, des:"lorem ipsum", title:"Emma Watson"},
         {src:tutor3, des:"lorem ipsum", title:"Daniel Nickman"},
         {src:tutor4, des:"lorem ipsum", title:"Bob right"},
+    ]
+
+    cards = [
+        {src : instructor, title : "Learn with Experts", description :"Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts."},
     ]
 
     handleTutorSearch = (event) => {
@@ -191,6 +198,12 @@ class TrustedTutors extends Component {
         const {loading} = this.state
         return (
             <div className = "trusted_tutors_root">
+                <Header 
+                    title = "COMUNITY EXPERTS"
+                    subTitle = ""
+                    src = {headerImg} 
+                    cards = {this.cards}   
+                />
                 {
                     loading ? 
                     <Loading open = {loading} />
