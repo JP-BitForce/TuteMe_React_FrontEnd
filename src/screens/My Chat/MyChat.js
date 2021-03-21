@@ -5,8 +5,6 @@ import ChatCard from './ChatCard'
 import CustomButton from '../../components/Button/CustomButton'
 
 //Boostarp
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Card from 'react-bootstrap/Card'
 
 //Material-UI
@@ -19,6 +17,9 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import Avatar from '@material-ui/core/Avatar';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 
 import './Chat.css'
 
@@ -116,11 +117,10 @@ class MyChat extends Component {
         return (
             <Card className = "people_card">
                 <Card.Body>
-                    <Card.Body>
-                        <ListItemText primary="PEOPLE YOU MAY KNOW"/>
-                        <List
-                            aria-labelledby="main"
-                        >
+                    <ListItemText primary="PEOPLE YOU MAY KNOW"/>
+                    <List
+                        aria-labelledby="main"
+                    >
                         {
                             this.dummayPeople.map(item => {
                                 return (
@@ -128,33 +128,56 @@ class MyChat extends Component {
                                 )
                             })
                         }
-                        </List>
-                    </Card.Body>
+                    </List>
                 </Card.Body>
             </Card>
         )
     }
 
-    renderRoot = () => {
-        return(
+    renderPeopleAlert = () => {
+        return (
             <div>
-                <Row>
-                    <Col sm={9}>
-                        { this.renderChatContainer() }
-                    </Col>
-                    <Col sm={3}>
-                        { this.renderPeopleBox() }
-                    </Col>
-                </Row>
+                <Typography variant="h6" gutterBottom>
+                    PEOPLE YOU MAY KNOW
+                </Typography>
+                <List
+                        aria-labelledby="main"
+                    >
+                        {
+                            this.dummayPeople.map(item => {
+                                return (
+                                    <People name = {item}/>
+                                )
+                            })
+                        }
+                    </List>
             </div>
+        )
+    }
+
+    renderRoot = () => {
+        return (
+            <Container maxWidth="lg">
+                <main className = "chat_root">
+                    <Grid container spacing={5}>
+                        <Grid item xs={12} md={9}>
+                            {this.renderChatContainer()}
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            {this.renderPeopleAlert()}
+                        </Grid>
+                    </Grid>
+                </main>
+            </Container>
         )
     }
 
     render() {
         return (
-            <div className = "my_chat_root">
-                { this.renderRoot( )}
-            </div>
+            <React.Fragment>
+                <CssBaseline />
+                {this.renderRoot()}
+            </React.Fragment>
         )
     }
 }

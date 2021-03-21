@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
 
+import Loading from '../../components/Loading/Loading'
 import TutorCard from '../../components/Card/TutorCard'
+import Modal from '../../components/Modal/Modal'
+import TutorCategories from './TutorCategories'
+import Header from '../../components/Header/Header'
 
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import MenuItem from '@material-ui/core/MenuItem';
 
 import all from '../../assets/images/courses/all.png'
 import javascript from '../../assets/images/courses/javascript.png'
-import reactnative from '../../assets/images/courses/react-native.png'
 import maths from '../../assets/images/courses/maths.png'
 import bio from '../../assets/images/courses/bio.png'
 import musical from '../../assets/images/courses/musical.png'
@@ -20,20 +22,23 @@ import tutor1 from '../../assets/images/dummy tutors/1.jpg'
 import tutor2 from '../../assets/images/dummy tutors/2.jpg'
 import tutor3 from '../../assets/images/dummy tutors/3.jpg'
 import tutor4 from '../../assets/images/dummy tutors/4.jpg'
+import headerImg from '../../assets/images/tutors/header.jpg'
+import instructor from '../../assets/images/tutors/instructor.svg'
 import './TrustedTutors.css'
 
 class TrustedTutors extends Component {
     state = {
+        loading: false,
         selected: {key:"0", src:all, alt:"all", title:"All"},
         tutorSearch: "",
-        categoryOptions:["All"],
-        categoryOption:"All"
+        categoryOptions: ["All"],
+        categoryOption: "All",
+        moreCategories: false,
     }
 
     list = [
         {key:"0", src:all, alt:"all", title:"All"},
         {key:"1", src:javascript, alt:"javascript", title:"Javascript"},
-        {key:"2", src:reactnative, alt:"reactnative", title:"React-Native"},
         {key:"3", src:maths, alt:"maths", title:"Mathematics"},
         {key:"4", src:bio, alt:"bio", title:"Biology"},
         {key:"5", src:musical, alt:"musical", title:"Musical"},
@@ -45,6 +50,10 @@ class TrustedTutors extends Component {
         {src:tutor2, des:"lorem ipsum", title:"Emma Watson"},
         {src:tutor3, des:"lorem ipsum", title:"Daniel Nickman"},
         {src:tutor4, des:"lorem ipsum", title:"Bob right"},
+    ]
+
+    cards = [
+        {src : instructor, title : "Learn with Experts", description :"Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts."},
     ]
 
     handleTutorSearch = (event) => {
@@ -64,46 +73,55 @@ class TrustedTutors extends Component {
         })
     }
 
+    handleMoreCategories = () => {
+        this.setState({
+            moreCategories: !this.state.moreCategories
+        })
+    }
+
+    handleCategoryModalOk = () => {
+
+    }
+
+    renderCategoryModal = () => {
+        return (
+            <Modal
+                open = {this.state.moreCategories}
+                handleClose = {this.handleMoreCategories}
+                title = "Select Tutor Category Here!"
+                handleCancel = {this.handleMoreCategories}
+                handleOk = {this.handleCategoryModalOk}
+            >
+                <TutorCategories items = {this.list} handleClick = {this.onCategorySelect}/>
+            </Modal>
+        )
+    }
+
+
     renderCategories = () => {
         return (
             this.list.map(item => this.renderCategoryItem(item))
         )
     }
 
-    renderCategorySelctor = () => {
-        return (
-            <TextField
-                id="standard-select-currency"
-                select
-                label="Select"
-                value={this.state.categoryOption}
-                onChange={this.handleOptionChange}
-                helperText="You can select other categories here"
-                >
-                {this.state.categoryOptions.map((option, index) => (
-                    <MenuItem key={index} value={option}>
-                        {option}
-                    </MenuItem>
-                ))}
-            </TextField>
-        )
-    }
 
     renderCategoryItem = (item) => {
-        const {title, src} = item
+        const {title,src} = item
         return (
-            <div className = "category_icon_wrapper">
-                <div
-                    onClick={()=>this.onCategorySelect(item)}
-                    className={[
-                    "category_icon",
-                    this.state.selected.title === title ? "selected_category_icon" : {},
-                    ].join(" ")}
-                >
-                    <img src={src} alt={title}  className = "category_icon_src"/>
-                </div>
-                <span>{title}</span>
-            </div>
+            <Grid item xs={6} sm={6} md={3}>
+                <Paper elevation = {5}>
+                    <div 
+                        onClick={()=>this.onCategorySelect(item)}
+                        className = {[
+                            "category_item_wrapper",
+                            this.state.selected.title === title && "selected_category"
+                        ].join(" ")}
+                    >
+                        <img src={src} alt={title} className = "category_icon_src"/>
+                        <span>{title}</span>
+                    </div>
+                </Paper>
+            </Grid>
         )
     }
 
@@ -112,7 +130,7 @@ class TrustedTutors extends Component {
         return (
             <div className = "trusted_tutors_list_head">
                 <div className = "header_category">
-                    <div className = "category_icon_small">
+                    <div className = "category_icon_small selected_category">
                         <Avatar src = {selected.src}/>
                     </div>
                     <span>
@@ -129,11 +147,12 @@ class TrustedTutors extends Component {
     renderTutorList = () => {
         return (
             <div className = "trusted_tutors_list">
+                { this.renderTutorListHead() }
                 <Grid container spacing={3}>
                     {
                         this.dummyTutors.map((item,index) => {
                             return (
-                                <Grid item xs={6} sm={2}>
+                                <Grid item xs={6} sm={6} md={3}>
                                     <Paper elevation = {3}>
                                         <TutorCard 
                                             media={item.src} 
@@ -151,23 +170,47 @@ class TrustedTutors extends Component {
         )
     }
 
-    render() {
+    renderTutorsRoot = () => {
         return (
-            <div className = "trusted_tutors_root">
+            <>
                 <div className = "trusted_tutors_category">
                     <div className = "trusted_tutors_category_title_container">
                         <span className = "trusted_tutors_category_title">TOP CATEGORIES</span>
-                        { this.renderCategorySelctor() }
                     </div>
                     <div className = "trusted_tutors_category_container">
-                        { this.renderCategories() }
+                        <Grid container spacing={3}>
+                            { this.renderCategories() }
+                        </Grid>
+                    </div>
+                    <div className = "more_category">
+                        <span onClick = {this.handleMoreCategories}>More Categories</span>
                     </div>
                     <Divider/>
                 </div>
                 <div className = "trusted_tutors_list_root">
-                    { this.renderTutorListHead() }
                     { this.renderTutorList() }
                 </div>
+            </>
+        )
+    }
+
+    render() {
+        const {loading} = this.state
+        return (
+            <div className = "trusted_tutors_root">
+                <Header 
+                    title = "COMUNITY EXPERTS"
+                    subTitle = ""
+                    src = {headerImg} 
+                    cards = {this.cards}   
+                />
+                {
+                    loading ? 
+                    <Loading open = {loading} />
+                    :
+                    this.renderTutorsRoot()
+                }
+                { this.renderCategoryModal() }
             </div>
         )
     }

@@ -3,9 +3,12 @@ import React, {useState} from 'react'
 import SideBar from '../../components/SideBar/SideBar'
 import TopBar from './TopBar'
 
+import Home from '../Home/Home'
 import Profile from '../Profile/Profile'
 import Chat from '../My Chat/MyChat'
 import TrustedTutors from '../Tutors/TrustedTutors'
+import MyCourses from '../Courses/MyCourses'
+import OnlineCourses from '../Courses/OnlineCourses'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -37,14 +40,6 @@ const useStyles = makeStyles((theme) => ({
 
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
   },
 
   toolbar: theme.mixins.toolbar,
@@ -55,46 +50,13 @@ const GettingStarted = () => {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-    const [active, setItemActive] = useState({
-      HOME: true,
-      COURSES: false,
-      ONE_STEP: false,
-      TRUSTED_TUTORS: false,
-      MY_CHATS: false,
-      MY_PROFILE: false
-    })
-
-    const [subItemActive, setSubItemActive] = useState({
-        MY_COURSES: false,
-        ONLINE_COURSES: false,
-        VIEW_QAs: false,
-        NEW: false
-    })
+    const [active, setActiveItem] = useState("HOME")
   
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-    const handleSidebarItemOnClick = (name, value) => {
-      setItemActive({
-        HOME: false,
-        COURSES: false,
-        ONE_STEP: false,
-        TRUSTED_TUTORS: false,
-        MY_CHATS: false,
-        MY_PROFILE: false,
-        [name]: value
-      })
-    }
     
-    const handleSidebarSubItemOnClick = (name, value) => {
-      setSubItemActive({
-        MY_COURSES: false,
-        ONLINE_COURSES: false,
-        VIEW_QAs: false,
-        NEW: false,
-        [name]: value
-      })
+    const handleSetActiveItem = (id) => {
+      setActiveItem(id)
     }
-    
 
     const handleDrawerToggle = () => {
       setMobileOpen(!mobileOpen);
@@ -112,10 +74,6 @@ const GettingStarted = () => {
       
     }
 
-    const handleSearch = () => {
-
-    }
-
     const renderPermanentDrawer = () => {
         return (
           <Hidden xsDown implementation="css">
@@ -124,12 +82,9 @@ const GettingStarted = () => {
               variant="permanent"
               open
             >
-              <SideBar 
-                itemOnClick = {handleSidebarItemOnClick} 
-                subItemOnClick = {handleSidebarSubItemOnClick}
-                active = {active}
-                subItemActive = {subItemActive}
-              />
+              <div className={classes.toolbar} />
+              <Divider/>
+              <SideBar itemOnClick = {handleSetActiveItem} active = {active}/>
               <div className = "grow"/>
               <Divider/>
               <div button onClick = {handleSignOut} className = "list_item_div sign_out_div ">
@@ -151,12 +106,7 @@ const GettingStarted = () => {
                   classes = {{ paper: classes.drawerPaper }}
                   ModalProps={{ keepMounted: true }}
               >
-                <SideBar 
-                  itemOnClick = {handleSidebarItemOnClick} 
-                  subItemOnClick = {handleSidebarSubItemOnClick}
-                  active = {active}
-                  subItemActive = {subItemActive}
-                />
+                <SideBar itemOnClick = {handleSetActiveItem} active = {active}/>
                 <div className = "grow"/>
                 <Divider/>
                 <div button onClick = {handleSignOut} className = "list_item_div sign_out_div ">
@@ -176,7 +126,6 @@ const GettingStarted = () => {
             isMobileMenuOpen = {isMobileMenuOpen}
             handleMobileMenuClose = {handleMobileMenuClose}
             handleMobileMenuOpen = {handleMobileMenuOpen}
-            handleSearch = {handleSearch}
           />
 
           <nav className={classes.drawer} aria-label="mailbox folders">
@@ -187,17 +136,19 @@ const GettingStarted = () => {
           <main className={classes.content}>
               <div className={classes.toolbar} />
               { 
-                active["HOME"] ? null 
+                active === "HOME" ? <Home/> 
                 :
-                active["COURSES"] ? null
+                active === "MY_COURSES" ? <MyCourses/>
                 :
-                active["ONE_STEP"] ? null
+                active === "ONLINE_COURSES" ? <OnlineCourses/>
                 :
-                active["TRUSTED_TUTORS"] ? <TrustedTutors/>
+                active === "ONE_STEP" ? null
                 :
-                active["MY_CHATS"] ? <Chat/>
+                active === "TRUSTED_TUTORS" ? <TrustedTutors/>
                 :
-                active["MY_PROFILE"] && <Profile/>  
+                active === "MY_CHATS" ? <Chat/>
+                :
+                active === "MY_PROFILE"  && <Profile/>  
               }
           </main>
       </div>

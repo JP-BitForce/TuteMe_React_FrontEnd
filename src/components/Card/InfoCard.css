@@ -7,3 +7,51 @@
     display: flex;
     justify-content: space-between;
 }
+
+.course_card_body {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.course_card_body_column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-size: large;
+}
+
+.card_title {
+    font-size: 1.5rem;
+}
+
+.card_sub_content {
+    font-size: 1.0rem;
+    color: #808080;
+}
+
+@media(max-width: 700px) {
+    .course_card_body img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .course_card_body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .card_title {
+        font-size: 1.2rem;
+    }
+    
+    .card_sub_content {
+        font-size: 0.8rem;
+        color: #808080;
+    }
+}
+
