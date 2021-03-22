@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import ChipButton from '../../components/Button/ChipButton'
 import CustomButton from '../../components/Button/CustomButton'
-
+import Header from '../../components/Header/Header'
 import EditInfo from './EditInfo'
 import ChangePassword from './ChangePassword'
 
@@ -24,6 +24,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
 
+import headerImg from '../../assets/images/Profile/headerImg.jpg'
 import ProfileImage from '../../assets/images/Profile/avatar.png'
 import './Profile.css'
 
@@ -212,7 +213,13 @@ class Profile extends Component {
     render() {
         return (
             <div className = "profile_root">
-               { this.renderStudentProfile() }
+                <Header 
+                    title = "PROFILE "
+                    src = {headerImg} 
+                />
+                <div className = "profile_content_root">
+                    { this.renderStudentProfile() }
+                </div>
             </div>
         )
     }

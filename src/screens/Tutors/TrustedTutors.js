@@ -200,7 +200,6 @@ class TrustedTutors extends Component {
             <div className = "trusted_tutors_root">
                 <Header 
                     title = "COMUNITY EXPERTS"
-                    subTitle = ""
                     src = {headerImg} 
                     cards = {this.cards}   
                 />

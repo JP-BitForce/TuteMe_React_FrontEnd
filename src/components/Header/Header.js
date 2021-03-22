@@ -28,7 +28,7 @@ const Header = ({title, src, cards}) => {
 
     const renderHeaderCard = (src, title, description) => {
         return (
-            <Grid item xs={12} md={4} sm={12}>
+            <Grid item xs={6} md={4} sm={6}>
                 <Paper elevation = {3} style = {{padding:"3%", borderRadius:"10px"}}>
                     <div className = "header_card_container">
                         <div className = "img_container">
@@ -56,7 +56,7 @@ const Header = ({title, src, cards}) => {
                         </Typography>
                     </div>
                     </Grid>
-                    <Grid container spacing={4} style={{padding:"3%"}} item md={12}>
+                    <Grid container spacing={4} style={{padding:"4%"}} item md={12}>
                         {
                             cards && cards.map(item => {
                                 const {src, title, description} = item
