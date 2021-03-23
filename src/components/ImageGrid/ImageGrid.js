@@ -7,14 +7,14 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 
-import technology from '../../assets/images/landing page/courses/technology.jpg'
-import programming from '../../assets/images/landing page/courses/programming.jpg'
-import music from '../../assets/images/landing page/courses/music.jpg'
-import science from '../../assets/images/landing page/courses/science.jpg'
-import development from '../../assets/images/landing page/courses/development.jpg'
-import design from '../../assets/images/landing page/courses/design.jpg'
-import maths from '../../assets/images/landing page/courses/maths.jpg'
-import managemnt from '../../assets/images/landing page/courses/management.jpg'
+import technology from '../../assets/images/shared/technology.jpg'
+import programming from '../../assets/images/shared/programming.jpg'
+import music from '../../assets/images/shared/music.jpg'
+import science from '../../assets/images/shared/science.jpg'
+import development from '../../assets/images/shared/development.jpg'
+import design from '../../assets/images/shared/design.jpg'
+import maths from '../../assets/images/shared/maths.jpg'
+import managemnt from '../../assets/images/shared/management.jpg'
 
 import './ImageGrid.css'
 

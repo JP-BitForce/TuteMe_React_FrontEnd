@@ -149,3 +149,75 @@
     justify-content: space-between !important;
     display: flex !important;
 }
+
+.tutor_div_root {
+    padding: 25px;
+    background: #fff;
+    -webkit-box-shadow: 0px 3px 66px -24px rgb(0 0 0 / 20%);
+    -moz-box-shadow: 0px 3px 66px -24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 3px 66px -24px rgb(0 0 0 / 20%);
+}
+
+.tutor_card_top {
+    margin-bottom: 1.5rem !important;
+    display: -webkit-box !important;
+    display: flex !important;
+}
+
+.tutor_card_top_info {
+    width: calc(100% - 110px);
+    margin-left: 1.2rem !important;
+    text-align: left;
+}
+
+.tutor_card_top_info h3 {
+    font-size: 17px;
+    line-height: 1.4;
+    color: #2256b8;
+    font-weight: 400;
+    margin-top: 5%;
+}
+
+.tutor_position {
+    color: #96a1af;
+    display: block;
+    margin-bottom: 15px;
+    font-family: "Roboto", Arial, sans-serif;
+    font-size: 15px;
+}
+
+.tutor_socials {
+    display: -webkit-box !important;
+    display: flex !important;
+}
+
+.tutor_socials a {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-right: 2px;
+    background: #d0e5fb;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    border-radius: 50%;
+    -webkit-box-align: center !important;
+    align-items: center !important;
+    -webkit-box-pack: center !important;
+    justify-content: center !important;
+    display: -webkit-box !important;
+    display: flex !important;
+    color: #167ce9;
+    transform: all 0.5s ease;
+    text-decoration: none;
+}
+
+.tutor_socials a:hover {
+    color: white;
+    background-color: #167ce9;
+}
+
+.tutor_des_container {
+    text-align: left;
+    color: #7f8081;
+}

@@ -94,6 +94,19 @@ span {
     margin-bottom: 5px;
 }
 
+.more_category span:first-child {
+    margin-right: 2%;
+}
+
+.more_category span:first-child::before {
+    content: '';
+    position: absolute;
+    background-color: #e91e63;
+    height: 2px;
+    box-sizing: border-box;
+    width: 20px;
+}
+
 
 @media(max-width: 574px) {
     .category_icon {
