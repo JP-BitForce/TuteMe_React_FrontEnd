@@ -5,7 +5,9 @@ import TutorCard from '../../components/Card/TutorCard'
 import Modal from '../../components/Modal/Modal'
 import TutorCategories from './TutorCategories'
 import Header from '../../components/Header/Header'
+import CategoryGrid from '../../components/ImageGrid/CategoryBase'
 
+//Material-UI
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
@@ -13,37 +15,29 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
 import all from '../../assets/images/courses/all.png'
-import javascript from '../../assets/images/courses/javascript.png'
-import maths from '../../assets/images/courses/maths.png'
-import bio from '../../assets/images/courses/bio.png'
-import musical from '../../assets/images/courses/musical.png'
-import accounting from '../../assets/images/courses/accounting.png'
 import tutor1 from '../../assets/images/dummy tutors/1.jpg'
 import tutor2 from '../../assets/images/dummy tutors/2.jpg'
 import tutor3 from '../../assets/images/dummy tutors/3.jpg'
 import tutor4 from '../../assets/images/dummy tutors/4.jpg'
-import headerImg from '../../assets/images/tutors/header.jpg'
-import instructor from '../../assets/images/tutors/instructor.svg'
+import headerImg from '../../assets/images/tutors/headerImg.jpg'
+import certified from '../../assets/images/tutors/certified.png'
+import experiencedAdvice from '../../assets/images/tutors/advice.png'
+import design from '../../assets/images/shared/design.jpg'
+import development from '../../assets/images/shared/development.jpg'
+import ordinary_level from '../../assets/images/shared/maths.jpg'
+import medical from '../../assets/images/shared/medical.jpg'
+import musics from '../../assets/images/shared/music.jpg'
 import './TrustedTutors.css'
 
 class TrustedTutors extends Component {
     state = {
         loading: false,
-        selected: {key:"0", src:all, alt:"all", title:"All"},
+        selected: { src:all, title:"ALL" },
         tutorSearch: "",
         categoryOptions: ["All"],
         categoryOption: "All",
         moreCategories: false,
     }
-
-    list = [
-        {key:"0", src:all, alt:"all", title:"All"},
-        {key:"1", src:javascript, alt:"javascript", title:"Javascript"},
-        {key:"3", src:maths, alt:"maths", title:"Mathematics"},
-        {key:"4", src:bio, alt:"bio", title:"Biology"},
-        {key:"5", src:musical, alt:"musical", title:"Musical"},
-        {key:"5", src:accounting, alt:"accounting", title:"Accounting"},
-    ]
 
     dummyTutors = [
         {src:tutor1, des:"lorem ipsum", title:"Allan Nickman"},
@@ -53,12 +47,20 @@ class TrustedTutors extends Component {
     ]
 
     cards = [
-        {src : instructor, title : "Learn with Experts", description :"Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts."},
+        {src : certified, title : "Certified Instructors", description :"Far from the countries Vokalia and Consonantia, there live the blind texts."},
+        {src : experiencedAdvice, title : "Experienced Advice", description :"Far from the countries Vokalia and Consonantia, there live the blind texts."},
+    ]
+
+    categories = [
+        { src: design, title: 'Design', width: '100%' },
+        { src: development, title: 'Development', width: '100%' },
+        { src: ordinary_level, title: 'Ordinary Level', width: '100%' },
+        { src: musics, title: 'Musical', width: '100%' },
+        { src: medical, title: 'Medical', width: '100%' },
     ]
 
     handleTutorSearch = (event) => {
         event.preventDefault()
-        console.log(this.state.tutorSearch)
     }
 
     handleTutorSearchOnChange = (event) => {
@@ -79,6 +81,12 @@ class TrustedTutors extends Component {
         })
     }
 
+    handleAllOnClick = () => {
+        this.setState({
+            selected: { src:all, title:"ALL" }
+        })
+    }
+
     handleCategoryModalOk = () => {
 
     }
@@ -92,37 +100,21 @@ class TrustedTutors extends Component {
                 handleCancel = {this.handleMoreCategories}
                 handleOk = {this.handleCategoryModalOk}
             >
-                <TutorCategories items = {this.list} handleClick = {this.onCategorySelect}/>
+                <TutorCategories items = {this.categories} handleClick = {this.onCategorySelect}/>
             </Modal>
         )
     }
 
-
-    renderCategories = () => {
-        return (
-            this.list.map(item => this.renderCategoryItem(item))
-        )
-    }
-
-
-    renderCategoryItem = (item) => {
-        const {title,src} = item
-        return (
-            <Grid item xs={6} sm={6} md={3}>
-                <Paper elevation = {5}>
-                    <div 
-                        onClick={()=>this.onCategorySelect(item)}
-                        className = {[
-                            "category_item_wrapper",
-                            this.state.selected.title === title && "selected_category"
-                        ].join(" ")}
-                    >
-                        <img src={src} alt={title} className = "category_icon_src"/>
-                        <span>{title}</span>
-                    </div>
+    renderCourseCategory = () => {
+        return this.categories.map(image => {
+            return (
+             <Grid item xs={6} sm={6} md={3}>
+                <Paper elevation = {3}>
+                    <CategoryGrid image = {image}/>
                 </Paper>
-            </Grid>
-        )
+             </Grid>
+            )
+        })
     }
 
     renderTutorListHead = () => {
@@ -152,7 +144,7 @@ class TrustedTutors extends Component {
                     {
                         this.dummyTutors.map((item,index) => {
                             return (
-                                <Grid item xs={6} sm={6} md={3}>
+                                <Grid item xs={12} sm={6} md={4}>
                                     <Paper elevation = {3}>
                                         <TutorCard 
                                             media={item.src} 
@@ -179,10 +171,11 @@ class TrustedTutors extends Component {
                     </div>
                     <div className = "trusted_tutors_category_container">
                         <Grid container spacing={3}>
-                            { this.renderCategories() }
+                            { this.renderCourseCategory() }
                         </Grid>
                     </div>
                     <div className = "more_category">
+                        <span onClick = {this.handleAllOnClick}>All</span>
                         <span onClick = {this.handleMoreCategories}>More Categories</span>
                     </div>
                     <Divider/>
@@ -200,7 +193,6 @@ class TrustedTutors extends Component {
             <div className = "trusted_tutors_root">
                 <Header 
                     title = "COMUNITY EXPERTS"
-                    subTitle = ""
                     src = {headerImg} 
                     cards = {this.cards}   
                 />

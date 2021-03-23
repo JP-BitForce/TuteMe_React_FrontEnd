@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import People from './People'
 import ChatCard from './ChatCard'
 import CustomButton from '../../components/Button/CustomButton'
+import Header from '../../components/Header/Header'
 
 //Boostarp
 import Card from 'react-bootstrap/Card'
@@ -21,6 +22,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 
+import headerImg from '../../assets/images/Chat/headerImg.jpg'
 import './Chat.css'
 
 class MyChat extends Component {
@@ -176,6 +178,10 @@ class MyChat extends Component {
         return (
             <React.Fragment>
                 <CssBaseline />
+                <Header
+                    title = "SOCIAL COLLABORATION"
+                    src = {headerImg} 
+                />
                 {this.renderRoot()}
             </React.Fragment>
         )
