@@ -3,6 +3,7 @@ import React, {useState} from 'react'
 import SideBar from '../../components/SideBar/SideBar'
 import TopBar from './TopBar'
 
+import Home from '../Home/Home'
 import Profile from '../Profile/Profile'
 import Chat from '../My Chat/MyChat'
 import TrustedTutors from '../Tutors/TrustedTutors'
@@ -39,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
   },
 
   toolbar: theme.mixins.toolbar,
@@ -136,7 +136,7 @@ const GettingStarted = () => {
           <main className={classes.content}>
               <div className={classes.toolbar} />
               { 
-                active === "HOME" ? null 
+                active === "HOME" ? <Home/> 
                 :
                 active === "MY_COURSES" ? <MyCourses/>
                 :

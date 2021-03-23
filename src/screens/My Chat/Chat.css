@@ -1,6 +1,6 @@
-.my_chat_root {
-    width: 100%;
-    height: 100%;
+.chat_root {
+    margin: 2%;
+    margin-top: 5%;
 }
 
 .people_card {

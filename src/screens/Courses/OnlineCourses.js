@@ -4,11 +4,12 @@ import Loading from '../../components/Loading/Loading'
 import CourseCard from '../../components/Card/CourseCard'
 import Modal from '../../components/Modal/Modal'
 import CourseCategories from './CourseCategories'
+import Header from '../../components/Header/Header'
+import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 
 //Material-UI
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 
@@ -20,6 +21,10 @@ import bio from '../../assets/images/courses/bio.png'
 import musical from '../../assets/images/courses/musical.png'
 import accounting from '../../assets/images/courses/accounting.png'
 import music_2 from '../../assets/images/courses/music_2.png'
+import headerImg from '../../assets/images/Course/course.jpg'
+import certificate from '../../assets/images/Course/certificate.png'
+import prizing from '../../assets/images/Course/prizing.png'
+import unity from '../../assets/images/Course/unity.jpg'
 import './Courses.css'
 
 class OnlineCourses extends Component {
@@ -29,6 +34,7 @@ class OnlineCourses extends Component {
         categoryOptions: ["ALL"],
         selected:{category : "ALL", src : all },
         moreCategories: false,
+        checked: [0]
     }
 
     dummyCourseCategories = [
@@ -51,6 +57,33 @@ class OnlineCourses extends Component {
         {src:music_2, des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
         {src:javascript, des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
         {src:maths, des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
+    ]
+
+    cards = [
+        {src : certificate, title : "Certificate Courses", description :"The automated process all your website tasks."},
+        {src : prizing, title : "Prizing courses ",  description :"The automated process all your website tasks."},
+    ]
+
+    courseCategories = [
+        "ALL",
+        "UI/UX Design",
+        "Art & Design",
+        "Computer Science",
+        "History & Archelogic",
+        "App Development"
+    ]
+
+    courseInstuctors = ["All", " Ronald Jackson", "John Dee", "Nathan Messy", " Tony Griffin"]
+
+    courseType = ["All", "Primary", "Ordinary", "Advanced", "Others"]
+
+    coursePrizes = ["All", "Under $125.00", "$125.00 - $175.00"]
+
+    categories = [
+        {title : "Category", options : this.courseCategories},
+        {title : "Instructors", options : this.courseInstuctors},
+        {title : "Type", options : this.courseType},
+        {title : "Price", options : this.coursePrizes}
     ]
 
     handleCategoryModalOk = () => {
@@ -82,6 +115,22 @@ class OnlineCourses extends Component {
             selected: item
         })
     }
+
+    handleToggle = (value) => () => {
+        const checked = this.state.checked
+        const currentIndex = checked.indexOf(value);
+        const newChecked = [...checked];
+    
+        if (currentIndex === -1) {
+          newChecked.push(value);
+        } else {
+          newChecked.splice(currentIndex, 1);
+        }
+    
+        this.setState({
+            checked: newChecked
+        })
+    };
 
     renderCategoryModal = () => {
         return (
@@ -120,6 +169,20 @@ class OnlineCourses extends Component {
         )
     }
 
+    renderCourseCard = (item) => {
+        const {name, by, rating} = item
+        return (
+            <Grid item xs={6} sm={6} md={4}>
+                <CourseCard
+                    src = {unity}
+                    title = {name}
+                    by = {by}
+                    rating = {rating}
+                />
+            </Grid>
+        )
+    }
+
     renderListHead = () => {
         const selected = this.state.selected
         return (
@@ -139,57 +202,56 @@ class OnlineCourses extends Component {
         )
     }
 
-    renderListItems = () => {
+    renderCategoryFilters = () => {
+        return this.categories.map(item => {
+            return (
+                <Grid item xs={6} sm={4} md={12}>
+                    <CategoryFilter 
+                        title = {item.title}
+                        options = {item.options}
+                        handleToggle = {this.handleToggle}
+                        checked = {this.state.checked}
+                    />
+                </Grid>
+            )
+        })
+    }
+
+    renderCourseList = () =>{
         return (
             <div className = "online_course_list_container">
-                { this.renderListHead() }
-                <div className = "online_course_list">
-                    <Grid container spacing={3}>
-                        {
-                            this.dummyCourses.map(item => {
-                                const {src, name, by, rating} = item
-                                return (
-                                    <Grid item xs={6} sm={6} md={3}>
-                                        <Paper elevation = {3}>
-                                            <CourseCard
-                                                src = {src}
-                                                title = {name}
-                                                by = {by}
-                                                rating = {rating}
-                                            />
-                                        </Paper>
-                                    </Grid>
-                                )
-                            })
-                        }
+                <Grid container spacing={4}>
+                    <Grid item xs={12} sm={12} md={3}>
+                        <Grid container spacing={1}>
+                            { this.renderCategoryFilters() }
+                        </Grid>
                     </Grid>
-                </div>
+                    <Grid item xs={12} sm={12} md={9}>
+                        <div maxWidth="md">
+                            { this.renderListHead() }
+                        </div>
+                        <Grid container spacing={2}>
+                            {
+                                this.dummyCourses.map(item => {
+                                    return this.renderCourseCard(item)
+                                })
+                            }
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
         )
     }
 
-    renderCoursesRoot = () => {
+    renderRoot = () => {
         return (
             <div className = "online_courses_container">
-                <div className = "online_courses_category_root">
-                    <div className = "courses_category_header_container">
-                        <span className = "courses_category_title">Browse Our Online Courses</span>
+                <div className = "online_course_list_root">
+                    <div className = "more_category">
+                        <span onClick = {this.handleMoreCategories}>More Categories</span>
                     </div>
-                    <div className = "courses_category_container">
-                        <Grid container spacing={3}>
-                            {
-                                    this.dummyCourseCategories.slice(0,8).map(item => this.renderCategoryItem(item))
-                            }
-                        </Grid>
-                        <div className = "more_category">
-                            <span onClick = {this.handleMoreCategories}>More Categories</span>
-                        </div>
-                        <Divider/>
-                    </div>
-                    <div className = "online_course_list_root">
-                        { this.renderListItems()}
-                    </div>                 
-                </div>
+                    { this.renderCourseList() }  
+                </div>   
             </div>
         )
     }
@@ -198,11 +260,16 @@ class OnlineCourses extends Component {
         const {loading} = this.state
         return (
             <div className = "online_courses_root">
+                <Header 
+                    title = "BROWSE ONLINE COURSES" 
+                    src = {headerImg}
+                    cards = {this.cards}
+                />
                 {
                     loading ? 
                     <Loading open = {loading} />
                     :
-                    this.renderCoursesRoot()
+                    this.renderRoot()
                 }
                 { this.renderCategoryModal() }
             </div>
