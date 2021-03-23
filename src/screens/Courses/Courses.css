@@ -55,7 +55,7 @@
     align-items: flex-end;
     justify-content: flex-end;
     display: flex;
-    padding: 2%;
+    padding-right: 3%;
 }
 
 .more_category span {
@@ -152,7 +152,7 @@
 
     .online_courses_container {
         text-align: left;
-        margin-top: 40%;
+        margin-top: 10%;
     }
 }
 

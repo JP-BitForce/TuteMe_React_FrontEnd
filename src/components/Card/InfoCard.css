@@ -82,7 +82,6 @@
     padding: 10px 20px;
     background: #183661;
     color: #fff;
-    /* clip-path: polygon(100% 0%, 85% 49%, 100% 100%, 0 100%, 0 0); */
 }
 
 .course_enrolled_content {
@@ -132,4 +131,21 @@
 .course_enrolled_rating {
     float: right;
     text-align: right;
+}
+
+.course_price {
+    position: absolute;
+    -webkit-transform: translatey(-100%);
+    -ms-transform: translatey(-100%);
+    transform: translatey(-100%);
+    padding: 10px 20px;
+    background: #2c333a;
+    color: #fff;
+    clip-path: polygon(100% 0%, 85% 49%, 100% 100%, 0 100%, 0 0);
+}
+
+.online_course_footer {
+    -webkit-box-pack: justify !important;
+    justify-content: space-between !important;
+    display: flex !important;
 }

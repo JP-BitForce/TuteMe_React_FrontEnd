@@ -3,12 +3,14 @@ import React, { Component } from 'react'
 import Loading from '../../components/Loading/Loading'
 import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
-import InputGroupSearch from '../../components/Input/InputGroupSearch'
 import CourseEnrolled from '../../components/Card/CourseEnrolled'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar';
 
+import all from '../../assets/images/courses/all.png'
 import headerImg from '../../assets/images/Course/course.jpg'
 import certificate from '../../assets/images/Course/certificate.png'
 import online_materials from '../../assets/images/Course/online_materials.png'
@@ -19,7 +21,8 @@ class MyCourses extends Component {
     state = {
         loading: false,
         checked: [0],
-        searchValue: ""
+        searchValue: "",
+        selected:{category : "ALL", src : all },
     }
 
     courseCategories = [
@@ -90,6 +93,25 @@ class MyCourses extends Component {
         })
     };
 
+    renderListHead = () => {
+        const selected = this.state.selected
+        return (
+            <div className = "courses_list_head">
+                <div className = "header_category">
+                    <div className = "category_icon_small selected_category">
+                        <Avatar src = {selected.src}/>
+                    </div>
+                    <span>
+                        {selected.category}
+                    </span>
+                </div>
+                <form noValidate autoComplete="off" onSubmit = {this.handleCoursesSearch}>
+                    <TextField id="standard-basic" label="serach" onChange = {this.handleSearchOnChange}/>
+                </form>
+            </div>
+        )
+    }
+
     renderCategoryFilters = () => {
         return this.categories.map(item => {
             return (
@@ -127,19 +149,9 @@ class MyCourses extends Component {
                     </Grid>
                     <Grid item xs={12} sm={12} md={9}>
                         <div maxWidth="md">
-                            <Grid container spacing={2}>
-                                <Grid item xs={0} sm={0} md={8}/>
-                                <Grid item xs={12} sm={12} md={4}>
-                                    <InputGroupSearch
-                                        name = "course"
-                                        value = {this.state.searchValue}
-                                        onChange = {() => {}}
-                                        max = {50}
-                                        placeholder = "search ...."
-                                        onClick = {()=>{}}
-                                    />
-                                </Grid>
-                            </Grid>
+                        <div maxWidth="md">
+                            { this.renderListHead() }
+                        </div>
                             <Grid container spacing={4}>
                                 {
                                     this.dummyCourses.map(item => {

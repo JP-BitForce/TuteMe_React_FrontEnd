@@ -22,7 +22,6 @@ const CourseEnrolled = ({src, title, by, rating}) => {
                     <div className = "course_enrolled_content">
                         <div className = "course_meta">
                             <span>1hr 24m</span>
-                            <span>Advanced</span>
                             <span>june 18 2021</span>
                         </div>
                         <Divider/>
