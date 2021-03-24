@@ -1,35 +1,39 @@
 import React, { Component } from 'react'
 
-import ChipButton from '../../components/Button/ChipButton'
 import CustomButton from '../../components/Button/CustomButton'
-import Header from '../../components/Header/Header'
 import EditInfo from './EditInfo'
 import ChangePassword from './ChangePassword'
+import Loading from '../../components/Loading/Loading'
 
 //Boostarp
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
 import Card from 'react-bootstrap/Card'
 import Form from "react-bootstrap/Form";
 
 //Material-UI
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
+import PersonPinIcon from '@material-ui/icons/PersonPin';
+import Edit from '@material-ui/icons/Edit';
+import FolderShared from '@material-ui/icons/FolderShared';
+import LocationOn from '@material-ui/icons/LocationOn';
+import MailIcon from '@material-ui/icons/Mail';
+import Cake from '@material-ui/icons/Cake';
+import Grade from '@material-ui/icons/Grade';
+import Settings from '@material-ui/icons/Settings';
 
-import headerImg from '../../assets/images/Profile/headerImg.jpg'
-import ProfileImage from '../../assets/images/Profile/avatar.png'
+import ProfileImage from '../../assets/images/shared/minimal_avatar.jpg'
 import './Profile.css'
 
 class Profile extends Component {
     state = {
+        loading:false,
         updateValidated: false,
         passwordValidated: false,
         firstName: "",
@@ -46,6 +50,44 @@ class Profile extends Component {
         levelOptions: ["Higher Studies", "Advanced Level", "Ordinary Level", "Other"],
         updateLoading: false,
         changePasswordLoading: false,
+        tabValue: 0
+    }
+
+    tab_links = ["General", "Edit", "Following", "Settings"]
+
+    notifications = [
+        {
+            caption: "Activity",
+            items: [
+                {id : "one_step_notify", message: "Email me when someone comments on my one-step"},
+                {id : "blog_notify", message: "Email me when someone comments on my blog"},
+            ],
+        },
+        {
+            caption: "Application",
+            items: [
+                {id : "course_notify", message: "Weekly Course Update"},
+                {id : "tutor_notify", message: "Weekly Tutor update"},
+            ]
+        }
+    ]
+
+    dummyAbout = [
+        {name: "Location", content: "Live at  Algeria"},
+        {name: "Email", content: "Dena75@yahoo.com"},
+        {name: "DOB", content: "01/01/1940"},
+        {name: "Level", content: "Ordinary"}
+    ]
+
+    icons = {
+        General: <PersonPinIcon/>,
+        Edit: <Edit/>,
+        Following: <FolderShared/>,
+        Location: <LocationOn/>,
+        Email: <MailIcon/>,
+        DOB: <Cake/>,
+        Level: <Grade/>,
+        Settings: <Settings/>
     }
 
     handleUpdate = (event) => {
@@ -72,6 +114,16 @@ class Profile extends Component {
         this.setState({
             [event.target.name]: event.target.value
         })
+    }
+
+    handleTabChange = (newValue) => {
+        this.setState({
+            tabValue: newValue
+        })
+    };
+
+    handleSwitchOnChange = (event) => {
+
     }
 
     renderRowItems = (child1, child2) => {
@@ -128,7 +180,6 @@ class Profile extends Component {
         )
     }
 
-    
     renderEditTab = () => {
         return (
             <Card.Body className = "edit_card_body">
@@ -149,7 +200,7 @@ class Profile extends Component {
     renderPasswordTab = () => {
         return (
             <Card.Body className = "edit_card_body">
-                <ListItemText secondary="CHANGE PASSWORD"/>
+                <p>Change Password</p>
                 <Form
                     onSubmit={this.changePassword}
                     noValidate
@@ -157,69 +208,194 @@ class Profile extends Component {
                     className = "edit_card_body_form"
                 >
                 <ChangePassword values = {this.state} handleOnChange={this.handleInputChange}/>
-                <CustomButton label = "Update Password" type="submit"/>
+                <div className = "save__changes">
+                    <CustomButton label = "Update Password" type="submit"/>
+                </div>
                 </Form>
             </Card.Body>
         )
     }
 
-    renderProfilePic = () => {
+    renderSwitchControl = (id, message) => {
         return (
-            <div className="profile_image_container">
-                <img src={ProfileImage} alt="Avatar" className="avatar"/>
-                <div className="overlay">
-                    <CameraIcon/>
+            <FormControlLabel
+                control={
+                    <Switch 
+                        checked={true} 
+                        onChange={this.handleSwitchOnChange} 
+                        name = {id} 
+                        color = "primary"
+                    />
+                }
+                label = {message}
+            />
+        )
+    }
+
+    renderSettings = () => {
+        return (
+            <div>
+                { this.renderPasswordTab() }
+                <div className = "notifications_Container">
+                    <p>Notification settings</p>
+                    {
+                        this.notifications.map(item => {
+                            const {caption, items} = item
+                            return (
+                                <>
+                                <p>{caption}</p>
+                                {
+                                    items.map(item => {
+                                        return this.renderSwitchControl(item.id, item.message)
+                                    })
+                                }
+                                </>
+                            )
+                        })
+                    }
+                    <div className = "save__changes">
+                        <CustomButton label = "Save changes"/>
+                    </div>
                 </div>
             </div>
         )
     }
 
-    renderStudentProfile = () => {
+    handleRenderTabs = () => {
+        switch(this.state.tabValue) {
+            case 0: return this.renderSettings();
+            case 1: return this.renderEditTab();
+            case 2: return null;
+            case 3: return this.renderSettings();
+            default: return null
+        }
+    }
+
+    renderTabContent = () => {
         return (
-            <Grid container spacing={1}>
-                <Grid item xs={12} sm={12} md={4}>
-                    <Paper elevation = {3} square style={{padding:"3%"}}>
-                        <div className = "pro_head">
-                            {this.renderProfilePic()}
-                            <Typography gutterBottom variant="h6" component="h1">
-                                GENERAL INFORMATION
-                            </Typography>
+            <div className = "tab_content_container">
+                { this.handleRenderTabs() }
+            </div>
+        )
+    }
+
+    renderInfoContent = () => {
+        return (
+            <div className = "main_info_container">
+                <div className = "info_statistics">
+                    <div className = "info_statistics_block">
+                        <div className = "profile_stat">
+                            <h4>151</h4>
+                            <p>Enrolled Courses</p>
                         </div>
-                        { this.renderBasicInformation() }
-                        <Divider/>
-                        {this.renderBio("This is a bio")}
-                        <ChipButton label = "Delete My Account"/>
-                    </Paper>
+                        <hr/>
+                        <div className = "profile_stat">
+                            <h4>235</h4>
+                            <p>Following Tutors</p>
+                        </div>
+                    </div>
+                </div>
+                <div className = "profile_about">
+                    <div className = "profile_about_head">
+                        <span>About</span>
+                    </div>
+                    <div className = "profile_about_info">
+                        <p>Tart I love sugar plum I love oat cake. Sweet roll caramels I love jujubes. Topping cake wafer..</p>
+                        {
+                            this.dummyAbout.map(item => {
+                                return (
+                                    <div className = "about_general_info">
+                                        {this.icons[item.name]}
+                                        <span>{item.content}</span>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    renderMainContainer = () => {
+        return (
+            <div className = "profile_main_container">
+                <Grid container spacing={4}>
+                    <Grid item xs={12} sm={12} md={3}>
+                        { this.renderInfoContent() }
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={9}>
+                        { this.renderTabContent() }
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} sm={12} md={8}>
-                    <Paper elevation = {3} square style={{padding:"3%"}}>
-                        <Tabs defaultActiveKey="password" id="uncontrolled-tab-example">
-                            <Tab eventKey="edit" title="Edit">
-                                { this.renderEditTab() }
-                            </Tab>
-                            <Tab eventKey="interests" title="My Interests">
-                                
-                            </Tab>
-                            <Tab eventKey="password" title="Change Password">
-                                { this.renderPasswordTab() }
-                            </Tab>
-                        </Tabs>
-                    </Paper>
-                </Grid>
-            </Grid>
+            </div>
+        )
+    }
+
+    renderTopContainer = () => {
+        return (
+            <div className = "profile_header_container">
+                <div className = "container_top">
+                    <div className = "profile_avatar_alt">
+                        <img src = {ProfileImage} alt = "avatar" className = "profile_avatar_img"/>
+                        <div className="overlay">
+                            <CameraIcon/>
+                        </div>
+                    </div>
+                    <div className = "profile_section_info">
+                        <h4>Steve Austin</h4>
+                        <p>UI Designer</p>
+                    </div>
+                </div>
+                <div className = "container_bottom">
+                    <div className = "multitab_root">
+                        {
+                            this.tab_links.map((item, index) => {
+                                return (
+                                    <div 
+                                        className = {[
+                                            "multi_btn_base",
+                                             this.state.tabValue === index && "multi_btn_base_active"
+                                            ].join(" ")
+                                        } 
+                                        onClick = {() => {this.handleTabChange(index)}}
+                                    >
+                                        {this.icons[item]}
+                                        <span 
+                                            className = {[
+                                                "multitab_wrapper", 
+                                                this.state.tabValue === index && "multitab_active"
+                                                ].join(" ")
+                                            }
+                                        >{item}</span>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    renderProfileRoot = () => {
+        return (
+            <div className = "profile_root_alt">
+                { this.renderTopContainer() }
+                { this.renderMainContainer() }
+            </div>
         )
     }
 
     render() {
         return (
             <div className = "profile_root">
-                <Header 
-                    title = "PROFILE "
-                    src = {headerImg} 
-                />
-                <div className = "profile_content_root">
-                    { this.renderStudentProfile() }
-                </div>
+                { 
+                    this.state.loading ?
+                    <Loading/>
+                    :
+                    this.renderProfileRoot() 
+                }
             </div>
         )
     }

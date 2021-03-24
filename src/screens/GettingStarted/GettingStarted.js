@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 
-import SideBar from '../../components/SideBar/SideBar'
 import TopBar from './TopBar'
+import SideBarAlt from '../../components/SideBar/SideBarAlt'
 
 import Home from '../Home/Home'
 import Profile from '../Profile/Profile'
@@ -14,12 +14,12 @@ import OnlineCourses from '../Courses/OnlineCourses'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
-import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 
 import './GettingStarted.css'
 
-const drawerWidth = 210;
+// const drawerWidth = 210;
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: '#2c333a'
   },
 
   content: {
@@ -55,7 +54,11 @@ const GettingStarted = () => {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     
     const handleSetActiveItem = (id) => {
-      setActiveItem(id)
+      if (id === "SIGN_OUT") {
+        handleSignOut()
+      } else {
+        setActiveItem(id)
+      }
     }
 
     const handleDrawerToggle = () => {
@@ -82,14 +85,7 @@ const GettingStarted = () => {
               variant="permanent"
               open
             >
-              <div className={classes.toolbar} />
-              <Divider/>
-              <SideBar itemOnClick = {handleSetActiveItem} active = {active}/>
-              <div className = "grow"/>
-              <Divider/>
-              <div button onClick = {handleSignOut} className = "list_item_div sign_out_div ">
-                  <span>SIGN-OUT</span>
-              </div>
+              <SideBarAlt itemOnClick = {handleSetActiveItem} active = {active}/>
             </Drawer>
           </Hidden>
         )
@@ -106,12 +102,7 @@ const GettingStarted = () => {
                   classes = {{ paper: classes.drawerPaper }}
                   ModalProps={{ keepMounted: true }}
               >
-                <SideBar itemOnClick = {handleSetActiveItem} active = {active}/>
-                <div className = "grow"/>
-                <Divider/>
-                <div button onClick = {handleSignOut} className = "list_item_div sign_out_div ">
-                  <span>SIGN-OUT</span>
-                </div>
+                <SideBarAlt itemOnClick = {handleSetActiveItem} active = {active}/>
               </Drawer>
           </Hidden>
         )
