@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography,Grid,Paper,Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-
+import InterestList from "./Json";
 
 const InterestCard = (props) => {
   const { name,Des, avatar,sub1 , sub2} = props;

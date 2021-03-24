@@ -1,7 +1,10 @@
 const data =[
     {
         name :"SUBJECTS",
-        Des:" Mathematics, science",
+        Des:[{ sub1:"Mathematics",
+        sub2:"Science",}],
+        sub1:"Mathematics",
+        sub2:"Science",
         avatar:"S",
     },
     {

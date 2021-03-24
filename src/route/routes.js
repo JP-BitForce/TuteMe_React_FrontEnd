@@ -3,7 +3,7 @@ import SignUp from '../screens/SignUp/SignUp'
 import LandingPage from '../screens/LandingPage/LandingPage'
 import ForgotPassword from '../screens/ForwardPassword/ForgotPassword'
 import GettingStarted from '../screens/GettingStarted/GettingStarted'
-import InterestCard from '../components/Card/MyInterestCard/InterestCard'
+import InterestCard from '../components/Card/MyInterestCard/EditInterestForm/EditInterestCard'
 
 const routes = {
     data: [

@@ -9,7 +9,7 @@ export default function SimpleRating() {
   return (
     <div>
       <Box component="fieldset" mb={3} borderColor="transparent">
-        <Typography component="legend">Controlled</Typography>
+        {/* <Typography component="legend">Give to Rate</Typography> */}
         <Rating
           name="simple-controlled"
           value={value}
@@ -18,7 +18,6 @@ export default function SimpleRating() {
           }}
         />
       </Box>
-      
     </div>
   );
 }

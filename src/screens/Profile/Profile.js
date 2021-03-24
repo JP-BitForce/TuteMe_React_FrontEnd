@@ -26,7 +26,7 @@ import CameraIcon from '@material-ui/icons/PhotoCamera';
 
 import ProfileImage from '../../assets/images/Profile/avatar.png'
 import './Profile.css'
-import Interest from "../../components/Card/MyInterestCard/CardView"
+import Interest from "../../components/Card/MyInterestCard/InterestCard"
 
 class Profile extends Component {
     state = {
@@ -198,7 +198,7 @@ class Profile extends Component {
                                 { this.renderEditTab() }
                             </Tab>
                             <Tab eventKey="interests" title="My Interests">
-                                
+                               <Paper> <Interest/></Paper>
                             </Tab>
                             <Tab eventKey="password" title="Change Password">
                                 { this.renderPasswordTab() }
