@@ -263,7 +263,7 @@ class Profile extends Component {
 
     handleRenderTabs = () => {
         switch(this.state.tabValue) {
-            case 0: return this.renderSettings();
+            case 0: return null;
             case 1: return this.renderEditTab();
             case 2: return null;
             case 3: return this.renderSettings();
