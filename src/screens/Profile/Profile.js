@@ -3,25 +3,22 @@ import React, { Component } from 'react'
 import CustomButton from '../../components/Button/CustomButton'
 import EditInfo from './EditInfo'
 import ChangePassword from './ChangePassword'
+import Feedback from './Feedback'
 import Loading from '../../components/Loading/Loading'
 
 //Boostarp
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Card from 'react-bootstrap/Card'
 import Form from "react-bootstrap/Form";
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
 import PersonPinIcon from '@material-ui/icons/PersonPin';
 import Edit from '@material-ui/icons/Edit';
-import FolderShared from '@material-ui/icons/FolderShared';
+import FeedbackImg from '@material-ui/icons/Feedback';
 import LocationOn from '@material-ui/icons/LocationOn';
 import MailIcon from '@material-ui/icons/Mail';
 import Cake from '@material-ui/icons/Cake';
@@ -50,10 +47,21 @@ class Profile extends Component {
         levelOptions: ["Higher Studies", "Advanced Level", "Ordinary Level", "Other"],
         updateLoading: false,
         changePasswordLoading: false,
-        tabValue: 0
+        tabValue: 0,
+        feedbackFormValidated: false,
+        feedbackSubmitLoading: false,
+        feedbackName: "",
+        feedbackEmail: "",
+        feedbackMessage: "",
+        feedbackRate: 0,
+        feedbackRadio: "yes",
+        one_step_notify: false,
+        blog_notify: false,
+        course_notify: false,
+        tutor_notify: false,
     }
 
-    tab_links = ["General", "Edit", "Following", "Settings"]
+    tab_links = ["General", "Edit", "Feedback", "Settings"]
 
     notifications = [
         {
@@ -82,7 +90,7 @@ class Profile extends Component {
     icons = {
         General: <PersonPinIcon/>,
         Edit: <Edit/>,
-        Following: <FolderShared/>,
+        Feedback: <FeedbackImg/>,
         Location: <LocationOn/>,
         Email: <MailIcon/>,
         DOB: <Cake/>,
@@ -110,6 +118,16 @@ class Profile extends Component {
         });
     }
 
+    submitFeedback = (event) => {
+        const form = event.currentTarget;
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({
+            feedbackFormValidated: !form.checkValidity(),
+            feedbackSubmitLoading:true
+        });
+    }
+
     handleInputChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value
@@ -118,66 +136,17 @@ class Profile extends Component {
 
     handleTabChange = (newValue) => {
         this.setState({
-            tabValue: newValue
+            tabValue: newValue,
+            feedbackFormValidated: false,
+            passwordValidated: false,
+            updateValidated: false
         })
-    };
+    }
 
     handleSwitchOnChange = (event) => {
-
-    }
-
-    renderRowItems = (child1, child2) => {
-        return (
-            <Row>
-                <Col xs={6} sm={6} md={6}> {child1} </Col>
-                <Col xs={6} sm={6} md={6}> {child2} </Col>
-            </Row>
-        )
-    }
-
-    renderInfo = (label, value) => {
-        return (
-            <div className = "info_container">
-                <ListItem>
-                    <ListItemText secondary={value}>{label}</ListItemText>
-                </ListItem>
-            </div>
-        )
-    }
-
-    renderBio = (bio) => {
-        return (
-            <List style = {{display:"flex",flexDirection:"column", padding:"2%"}}>
-                <span className = "bio_header">BIO</span>
-                <span className = "bio_content">{bio}</span>
-            </List>
-        )
-    }
-
-    renderBasicInformation = () => {
-        return (
-            <List>
-                { 
-                    this.renderRowItems(
-                        this.renderInfo("First Name", "Rogers"),
-                        this.renderInfo("Last Name", "Steve")
-                    )
-                }
-                {this.renderInfo("Email", "steverogers@gmail.com")}
-                {
-                    this.renderRowItems(
-                        this.renderInfo("DOB", "01/01/1940"),
-                        this.renderInfo("Level", "Unknown")
-                    )
-                }
-                {
-                    this.renderRowItems(
-                        this.renderInfo("City", "Brooklyn"),
-                        this.renderInfo("District", "Gampaha")
-                    )
-                }
-            </List>
-        )
+        this.setState({
+            [event.target.name]: event.target.checked
+        })
     }
 
     renderEditTab = () => {
@@ -191,7 +160,9 @@ class Profile extends Component {
                     className = "edit_card_body_form"
                 >
                     <EditInfo values = {this.state} handleOnChange={this.handleInputChange}/>
-                    <CustomButton label = "Save Changes" type="submit"/>
+                    <div className = "save__changes">
+                        <CustomButton label = "Save Changes" type="submit"/>
+                    </div>
                 </Form>
             </Card.Body>
         )
@@ -221,7 +192,7 @@ class Profile extends Component {
             <FormControlLabel
                 control={
                     <Switch 
-                        checked={true} 
+                        checked={this.state[id]} 
                         onChange={this.handleSwitchOnChange} 
                         name = {id} 
                         color = "primary"
@@ -261,11 +232,30 @@ class Profile extends Component {
         )
     }
 
+    renderFeedbackTab = () => {
+        return (
+            <Form
+                onSubmit={this.submitFeedback}
+                noValidate
+                validated={this.state.feedbackFormValidated}
+                className = "feedback_form"
+            >
+            <Feedback
+                values = {this.state}
+                handleOnChange = {this.handleInputChange}
+            />
+            <div className = "save__changes">
+                <CustomButton label = "Submit" type = "submit"/>
+            </div>
+            </Form>
+        )
+    }
+
     handleRenderTabs = () => {
         switch(this.state.tabValue) {
             case 0: return null;
             case 1: return this.renderEditTab();
-            case 2: return null;
+            case 2: return this.renderFeedbackTab();;
             case 3: return this.renderSettings();
             default: return null
         }
@@ -284,14 +274,16 @@ class Profile extends Component {
             <div className = "main_info_container">
                 <div className = "info_statistics">
                     <div className = "info_statistics_block">
-                        <div className = "profile_stat">
-                            <h4>151</h4>
-                            <p>Enrolled Courses</p>
-                        </div>
-                        <hr/>
-                        <div className = "profile_stat">
-                            <h4>235</h4>
-                            <p>Following Tutors</p>
+                        <div className = "css-1lomthf">
+                            <div className = "profile_stat">
+                                <h4>151</h4>
+                                <p>Enrolled Courses</p>
+                            </div>
+                            <hr/>
+                            <div className = "profile_stat">
+                                <h4>235</h4>
+                                <p>Following Tutors</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -332,6 +324,28 @@ class Profile extends Component {
         )
     }
 
+    renderTab = (index, item) => {
+        return (
+            <div 
+                className = {[
+                    "multi_btn_base",
+                    this.state.tabValue === index && "multi_btn_base_active"
+                    ].join(" ")
+                } 
+                onClick = {() => {this.handleTabChange(index)}}
+            >
+                {this.icons[item]}
+                <span 
+                    className = {[
+                        "multitab_wrapper", 
+                        this.state.tabValue === index && "multitab_active"
+                        ].join(" ")
+                    }
+                >{item}</span>
+            </div>
+        )
+    }
+
     renderTopContainer = () => {
         return (
             <div className = "profile_header_container">
@@ -351,25 +365,7 @@ class Profile extends Component {
                     <div className = "multitab_root">
                         {
                             this.tab_links.map((item, index) => {
-                                return (
-                                    <div 
-                                        className = {[
-                                            "multi_btn_base",
-                                             this.state.tabValue === index && "multi_btn_base_active"
-                                            ].join(" ")
-                                        } 
-                                        onClick = {() => {this.handleTabChange(index)}}
-                                    >
-                                        {this.icons[item]}
-                                        <span 
-                                            className = {[
-                                                "multitab_wrapper", 
-                                                this.state.tabValue === index && "multitab_active"
-                                                ].join(" ")
-                                            }
-                                        >{item}</span>
-                                    </div>
-                                )
+                                return this.renderTab(index, item)
                             })
                         }
                     </div>
