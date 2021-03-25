@@ -5,6 +5,7 @@ import EditInfo from './EditInfo'
 import ChangePassword from './ChangePassword'
 import Feedback from './Feedback'
 import Loading from '../../components/Loading/Loading'
+import Interest from "../../components/Card/MyInterestCard/InterestCard"
 
 //Boostarp
 import Card from 'react-bootstrap/Card'
@@ -253,7 +254,7 @@ class Profile extends Component {
 
     handleRenderTabs = () => {
         switch(this.state.tabValue) {
-            case 0: return null;
+            case 0: return <Interest/>;
             case 1: return this.renderEditTab();
             case 2: return this.renderFeedbackTab();;
             case 3: return this.renderSettings();

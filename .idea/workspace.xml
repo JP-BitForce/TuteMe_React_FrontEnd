@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c8b404b0-6a70-4b0b-a17f-0ea81063751e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/assets/images/Profile/avatar.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/design.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/management.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/maths.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/medical.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/music.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/science.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/technology.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/digital.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/feature_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/future.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/cap.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/employee.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/features-icon-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/features-icon-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/features-icon-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/features-icon-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/features-icon-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/features-icon-6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/schedule.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/student.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/icons/teacher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/landing page/theme.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Badge/BadgeButton.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Card/InfoCard.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Card/InfoCard.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/CountUp/Countup.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/CountUp/Countup.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ImageGrid/ImageGrid.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ImageGrid/ImageGrid.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Input/Dropdown.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Input/TextArea.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/SideBar/SideBar.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/SideBar/SideBar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/json/Sidebar.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/screens/GettingStarted/GettingStarted.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/screens/GettingStarted/TopBar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/screens/LandingPage/Content.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/screens/Profile/Profile.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/shared/colors.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/carousel1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/carousel2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/development.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/carousel3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/carousel4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/carousel5.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/images/landing page/any.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/extra.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/learn.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/online-les.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/students.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/landing page/teacher.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/register/forgotPassword.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/register/signin.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/register/signup.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/images/landing page/courses/programming.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AppBar/AppBar.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AppBar/AppBar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AppBar/AppBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AppBar/AppBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AppBar/DesktopBar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AppBar/MobileBar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Button/AnimatedButton.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Button/AnimatedButton.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Button/ChipButton.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Button/ChipButton.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Card/CardView.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Card/CardView.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Carousel/Carousel.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Carousel/Carousels.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Footer/Footer.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Footer/Footer.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Footer/Footer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Footer/Footer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LandingContent/LandingContent.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LandingContent/LandingContent.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RegisterLeftPanel/RegisterLeftPanel.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RegisterLeftPanel/RegisterLeftPanel.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RegisterLeftPanel/RegisterLeftPanel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RegisterLeftPanel/RegisterLeftPanel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json/Footer.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json/Footer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json/Header.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json/Header.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/json/LandingContent.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json/LandingContent.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/route/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/route/routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/ForwardPassword/ForgotPassword.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForwardPassword/ForgotPassword.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/LandingPage/LandingPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/LandingPage/LandingPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/LandingPage/LandingPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/LandingPage/LandingPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/SignIn/SignIn.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SignIn/SignIn.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/SignUp/SignUp.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SignUp/SignUp.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1own3OUW9C2nqv6z8aFxkuiG0uD" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c8b404b0-6a70-4b0b-a17f-0ea81063751e" name="Default Changelist" comment="" />
+      <created>1614206320376</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1614206320376</updated>
+      <workItem from="1614206324552" duration="1130000" />
+      <workItem from="1615783935592" duration="12984000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1515" height="210" key="GridCell.Tab.0.bottom" timestamp="1615909367463">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1615909367463" />
+    <state width="1515" height="210" key="GridCell.Tab.0.center" timestamp="1615909367463">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1615909367463" />
+    <state width="1515" height="210" key="GridCell.Tab.0.left" timestamp="1615909367462">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1615909367462" />
+    <state width="1515" height="210" key="GridCell.Tab.0.right" timestamp="1615909367463">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1615909367463" />
+    <state x="456" y="200" key="git4idea.merge.GitPullDialog" timestamp="1615807806407">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="456" y="200" key="git4idea.merge.GitPullDialog/0.0.1536.824@0.0.1536.824" timestamp="1615807806407" />
+  </component>
+</project>
