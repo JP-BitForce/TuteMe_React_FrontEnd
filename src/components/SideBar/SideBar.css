@@ -10,7 +10,6 @@
     height: 100%;
     overflow: auto;
     background-color: #2c333a;
-    color: white;
 }
   
 .list_item_div {
@@ -23,44 +22,74 @@
     justify-content: space-between;
 }
 
-.list_item_div:hover {
-    cursor: pointer;
-    color: white;
-    background-color: #555;
-}
-
-
-.list_sub_item_div {
-    padding: 5px;
-    padding-left: 45px;
-    text-decoration: none;
-    text-align: left;
-    margin-bottom: 5%;
-    font-size: small;
-}
-
-.list_sub_item_div:hover {
-    cursor: pointer;
-    background-color: #555;
-    color: white;
-}
-
-.active {
-    color: white;
-    background-color: #555;
-}
-
-.sub_item_active {
-    color: white;
-    background-color: #555;
-}
-
-
 .logo_div {
     height: 70px;
 } 
 
 .sign_out_div {
     margin-top: 5%;
-    color: white;
+    color: "#5D6D7E";
+}
+
+
+.profile_card {
+    width: 80%;
+    margin-left: 10%;
+    background-color: rgb(238, 238, 238);
+    border-radius: 16px;
+    padding: 5%;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    margin-top: 8%;
+}
+
+.navigations_root {
+    margin-top: 10%;
+}
+
+.navigation_category_content {
+    text-align: left;
+    margin-bottom: 8%;
+}
+
+.dot {
+    height: 5px;
+    width: 5px;
+    background-color: #656768;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4%;
+}
+
+.dot_active {
+    height: 10px;
+    width: 10px;
+    background-color: #21618C;
+}
+
+.nav_item_text {
+    font-family: "Be Vietnam", sans-serif;
+    margin-left: 8%;
+    font-size: 0.9rem;
+}
+
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+  
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+  
+::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box; 
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
