@@ -62,6 +62,8 @@ class Profile extends Component {
         tutor_notify: false,
     }
 
+    initialState = this.state
+
     tab_links = ["General", "Edit", "Feedback", "Settings"]
 
     notifications = [
@@ -135,12 +137,16 @@ class Profile extends Component {
         })
     }
 
+    handleRatingOnChange = (value) => {
+        this.setState({
+            feedbackRate: value
+        })
+    }
+
     handleTabChange = (newValue) => {
         this.setState({
+            ...this.initialState,
             tabValue: newValue,
-            feedbackFormValidated: false,
-            passwordValidated: false,
-            updateValidated: false
         })
     }
 
@@ -244,6 +250,7 @@ class Profile extends Component {
             <Feedback
                 values = {this.state}
                 handleOnChange = {this.handleInputChange}
+                handleRateOnChange = {this.handleRatingOnChange}
             />
             <div className = "save__changes">
                 <CustomButton label = "Submit" type = "submit"/>
