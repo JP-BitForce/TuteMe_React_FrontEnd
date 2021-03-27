@@ -2,7 +2,7 @@ import React from 'react'
 
 import InputField from '../../components/Input/InputField'
 import TextArea from '../../components/Input/TextArea'
-import ReadOnlyRating from '../../components/Rating/ReadOnlyRating'
+import Rating from '../../components/Rating/Rating'
 
 //Material-UI
 import Radio from '@material-ui/core/Radio';
@@ -12,7 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 
 import './Profile.css'
 
-const Feedback = ({values, handleOnChange}) => {
+const Feedback = ({values, handleOnChange, handleRateOnChange}) => {
 
     const renderTextArea = (name) => {
         return (
@@ -49,7 +49,7 @@ const Feedback = ({values, handleOnChange}) => {
             <h5 className = "system_feedback_contain_h5">How was your experince ?</h5>
             <div className = "system_feedback_section_002">
                 <span className = "system_feedback__span">How satisfied are you with the overall experience on our website?</span>
-                <ReadOnlyRating rate = {values["feedbackRate"]} />
+                <Rating rate = {values["feedbackRate"]} handleOnChange = {handleRateOnChange}/>
             </div>
             <div className = "system_feedback_section_003">
                 <span className = "system_feedback__span">Did you find what you looking for?</span>

@@ -1,0 +1,32 @@
+.more_detail_container {
+    padding: 24px;
+    position: relative;
+    margin-top: 24px;
+    border-radius: 8px;
+    background-color: #F4F6F8;
+}
+
+.more_detail_container h6 {
+    margin: 0px 0px 8px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.more_detail_content {
+    margin: 0px 0px 8px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.57143;
+}
+
+.more_detail_content span {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.57143;
+    color: rgb(99, 115, 129);
+}

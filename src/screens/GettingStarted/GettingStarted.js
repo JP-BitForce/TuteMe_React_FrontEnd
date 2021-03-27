@@ -9,6 +9,8 @@ import Chat from '../My Chat/MyChat'
 import TrustedTutors from '../Tutors/TrustedTutors'
 import MyCourses from '../Courses/MyCourses'
 import OnlineCourses from '../Courses/OnlineCourses'
+import Blog from '../Blog/Blog'
+import Payments from '../Payments/Payments'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -139,7 +141,11 @@ const GettingStarted = () => {
                 :
                 active === "MY_CHATS" ? <Chat/>
                 :
-                active === "MY_PROFILE"  && <Profile/>  
+                active === "MY_PROFILE" ? <Profile/>
+                :
+                active === "BLOG" ? <Blog/>
+                :
+                active === "PAYMENTS"  && <Payments/>
               }
           </main>
       </div>
