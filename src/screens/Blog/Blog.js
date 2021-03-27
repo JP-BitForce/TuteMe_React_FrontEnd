@@ -4,6 +4,7 @@ import Loading from '../../components/Loading/Loading'
 import ChipButton from '../../components/Button/ChipButton'
 import BlogCard from '../../components/Card/BlogCard'
 import Selector from '../../components/Input/Selector'
+import HeaderCard from '../../components/Header/HeaderCard'
 
 //Material-UI
 import TextField from '@material-ui/core/TextField';
@@ -11,9 +12,12 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 import Search from '@material-ui/icons/Search';
+import Dialpad from '@material-ui/icons/Dialpad';
+import HowToReg from '@material-ui/icons/HowToReg';
 
 import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
 import cover_12 from '../../assets/images/shared/cover_12.jpg'
+import headerImg from '../../assets/images/Blog/header.jpg'
 import './Blog.css'
 
 class Blog extends Component {
@@ -21,7 +25,16 @@ class Blog extends Component {
         loading: false,
         searchValue: "",
         filterValue: "Latest",
-        filterOptions: ["Latest", "Oldest", "Popular", "My Blogs"]
+        filterOptions: ["Latest", "Oldest", "Popular", "My Blogs"],
+        tabValue: 0,
+
+    }
+
+    tab_links = ["All", "Own"]
+
+    icons = {
+        All: <Dialpad/>,
+        Own: <HowToReg/>,
     }
 
     blogs = [
@@ -57,6 +70,12 @@ class Blog extends Component {
     handleFilterOnChnage = (event) => {
         this.setState({
             filterValue: event.target.value
+        })
+    }
+
+    handleTabChange = (newValue) => {
+        this.setState({
+            tabValue: newValue
         })
     }
 
@@ -132,6 +151,15 @@ class Blog extends Component {
             <div className = "blog_root_container">
                 <div className = "blog_root_header">
                     { this.renderHeader() }
+                </div>
+                <div>
+                    <HeaderCard
+                        tabs = {this.tab_links}
+                        src = {headerImg}
+                        icons = {this.icons}
+                        tabValue = {this.state.tabValue}
+                        handleTabChange = {this.handleTabChange}
+                    />
                 </div>
                 <div className = "blog_main_container">
                     <div className = "blog_search_block">

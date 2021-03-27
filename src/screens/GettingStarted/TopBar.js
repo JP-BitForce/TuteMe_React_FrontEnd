@@ -1,12 +1,6 @@
 import React from 'react'
 
 import Batch from '../../components/Badge/BadgeButton'
-// import ChipButton from '../../components/Button/ChipButton'
-
-//Boostarp
-import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
-import Nav from 'react-bootstrap/Nav'
 
 //Material-UI
 import AppBar from '@material-ui/core/AppBar';

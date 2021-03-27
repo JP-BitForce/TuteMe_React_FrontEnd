@@ -1,0 +1,376 @@
+.payments_root_div {
+    padding: 2%;
+}
+
+.payment_root_top {
+    padding: 1%;
+}
+
+.summary_top {
+    padding: 34px;
+    position: relative;
+    text-align: left;
+}
+
+.header_title_span {
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgb(99, 115, 129);
+    display: block;
+}
+
+.payment_method_container {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(100% + 16px);
+    margin-top: 8px;
+    margin-left: -16px;
+}
+
+.payment_method_card {
+    position: relative;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid rgba(145, 158, 171, 0.32);
+    display: flex;
+    flex-direction: column;
+}
+
+.payment_method_card_top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10%;
+}
+
+.more_icon {
+    cursor: pointer;
+}
+
+.card_number_block {
+    margin-top: 5%;
+}
+
+.card_number_block span {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.57143;
+}
+
+.add_card_block {
+    margin-top: 24px;
+    align-items: center;
+}
+
+.add_card_block span {
+    font-family: "Be Vietnam", sans-serif;
+    display: inherit;
+    margin-left: -2px;
+    color: blue;
+    font-weight: 550;
+    cursor: pointer;
+}
+
+.plan_h4 {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+.summary_table {
+    margin-top: 3%;
+    text-align: left;
+    padding: 3%;
+}
+
+.summary_table span {
+    margin-bottom: 3%;
+}
+
+.checkout_root_div {
+    width: 100%;
+    margin-left: auto;
+    box-sizing: border-box;
+    margin-right: auto;
+    display: block;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.checkout_root_top {
+    margin-bottom: 40px;
+}
+
+.checkout_root_top h3 {
+    margin: 0px 0px 8px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.checkout_root_top p {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+    color: rgb(99, 115, 129);
+}
+
+.payment_form_container {
+    padding: 25px;
+    text-align: left;
+}
+
+.payment_form_header {
+    margin-bottom: 10%;
+    margin: 0px 0px 40px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.payment_method_container {
+    box-sizing: border-box;
+    margin: 0px;
+    flex-basis: 100%;
+    flex-grow: 0;
+    max-width: 100%;
+    padding: 25px;
+    text-align: left;
+}
+
+.payment_method__paper {
+    box-shadow: 0 8px 16px 0 rgb(145 158 171 / 24%);
+    border: solid 1px rgba(145, 158, 171, 0.32);
+    display: flex;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    align-items: center;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    justify-content: space-between;
+    padding: 3%;
+}
+
+.payment_method__paper_3 {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 16px 0 rgb(145 158 171 / 24%);
+    border: solid 1px rgba(145, 158, 171, 0.32);
+    display: flex;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    padding: 3%;
+}
+
+.payment_method__paper_3_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment_method__paper__bottom {
+    min-height: 0px;
+    height: auto;
+    transition-duration: 300ms;
+    height: auto;
+    overflow: visible;
+    transition: height 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    display: flex;
+    margin-top: 5%;
+}
+
+.payment_method__paper_dropdown {
+    display: inline-flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 0px;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    vertical-align: top;
+    width: 100%;
+}
+
+.new_card_wrapper {
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background-color: #F4F6F8;
+}
+
+.new_card_wrapper p {
+    margin: 0px 0px 16px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.payment_summary {
+    box-sizing: border-box;
+    margin: 0px;
+    flex-basis: 100%;
+    flex-grow: 0;
+    max-width: 100%;
+    padding: 25px;
+    text-align: left;
+    background-color: #f1f1f1;
+}
+
+.payment_summary_wrapper {
+    height: calc(100% - 16px);
+    border-radius: 16px;
+    padding: 2%;
+}
+
+.payment_section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.payment_summary_section__1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4%;
+}
+
+.payment_summary_section {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.57143;
+    color: rgb(99, 115, 129);
+    text-transform: uppercase;
+}
+
+.payment_summary_section__1_special {
+    color: #fff;
+    background-color: #FF4842;;
+    cursor: default;
+    height: 22px;
+    display: inline-flex;
+    padding: 0px 8px;
+    font-size: 0.75rem;
+    min-width: 22px;
+    align-items: center;
+    font-family: Be Vietnam, sans-serif;
+    font-weight: 700;
+    line-height: 0;
+    white-space: nowrap;
+    border-radius: 8px;
+    justify-content: center;
+}
+
+.payment_summary_section__2_nested {
+    margin-left: 2%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.payment_summary_section__2_nested:not(:first-child) {
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 0.675rem;
+    line-height: 1.57143;
+    color: rgb(80, 81, 82);
+}
+
+.payment_summary_section__3 {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5%;
+}
+
+.payment_summary_section__3 p {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: rgb(99, 115, 129);
+}
+
+.payment_summary_section__3 h2 {
+    margin: 0px 8px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 2.5rem;
+    line-height: 1.33333;
+}
+
+.payment_summary_section__3 span{
+    margin: 0px 0px 8px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 0.675rem;
+    line-height: 1.57143;
+    color: rgb(99, 115, 129);
+    align-self: flex-end;
+}
+
+.payment_summary_section__4 {
+    padding-top: 12px;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.payment_summary_section__4 p {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    line-height: 1.55556;
+}
+
+.payment_summary_section__5 {
+    margin-top: 10px;
+    margin-bottom: 24px;
+}
+
+.payment_summary_section__5_span {
+    color: rgb(99, 115, 129);
+}
+
+.payement_detail_value {
+    text-transform: uppercase;
+    font-size: 0.6rem;
+    color: rgb(99, 115, 129);
+}
+
+.shadow_card {
+    background-color: rgb(255, 255, 255);
+    color: rgb(33, 43, 54);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    overflow: hidden;
+    box-shadow: rgb(145 158 171 / 24%) 0px 0px 2px 0px, rgb(145 158 171 / 24%) 0px 16px 32px -4px;
+    border-radius: 16px;
+    position: relative;
+    z-index: 0;
+}

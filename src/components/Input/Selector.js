@@ -22,7 +22,7 @@ const Selector = ({value, onChange, options, label}) => {
     const styles = useStyles()
     return (
         <FormControl variant="outlined" className = {styles.formControl} size="small">
-            <InputLabel id="demo-simple-select-outlined-label">Filter</InputLabel>
+            <InputLabel id="demo-simple-select-outlined-label">{label}</InputLabel>
             <Select
                 labelId="demo-simple-select-outlined-label"
                 id="demo-simple-select-outlined"
