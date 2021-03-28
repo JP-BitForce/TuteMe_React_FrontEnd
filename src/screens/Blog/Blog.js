@@ -17,7 +17,7 @@ import HowToReg from '@material-ui/icons/HowToReg';
 
 import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
 import cover_12 from '../../assets/images/shared/cover_12.jpg'
-import headerImg from '../../assets/images/Blog/header.jpg'
+import headerImg from '../../assets/images/Blog/headerImg.jpg'
 import './Blog.css'
 
 class Blog extends Component {

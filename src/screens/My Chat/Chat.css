@@ -1,74 +1,271 @@
-.chat_root {
-    margin: 2%;
-    margin-top: 5%;
+.my_chat_root {
+    padding: 3%;
 }
 
-.people_card {
-    box-shadow: 1px 1px 1px  rgb(185, 183, 183);
-}
-
-.row {
+.chat_alt_root {
+    height: 72vh;
     display: flex;
-    flex-direction: row;
+    background-color: rgb(255, 255, 255);
+    color: rgb(33, 43, 54);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    overflow: hidden;
+    box-shadow: rgb(145 158 171 / 24%) 0px 0px 2px 0px, rgb(145 158 171 / 24%) 0px 16px 32px -4px;
+    border-radius: 16px;
+    position: relative;
+    z-index: 0;
+    margin-top: 2%;
 }
 
-.container_left {
-    width: "40%";
-}
-
-.container_center {
-    width: "60%";
-}
-
-.search_chats {
+.chat_list_block {
+    width: 320px;
     display: flex;
-    flex-direction: row;
-    padding: 5%;
-    justify-content: space-between;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(145, 158, 171, 0.24);
+    flex-direction: column;
 }
 
-.chats_contents {
-    padding: 15px;
-    height: 70ch;
+.chat_list_block_inside {
+    padding: 16px 24px;
 }
 
-.my_chats {
-    height: 83vh;
+.chat_list_top {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5%;
 }
 
-.my_chats_header {
-    height: 10%;
-    box-shadow: 1px 1px 1px  rgb(185, 183, 183);
+.own_avatar_div {
+    position: relative;
 }
 
-.dark_background {
-    background-color: #2c333a;
-    color:white;
+.own_avatar_div span {
+    background-color: #54D62C;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    justify-content: center;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+}
+
+.flex_grow {
+    flex-grow: 1;
+}
+
+.chat_lists_container {
+    height: 100%;
+    overflow: hidden;
+    flex-grow: 1;
+    padding: 6%;
+}
+
+.chat_list_card_alt {
+    padding: 12px;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+    appearance: none;
+    color: inherit;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
     text-align: left;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
-.my_chats_content {
-    height: 75%;
-    overflow-y: auto;
-    background-color: rgba(0,0,0,0.05);  
+.list_tem_avatar {
+    flex-shrink: 0;
+    min-width: auto;
+    margin-right: 16px;
 }
 
-.my_chats_footer {
-    height: 10%;
+.list_item_text {
+    flex: 1 1 auto;
+    min-width: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
-.header_body {
+.list_item_text span {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.57143;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+.list_item_text p {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
+    line-height: 1.57143;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgb(99, 115, 129);
+    display: block;
+}
+
+.list_item_time {
+    margin-left: 16px;
+    height: 44px;
     display: flex;
-    flex-direction: row;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.list_item_time_val {
+    color: #919EAB;
+    font-size: 12px;
+    line-height: 22px;
+    white-space: nowrap;
+    margin-bottom: 10px;
+}
+
+.list_item_time span {
+    background-color: #1890FF;
+    width: 8px;
+    height: 8px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    justify-content: center;
+}
+
+.chat_list_card_alt:hover {
+    background-color: rgb(220, 220, 253);
+}
+
+.chat_list_card_alt_active {
+    background-color: rgb(220, 220, 253);
+}
+
+.chat_messanger {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.messanger_top_search {
+    display: flex;
+    padding: 16px 24px;
     align-items: center;
 }
 
-.header_text {
-    margin-left: 2%;
+.messanger_top_search h6 {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1.57143;
+    color: rgb(99, 115, 129);
+    margin-right: 2%;
 }
 
-.footer_body {
-   display: flex;
-   flex-direction: row;
-   align-items: center;
+.messanger_top_item {
+    display: flex;
+    padding: 0px 24px;
+    min-height: 92px;
+    align-items: center;
+    flex-shrink: 0;
+    justify-content: space-between;
+}
+
+.messanger_top_item_left {
+    display: flex;
+    align-items: center;
+    text-align: left;
+}
+
+.messanger_top_item_right {
+    display: flex;
+    flex-direction: row;
+}
+
+.main_chat_container {
+    display: flex;
+    overflow: hidden;
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.main_chat_lists {
+    height: 100%;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.main_chat__footer {
+    display: flex;
+    position: relative;
+    min-height: 56px;
+    align-items: center;
+    padding-left: 16px;
+}
+
+.main_input_base {
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.4375em;
+    color: rgb(33, 43, 54);
+    box-sizing: border-box;
+    cursor: text;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    height: 100%;
+    width: 90%;
+    justify-content: space-evenly;
+}
+
+.send_base {
+    width: 10%;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
+    outline: 0px;
+    border: 0px;
+    margin: 0px;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+    appearance: none;
+    text-decoration: none;
+    text-align: center;
+    flex: 0 0 auto;
+    font-size: 1.5rem;
+    padding: 12px;
+    border-radius: 50%;
+    overflow: visible;
+    color: rgb(99, 115, 129);
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.icon_button:hover {
+    background-color: rgb(235, 235, 235);
+    border-radius: 50%;
 }
