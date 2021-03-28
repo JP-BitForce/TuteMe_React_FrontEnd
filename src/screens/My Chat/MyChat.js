@@ -1,42 +1,55 @@
 import React, { Component } from 'react'
 
-import People from './People'
-import ChatCard from './ChatCard'
-import CustomButton from '../../components/Button/CustomButton'
-import Header from '../../components/Header/Header'
-
-//Boostarp
-import Card from 'react-bootstrap/Card'
+import Loading from '../../components/Loading/Loading'
+import HeaderTopper from '../../components/Header/HeaderTopper'
 
 //Material-UI
-import Paper from '@material-ui/core/Paper';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
 import Avatar from '@material-ui/core/Avatar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Box from '@material-ui/core/Box';
+import Collapse from '@material-ui/core/Collapse';
 
-import headerImg from '../../assets/images/Chat/headerImg.jpg'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Search from '@material-ui/icons/Search';
+import Edit from '@material-ui/icons/Edit';
+import Videocam from '@material-ui/icons/Videocam';
+import More from '@material-ui/icons/MoreVert';
+import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
+import AttachFile from '@material-ui/icons/AttachFile';
+import Mic from '@material-ui/icons/Mic';
+import Send from '@material-ui/icons/Send';
+
+
+import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
+import avatar_2 from '../../assets/images/shared/avatar_2.jpg'
+import avatar_3 from '../../assets/images/shared/avatar_3.jpg'
 import './Chat.css'
 
 class MyChat extends Component {
-
     state = {
-        message:""
+        loading: false,
+        leftPanelOpen: true,
+        message:"",
+        search: "",
+        recipients: "",
+        currentPersonnel: null
     }
 
     dummayPeople = ["Alice Walker", "Chris Haris", "Ron Weasley", "Bob Watson"]
     dummyChats = [
-        {title: "Zack Zimmer", lastText:"Hi ...", type: "individual", time: "17.00"},
-        {title: "Javascript-Team", lastText:"Script....", type: "group", time: "04.45"},
-        {title: "Brian Waltor", lastText:"No i'm not...", type: "individual", time: "10.05"}
+        {title: "Zack Zimmer", lastText:"Hi ...", type: "individual", time: "13 minutes", src : avatar_2},
+        {title: "Javascript-Team", lastText:"Script....", type: "group", time: "13 minutes", src : avatar_3},
     ]
+
+    handleSearchOnChange = (event) => {
+        this.setState({
+            [event.target.name]: event.traget.value
+        })
+    }
 
     handleMessageOnType = (event) => {
         this.setState({
@@ -44,146 +57,264 @@ class MyChat extends Component {
         })
     }
 
-    renderChatContainer = () => {
-        return (
-            <Paper elevation = {3}>
-                <Grid
-                    container
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
-                >
-                    <Grid item xs={8}>
-                        <div className = "my_chats">
-                            <div className = "my_chats_header">
-                                <Card className = "dark_background">
-                                    <Card.Body className = "header_body">
-                                        <Avatar>Z</Avatar>
-                                        <span className = "header_text">Zack Zimmer</span>
-                                    </Card.Body>
-                                </Card>
-                            </div>
-                            <div className = "my_chats_content"></div>
-                            <div className = "my_chats_footer">
-                                <Card>
-                                    <Card.Body className = "footer_body">
-                                    <TextField
-                                        id="outlined-margin-normal"
-                                        placeholder="write something...."
-                                        fullWidth
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                        <Divider orientation="vertical" />
-                                        <CustomButton label = "send"/>
-                                    </Card.Body>
-                                </Card>
-                            </div>
-                        </div>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Paper>
-                            <div className = "search_chats">
-                                <TextField id="outlined-search" label="Find" type="search" variant="outlined" size="small"/>
-                                <IconButton
-                                    aria-label="open drawer"
-                                    edge="start"
-                                    onClick={()=>{}}
-                                >
-                                <SearchIcon/>
-                                </IconButton>
-                            </div>
-                            <Divider />
-                            <div className = "chats_contents">
-                                {
-                                    this.dummyChats.map(item => {
-                                        return (
-                                            <div>
-                                                <ChatCard item = {item}/>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </Paper>
-                    </Grid>
-                </Grid>
-            </Paper>
-        )
+    handleLeftPanel = () => {
+        this.setState({
+            leftPanelOpen: !this.state.leftPanelOpen
+        })
     }
 
-    renderPeopleBox = () => {
-        return (
-            <Card className = "people_card">
-                <Card.Body>
-                    <ListItemText primary="PEOPLE YOU MAY KNOW"/>
-                    <List
-                        aria-labelledby="main"
-                    >
-                        {
-                            this.dummayPeople.map(item => {
-                                return (
-                                    <People name = {item}/>
-                                )
-                            })
-                        }
-                    </List>
-                </Card.Body>
-            </Card>
-        )
+    handleListItemOnClick = (item) => {
+        this.setState({
+            currentPersonnel: item
+        })
     }
 
-    renderPeopleAlert = () => {
+    handleChatNewOnClick = () => {
+        this.setState({
+            currentPersonnel: null
+        })
+    }
+
+    handleVideoCamOnClick = () => {
+
+    }
+
+    handleMoreOnClick = () => {
+
+    }
+
+    handleEmojiOnClick = () => {
+
+    }
+
+    handleAttachmentOnClick = () => {
+
+    }
+
+    handleMicOnClick = () => {
+
+    }
+
+    handleSendOnClick = () => {
+
+    }
+
+    renderChatListTop = () => {
         return (
-            <div>
-                <Typography variant="h6" gutterBottom>
-                    PEOPLE YOU MAY KNOW
-                </Typography>
-                <List
-                        aria-labelledby="main"
-                    >
-                        {
-                            this.dummayPeople.map(item => {
-                                return (
-                                    <People name = {item}/>
-                                )
-                            })
-                        }
-                    </List>
+            <div className = "chat_list_top">
+                <div className = "own_avatar_div">
+                    <Avatar src = {minimal_avatar}/>
+                    <span/>
+                </div>
+                <div className = "flex_grow"/>
+                <div className = "icon_button" onClick = {this.handleLeftPanel}>
+                    <ChevronLeftIcon />
+                </div>
+                <div className = "icon_button" onClick = {this.handleChatNewOnClick}>
+                    <Edit style = {{width: "15px", height: "15px"}}/>
+                </div> 
             </div>
         )
     }
 
-    renderRoot = () => {
+    renderChatListTopAlt = () => {
         return (
-            <Container maxWidth="lg">
-                <main className = "chat_root">
-                    <Grid container spacing={5}>
-                        <Grid item xs={12} md={9}>
-                            {this.renderChatContainer()}
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                            {this.renderPeopleAlert()}
-                        </Grid>
-                    </Grid>
-                </main>
-            </Container>
+            <div className = "chat_list_top">
+                <div className = "icon_button" onClick = {this.handleLeftPanel}>
+                    <ChevronRight/>
+                </div>               
+            </div>
+        )
+    }
+
+    renderSearchField = (label) => {
+        return (
+            <TextField 
+                id="input-with-icon-adornment"
+                label= {label}
+                variant="outlined" 
+                onChange = {this.handleSearchOnChange}
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <Search />
+                        </InputAdornment>
+                    )
+                }}
+                size="small"
+                name = {label.toLowerCase()}
+            />
+        )
+    }
+
+    renderChatListCard = (item) => {
+        const currentPersonnel = this.state.currentPersonnel
+        const {src, title, lastText, time} = item
+        return (
+            <div 
+                className = {[
+                    "chat_list_card_alt", 
+                    currentPersonnel && currentPersonnel === item && "chat_list_card_alt_active"
+                ].join(" ")}
+                onClick = {() => this.handleListItemOnClick(item)}
+            >
+                <div className = "list_tem_avatar">
+                    <Avatar src = {src}/>
+                </div>
+                <div className = "list_item_text">
+                    <span>{title}</span>
+                    <p>{lastText}</p>
+                </div>
+                <div className = "list_item_time">
+                    <div className = "list_item_time_val">{time}</div>
+                    <span/>
+                </div>
+            </div>
+        )
+    }
+
+    renderChatLists = () => {
+        return (
+            <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+            >
+            {
+                this.dummyChats.map((item) => {
+                    return this.renderChatListCard(item)
+                })
+            }
+            </Grid>
+        )
+    }
+
+    renderMessangerTop_search = () => {
+        return (
+            <div className = "messanger_top_search">
+                <h6>To:</h6>
+                { this.renderSearchField("Recipients", this.state.recipients) }
+            </div>
+        )
+    }
+
+    renderMessangerTop_item = () => {
+        const currentPersonnel = this.state.currentPersonnel
+        return (
+            <div className = "messanger_top_item">
+                <div className = "messanger_top_item_left">
+                    <div className = "list_tem_avatar">
+                        <Avatar src = {currentPersonnel && currentPersonnel.src}/>
+                    </div>
+                    <div className = "list_item_text">
+                        <span>{currentPersonnel && currentPersonnel.title}</span>
+                        <p>less than minute ago</p>
+                    </div>
+                </div>
+                <div className = "messanger_top_item_right">
+                    <div className = "icon_button" onClick = {this.handleVideoCamOnClick}>
+                        <Videocam/>
+                    </div>
+                    <div className = "icon_button" onClick = {this.handleMoreOnClick}>
+                        <More/>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    renderMainChatContainer = () => {
+        return (
+            <div className = "main_chat_container">
+                <div className = "main_chat_lists"></div>
+                <div className = "main_chat__footer">
+                    <div className = "main_input_base">
+                        <div className = "icon_button" onClick = {this.handleEmojiOnClick}>
+                            <InsertEmoticon/>
+                        </div>
+                        <TextField
+                            id="outlined-margin-normal"
+                            placeholder="write something...."
+                            fullWidth
+                            InputLabelProps={{ shrink: true }}
+                            variant="outlined"
+                            size="small"
+                            onChange = {this.handleMessageOnType}
+                        />
+                        <div className = "icon_button" onClick = {this.handleAttachmentOnClick}>
+                            <AttachFile/>
+                        </div>
+                        <div className = "icon_button" onClick = {this.handleMicOnClick}>
+                            <Mic/>
+                        </div>
+                    </div>
+                    <div className = "send_base">
+                        <div className = "icon_button" onClick = {this.handleSendOnClick}>
+                            <Send/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    renderChat = () => {
+        const {leftPanelOpen, currentPersonnel} = this.state
+        return (
+            <div className = "chat_alt_root">
+                <Collapse in={true} timeout="auto" unmountOnExit 
+                    style = {{
+                        width: leftPanelOpen ? "320px" : "100px", 
+                        borderRight: '1px solid rgba(145, 158, 171, 0.24)'
+                    }}
+                >
+                    <Box margin={1}>
+                        {
+                            leftPanelOpen ? 
+                             <div className = "chat_list_block_inside">
+                                { this.renderChatListTop() }
+                                { this.renderSearchField("Search", this.state.search) }
+                            </div>
+                            :
+                            <div className = "chat_list_block_inside">
+                                { this.renderChatListTopAlt() }
+                            </div>
+                        }
+                        <div className = "chat_lists_container">
+                            { this.renderChatLists() }
+                        </div>
+                    </Box>
+                </Collapse>
+                <div className = "chat_messanger">
+                    { 
+                        currentPersonnel ?
+                        this.renderMessangerTop_item()
+                        :
+                        this.renderMessangerTop_search() 
+                    }
+                    <Divider/>
+                    { this.renderMainChatContainer() }
+                </div>
+            </div>
         )
     }
 
     render() {
         return (
-            <React.Fragment>
-                <CssBaseline />
-                <Header
-                    title = "SOCIAL COLLABORATION"
-                    src = {headerImg} 
+            <div className = "my_chat_root">
+                <HeaderTopper
+                    screen = "Chat"
+                    rootNav = "App"
+                    childNav = {["Chat"]}
                 />
-                {this.renderRoot()}
-            </React.Fragment>
+                {
+                    this.state.loading ?
+                    <Loading/>
+                    :
+                    this.renderChat()
+                }
+            </div>
         )
     }
 }

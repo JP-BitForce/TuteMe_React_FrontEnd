@@ -12,7 +12,7 @@ import CreditCard from '@material-ui/icons/CreditCard';
 import masterCard from '../../assets/images/Payments/ic_mastercard.svg'
 import visa from '../../assets/images/Payments/ic_visa.svg'
 
-import headerImg from '../../assets/images/Payments/head.jpg'
+import headerImg from '../../assets/images/Payments/headerImg.jpg'
 import './Payments.css'
 
 class Payments extends Component {
