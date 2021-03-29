@@ -24,3 +24,100 @@
     text-align: left;
     margin-left: 5%;
 }
+
+.container__top {
+    left: 0;
+    z-index: 99;
+    position: absolute;
+    margin-top: 7%;
+    margin-left: 2%;
+}
+
+.container__top span {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+}
+
+.container_bottom {
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    z-index: 9;
+    position: absolute;
+    background-color: #fff;
+}
+
+.multitab_root {
+    display: flex;
+    min-height: 48px;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.multi_btn_base {
+    display: flex;
+    padding: 2%;
+    align-items: center;
+    color: rgb(145, 143, 143);
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    bottom: 0;
+    justify-content: center;
+}
+
+.multitab_wrapper {
+    margin-right: 5%;
+    font-size: 0.9rem;
+}
+
+.multitab_active {
+    color: #21618C;
+    font-weight: 550;
+}
+
+.multitab_wrapper:hover {
+    color: #21618C;
+    cursor: pointer;
+}
+
+.multi_btn_base_active {
+    color: #21618C;
+    font-weight: 550;
+}
+
+.multi_btn_base:last-child {
+    margin-right: 3%;
+}
+
+.screen-root {
+    margin: 0px 0px 8px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+.screen_childs {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: rgb(99, 115, 129);
+}
+
+.screen_childs__ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+}
+
+.screen_childs__ol li {
+    font-size: 0.8rem;
+}
+
+.screen_childs__ol li:not(:last-child) {
+    font-weight: 550;
+}

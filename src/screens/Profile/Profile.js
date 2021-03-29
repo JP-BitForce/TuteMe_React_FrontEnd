@@ -6,6 +6,7 @@ import ChangePassword from './ChangePassword'
 import Feedback from './Feedback'
 import Loading from '../../components/Loading/Loading'
 import Interest from "../../components/Card/MyInterestCard/InterestCard"
+import HeaderTopper from '../../components/Header/HeaderTopper'
 
 //Boostarp
 import Card from 'react-bootstrap/Card'
@@ -60,7 +61,10 @@ class Profile extends Component {
         blog_notify: false,
         course_notify: false,
         tutor_notify: false,
+        childNav: ["Profile","General"]
     }
+
+    initialState = this.state
 
     tab_links = ["General", "Edit", "Feedback", "Settings"]
 
@@ -135,12 +139,30 @@ class Profile extends Component {
         })
     }
 
-    handleTabChange = (newValue) => {
+    handleRatingOnChange = (value) => {
         this.setState({
+            feedbackRate: value
+        })
+    }
+
+    handleTabChange = (newValue) => {
+        const childNav = ["Profile"]
+        if (newValue === 0) {
+            childNav.push("General")
+        } 
+        else if (newValue === 1) {
+            childNav.push("Edit")
+        }
+        else if (newValue === 2) {
+            childNav.push("Feedback")
+        }
+        else {
+            childNav.push("Settings")
+        }
+        this.setState({
+            ...this.initialState,
             tabValue: newValue,
-            feedbackFormValidated: false,
-            passwordValidated: false,
-            updateValidated: false
+            childNav
         })
     }
 
@@ -244,6 +266,7 @@ class Profile extends Component {
             <Feedback
                 values = {this.state}
                 handleOnChange = {this.handleInputChange}
+                handleRateOnChange = {this.handleRatingOnChange}
             />
             <div className = "save__changes">
                 <CustomButton label = "Submit" type = "submit"/>
@@ -378,6 +401,13 @@ class Profile extends Component {
     renderProfileRoot = () => {
         return (
             <div className = "profile_root_alt">
+                <div style = {{marginBottom: "2%"}}>
+                    <HeaderTopper
+                        screen = "Profile"
+                        rootNav = "Management"
+                        childNav = {this.state.childNav}
+                    />
+                </div>
                 { this.renderTopContainer() }
                 { this.renderMainContainer() }
             </div>
