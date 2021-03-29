@@ -16,6 +16,9 @@ const TextArea = ({name, value, onChange, placeholder, rows, max}) => {
                 maxLength = {max}
                 placeholder = {placeholder} 
             />
+            <Form.Control.Feedback type="invalid">
+                {placeholder} can't be empty
+            </Form.Control.Feedback>
         </Form.Group>
     )
 }

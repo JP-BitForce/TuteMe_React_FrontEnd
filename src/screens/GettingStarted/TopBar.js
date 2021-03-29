@@ -1,6 +1,12 @@
 import React from 'react'
 
 import Batch from '../../components/Badge/BadgeButton'
+// import ChipButton from '../../components/Button/ChipButton'
+
+//Boostarp
+import Form from 'react-bootstrap/Form'
+import FormControl from 'react-bootstrap/FormControl'
+import Nav from 'react-bootstrap/Nav'
 
 //Material-UI
 import AppBar from '@material-ui/core/AppBar';
@@ -17,8 +23,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MenuIcon from '@material-ui/icons/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
-import back_arrow from '../../assets/images/undo.png'
-import profile from '../../assets/images/Profile/avatar.png'
+import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
 
 const drawerWidth = 210;
 
@@ -27,9 +32,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
-      backgroundColor:'white'
+      backgroundColor: 'rgba(255, 255, 255, .15)'
     },
     backgroundColor:'white',
+    backdropFilter: 'blur(4px)'
   },
 
   menuButton: {
@@ -51,18 +57,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
-  profile: {
-    marginLeft: "1%",
-    '&:hover, &:focus': {
-      cursor:"pointer"
-    },
-  },
-
-  goBack: {
-    '&:hover, &:focus': {
-      cursor:"pointer"
-    },
-  },
+  profile_image : {
+    marginLeft: "2%"
+  }
 
 }));
 
@@ -74,10 +71,6 @@ const TopBar = ({
     handleMobileMenuOpen
 }) => {
     const classes = useStyles();
-
-    const handleBackOnPress = () => {
-      window.location.replace('/')
-    }
 
     const renderMenuItem = (content, icon, title) => {
         return (
@@ -116,22 +109,16 @@ const TopBar = ({
                     <MenuIcon />
                 </IconButton>
 
-                <div className = {classes.goBack} onClick = {handleBackOnPress}>
-                  <Tooltip title="go back" aria-label="back">
-                    <Avatar src = {back_arrow}/>
-                  </Tooltip>
-                </div>
-
-                <div className = {classes.profile}>
-                  <Tooltip title="Profile" aria-label="back">
-                    <Avatar src = {profile}/>
-                  </Tooltip>
-                </div>
-
                 <div className = "grow"/>
                 <div className={classes.sectionDesktop}>
                     <Batch content = {4} icon = {<MailIcon />} />
                     <Batch content = {17} icon = {<NotificationsIcon />} />
+                </div>
+
+                <div className = {classes.profile_image}>
+                  <Tooltip title="Profile" aria-label="back">
+                      <Avatar src = {minimal_avatar}/>
+                  </Tooltip>
                 </div>
 
                 <IconButton 
