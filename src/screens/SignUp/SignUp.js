@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
 import RegisterMobilePanel from '../../components/RegisterMobilePanel/RegisterMobilePanel'
 import SnackBar from '../../components/SnackBar/SnackBar'
+import Selector from '../../components/Input/Selector'
 import { signUpUser } from '../../api/auth'
 import './SignUpForm'
 
@@ -36,7 +37,8 @@ class SignUp extends Component {
         apiCalling: false,
         severity: "success",
         snackBarMessage: "",
-        snackBarOn: false
+        snackBarOn: false,
+        userType: "student"
     }
 
     componentDidMount() {
@@ -68,7 +70,7 @@ class SignUp extends Component {
           validated: !form.checkValidity(),
         });
 
-        const {firstName, lastName, email, password, passwordScore} = this.state
+        const {firstName, lastName, email, password, passwordScore, userType} = this.state
 
         if (!this.validateEmail()) {
             this.setState({
@@ -99,7 +101,7 @@ class SignUp extends Component {
                 emailError: null
             })
             const request = { firstName, lastName, email, password }
-            signUpUser(request, "student").then(response => {
+            signUpUser(request, userType).then(response => {
                 if (response.success) {
                     this.setState({
                         signUpSuccess: true,
@@ -204,8 +206,14 @@ class SignUp extends Component {
     renderForm = () => {
         return (
             <div className = "form__root">
-                <div>
+                <div className = "form__top">
                     <span className = "already_member">Already a member ? <a href="/signIn">SIGN IN</a> </span>
+                    <Selector 
+                        value = {this.state.userType}
+                        onChange = {()=> {}}
+                        options = {["student", "tutor"]}
+                        label = "select your role"
+                    />
                 </div>
                 { this.renderSocial() }
                 <SignUpForm
@@ -264,6 +272,7 @@ class SignUp extends Component {
                     message = {snackBarMessage}
                     severity = {severity}
                     handleClose = {this.handleSnackBarClose}
+                    align = {{ vertical: 'top', horizontal: 'right' }}
                 />
             </div>
         )

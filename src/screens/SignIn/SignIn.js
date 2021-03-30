@@ -212,6 +212,7 @@ class SignIn extends Component {
                     message = {snackBarMessage}
                     severity = {severity}
                     handleClose = {this.handleSnackBarClose}
+                    align = {{ vertical: 'top', horizontal: 'right' }}
                 />
             </div>
         )
