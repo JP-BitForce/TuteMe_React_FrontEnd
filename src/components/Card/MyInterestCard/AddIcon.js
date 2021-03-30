@@ -23,10 +23,8 @@ function getModalStyle() {
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
-    width: 600,
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
+    width: 700,
+    backgroundColor: theme.palette.background.paper,    
     padding: theme.spacing(2, 4, 3),
   },
 }));
@@ -47,7 +45,6 @@ export default function AddIconPopup() {
   const body = (
     <div style={modalStyle} className={classes.paper}>
       <AddMyInterest/>
-      <AddIconPopup/>
     </div>
   );
   return (

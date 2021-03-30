@@ -5,7 +5,12 @@ import ComboBox from './ComboBox'
 import Chip from './Chip'
 
 export default function AddMyInterest(){
-    
+    const [open, setOpen] = React.useState(true);
+
+    const handleClose = () =>{
+        setOpen(false)
+    }
+
     return(
         <Paper style={{maxWidth:800, margin:"auto"}}>
              <Grid item container direction="column">
@@ -16,8 +21,8 @@ export default function AddMyInterest(){
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} align="right">
-                        <IconButton>
-                            <CloseIcon/>
+                        <IconButton close={open}>
+                            <CloseIcon onClick={handleClose}/>
                         </IconButton>
                     </Grid>
                 </Grid>
