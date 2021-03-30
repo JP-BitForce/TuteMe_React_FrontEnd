@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {connect} from 'react-redux'
 
 //Boostrap
 import Navbar from 'react-bootstrap/Navbar'
@@ -18,9 +19,8 @@ import GrainIcon from '@material-ui/icons/Grain';
 
 import './AppBar.css'
 
-const AppBar = () => {
+const AppBar = ({auth}) => {
   const [anchorEl, setAnchorEl] = useState(null);
-    const auth = false
 
     const nav = [
       {label:"Home", href:"/", icon: <HomeIcon className = "icon" />},
@@ -65,7 +65,7 @@ const AppBar = () => {
             <Navbar.Collapse className="justify-content-end">
                 <div className = "section_desktop">
                   {
-                    !auth && (
+                    !auth ? (
                       <div className = "setion_desktop_container">
                         <Button variant="outline-primary" onClick = {handleLoginRoute}> SIGN IN </Button>
                         <div className = "horizontal_seperator"/>
@@ -73,6 +73,10 @@ const AppBar = () => {
                         <div className = "horizontal_seperator"/>
                       </div>
                     )
+                    :
+                    <div className = "setion_desktop_container">
+                      <Button variant="outline-primary" onClick = {handleLoginRoute}> LOG OUT </Button>
+                    </div>
                   }
                 </div>
             </Navbar.Collapse>
@@ -107,4 +111,10 @@ const AppBar = () => {
     )
 }
 
-export default AppBar
+const mapStateToProps = (state) => {
+  return {
+      auth: state.auth.user
+  }
+}
+
+export default connect(mapStateToProps)(AppBar)

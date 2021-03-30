@@ -1,34 +1,39 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
+
+import SignInForm from './SignInForm'
+import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
+import RegisterMobilePanel from '../../components/RegisterMobilePanel/RegisterMobilePanel'
+import SnackBar from '../../components/SnackBar/SnackBar'
+import { signInUser } from '../../api/auth'
+import { storeLoginResponse } from '../../redux/actions/authAction'
 
 //Boostrap
 import Card from 'react-bootstrap/Card'
-import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
+import Avatar from '@material-ui/core/Avatar';
 
 import './SignIn.css'
-
-import InputField from '../../components/Input/InputField'
-import PasswordInput from '../../components/PasswordInput/PasswordInput'
-import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
-import RegisterMobilePanel from '../../components/RegisterMobilePanel/RegisterMobilePanel'
-import SocialRegister from '../../components/SocialRegister/SocialRegister'
-import CustomButton from '../../components/Button/CustomButton'
+import google from '../../assets/images/social/google.png'
+import facebook from '../../assets/images/social/facebook.png'
 
 class SignIn extends Component {
     state = {
-        validated:false,
-        email:"",
-        password:"",
-        type:"password",
-        mobileView:false,
-        loading:false
+        validated: false,
+        email: "",
+        password: "",
+        mobileView: false,
+        emailError: null,
+        apiCalling: false,
+        signInSuccess: false,
+        severity: "sucess",
+        snackBarOn: false,
+        snackBarMessage: ""
     }
 
     componentDidMount() {
@@ -47,27 +52,77 @@ class SignIn extends Component {
         window.removeEventListener("resize", this.resize.bind(this));
     }
 
-    handleHomeRoute = () => {
-        window.location.replace('/')
-    }
-
-    handleLoader = (boolean) => {
-        this.setState({
-            loading:boolean
-        })
-    }
-
     handleSubmit = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
         this.setState({
           validated: !form.checkValidity(),
-          loading:true
         });
+
+        const {email, password} = this.state
+
+        if (!this.validateEmail()) {
+            this.setState({
+                emailError: "Enter a valid email address",
+            })
+            return
+        }
+
+        if(email) {
+            this.setState({ 
+                apiCalling: true,
+                emailError: null
+            })
+            const request = { 
+                username: email, 
+                password 
+            }
+
+            signInUser(request).then(response => {
+                const loginResponse = {
+                    accessToken: response.accessToken,
+                    expiryTime: response.expandTime
+                }
+                this.props.storeLoginResponse(loginResponse)
+                this.setState ({
+                    signInSuccess: true,
+                    apiCalling: false,
+                    severity: "success",
+                    snackBarMessage: "Login successful",
+                    snackBarOn: true,
+                })
+                this.handleLoginSuceesRoute()
+            }).catch(err => {
+                this.setState({
+                    signInSuccess: false,
+                    apiCalling: false,
+                    severity: "error",
+                    snackBarOn: true,
+                    snackBarMessage: "Invalid credentials, please try again",
+                })
+            })
+        }
     }
 
-    handleCommonTypeInputChange = (event) => {
+    handleLoginSuceesRoute = () => {
+        setTimeout(() => {
+            this.props.history.push('/')
+        }, 2000)
+    }
+
+    handleSnackBarClose = () => {
+        this.setState({
+            snackBarOn: false,
+            snackBarMessage: ""
+        })
+    }
+
+    handleHomeRoute = () => {
+        window.location.replace('/')
+    }
+
+    handleInputOnChange = (event) => {
         this.setState({
             [event.target.name] : event.target.value
         })
@@ -75,22 +130,31 @@ class SignIn extends Component {
 
     validateEmail = () => {
         const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const result = pattern.test(this.state.email);
-        if (!result) {
-            this.setState({
-              emailError: "Enter a valid email address",
-            });
-        } 
-
-        return result
+        return pattern.test(this.state.email);
     }
 
-    handleVisibility = () => {
-        if(this.state.type === "password") {
-            this.setState({ type:"text" })
-        } else {
-            this.setState({ type:"password" })
-        }
+    renderSocial = () => {
+        return (
+            <div className = "social_signup_block">
+                <div className = "social_signup_blocks">
+                    <div className = "social_signup_item">
+                        <div className = "social_signup_item_card">
+                            <Avatar src = {google} style = {{width: "25px", height: "25px", marginRight: "5px"}}/>
+                            Google
+                        </div>
+                    </div>
+                    <div className = "social_signup_item">
+                        <div className = "social_signup_item_card">
+                            <Avatar src = {facebook} style = {{width: "26px", height: "25px", marginRight: "5px"}}/>
+                            Facebook
+                        </div>
+                    </div>
+                </div>
+                <div className = "divider">
+                    <span className = "divider_span">or</span>
+                </div>
+            </div>
+        )
     }
 
     renderForm = () => {
@@ -99,57 +163,13 @@ class SignIn extends Component {
                 <Row>
                     <span className = "not_member">Not a member ? <a href="/signUp">SIGN UP</a> </span>
                 </Row>
-
-                <Card.Title className = "signIn_from_title">Sign In</Card.Title>
-                    <Form
-                        onSubmit={this.handleSubmit}
-                        noValidate
-                        validated={this.state.validated}
-                    >
-                        <Row>
-                            <Col>
-                                <InputField 
-                                    type = "email"
-                                    name = "email"
-                                    value = { this.state.email }
-                                    onChange = { this.handleCommonTypeInputChange }
-                                    max = { 320 }
-                                    placeholder = "Email"
-                                />
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col>
-                                <PasswordInput 
-                                    type = { this.state.type }
-                                    name = "password"
-                                    value = { this.state.password }
-                                    onChange = { this.handleCommonTypeInputChange }
-                                    max = { 30 }
-                                    placeholder = "Password"  
-                                    onClick = { this.handleVisibility } 
-                                />
-                            </Col>
-                        </Row>
-
-                        <Row className = "submit_btn">
-                            <Col>
-                                <CustomButton label = "Sign-In" type="submit" fullWidth/>
-                            </Col>
-                        </Row>
-
-                        <Grid container style = {{marginTop:'2%'}}>
-                            <Grid item xs></Grid>
-                            <Grid item>
-                                <Link href="/forgotPassword" variant="body2">
-                                    {"Forgot Password"}
-                                </Link>
-                            </Grid>
-                        </Grid>
-
-                        <SocialRegister/>
-                </Form>
+                { this.renderSocial() }
+                <SignInForm
+                    handleSubmit = {this.handleSubmit}
+                    validated = {this.state.validated}
+                    values = {this.state}
+                    handleInputChange = {this.handleInputOnChange}
+                />
             </Card.Body>
         )
     }
@@ -180,10 +200,28 @@ class SignIn extends Component {
     }
 
     render() {
+        const {snackBarOn, snackBarMessage, severity} = this.state
         return (
-            !this.state.mobileView ? this.renderDesktopView() : this.renderMobileView()
+            <div>
+                {
+                    !this.state.mobileView ? this.renderDesktopView() : this.renderMobileView()
+                }
+                <SnackBar
+                    open = {snackBarOn}
+                    autoHideDuration = {3000}
+                    message = {snackBarMessage}
+                    severity = {severity}
+                    handleClose = {this.handleSnackBarClose}
+                />
+            </div>
         )
     }
 }
 
-export default SignIn
+const mapDispatchToProps = dispatch => {
+    return {
+        storeLoginResponse: data => { dispatch(storeLoginResponse(data)) }
+    }
+}
+
+export default connect(null,mapDispatchToProps)(SignIn)
