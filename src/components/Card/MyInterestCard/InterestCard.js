@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, Divider,Grid} from "@material-ui/core/";
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from './AddIcon'
-import EditIcon from './EditIcon'
+import AddIcon from './AddIconPopup'
+import EditIcon from './EditIconPopup'
 const data =[
     {
         name :"SUBJECTS",

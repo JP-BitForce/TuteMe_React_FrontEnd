@@ -1,29 +1,18 @@
 import React from 'react';
-import {Paper,Typography,Button,IconButton,Grid} from "@material-ui/core"
-import CloseIcon from '@material-ui/icons/Close';
+import {Paper,Typography,Button,Grid} from "@material-ui/core"
 import ComboBox from './ComboBox'
 import Chip from './Chip'
 
 export default function AddMyInterest(){
-    const [open, setOpen] = React.useState(true);
-
-    const handleClose = () =>{
-        setOpen(false)
-    }
 
     return(
         <Paper style={{maxWidth:800, margin:"auto"}}>
              <Grid item container direction="column">
                 <Grid item container direction="row">
-                    <Grid item xs={12} sm={6} align= "left">
+                    <Grid item xs={12} sm={12} align= "left">
                         <Typography style={{marginLeft:15, marginTop:5}}>
                             Add Skills
                         </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6} align="right">
-                        <IconButton close={open}>
-                            <CloseIcon onClick={handleClose}/>
-                        </IconButton>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sm={12} align= "center">

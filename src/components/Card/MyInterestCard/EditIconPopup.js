@@ -1,8 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
-import  EditMyInterest from './EditInterestForm/EditMyInterest'
+import  EditMyInterest from './EditInterestForm/EditMyInterestForm'
 import EditIcon from '@material-ui/icons/Edit';
+import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
 function rand() {
@@ -23,8 +24,10 @@ function getModalStyle() {
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
-    width: 700,
-    padding: theme.spacing(2, 4, 3),
+    width: 500,
+    paddingLeft:20,
+    paddingRight:20,
+    paddingBottom:20,
     backgroundColor: theme.palette.background.paper,    
   },
 }));
@@ -44,6 +47,11 @@ export default function EditIconPopup() {
   };
   const body = (
     <div style={modalStyle} className={classes.paper}>
+      <div align='right'>
+        <IconButton >
+          <CloseIcon onClick={handleClose}/>
+        </IconButton>
+      </div>
       <EditMyInterest/>
     </div>
   );
@@ -51,7 +59,7 @@ export default function EditIconPopup() {
     <div>
         <div>
             <IconButton>
-                <EditIcon href="/EditMyInterestCard" fontSize="small" onClick={handleOpen}/>
+                <EditIcon fontSize="small" onClick={handleOpen}/>
             </IconButton>
         </div>
       <Modal

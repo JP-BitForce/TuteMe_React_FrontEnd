@@ -3,8 +3,6 @@ import SignUp from '../screens/SignUp/SignUp'
 import LandingPage from '../screens/LandingPage/LandingPage'
 import ForgotPassword from '../screens/ForwardPassword/ForgotPassword'
 import GettingStarted from '../screens/GettingStarted/GettingStarted'
-import EditMyInterest from '../components/Card/MyInterestCard/EditInterestForm/EditMyInterest'
-import AddMyInterest from '../components/Card/MyInterestCard/EditInterestForm/AddMyInterest'
 
 const routes = {
     data: [
@@ -43,20 +41,7 @@ const routes = {
         type: "",
         children: [],
       },
-      {
-        name: "AddMyInterest",
-        path: "/addInterestCard",
-        component: AddMyInterest,
-        type: "",
-        children: [],
-      },
-      {
-        name: "EditMyInterest",
-        path: "/editInterestCard",
-        component: EditMyInterest,
-        type: "",
-        children: [],
-      }
+  
     ],
 
     sidebarNav : [
