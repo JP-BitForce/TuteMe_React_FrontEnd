@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
 
+import InputField from '../../components/Input/InputField'
+import PasswordInput from '../../components/PasswordInput/PasswordInput'
+import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
+import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
+import CustomButton from '../../components/Button/CustomButton'
+import { sendResetCode, verifyCode, resetPassword } from '../../api/auth'
+
 //Boostrap
 import Card from 'react-bootstrap/Card'
 import Form from "react-bootstrap/Form";
@@ -13,12 +20,6 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 import './ForgotPassword.css'
-
-import InputField from '../../components/Input/InputField'
-import PasswordInput from '../../components/PasswordInput/PasswordInput'
-import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
-import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
-import CustomButton from '../../components/Button/CustomButton'
 
 class ForgotPassword extends Component {
     state = {
@@ -62,13 +63,19 @@ class ForgotPassword extends Component {
         event.preventDefault();
         event.stopPropagation();
 
-        if (!this.state.email) {
+        const email = this.state.email
+        if (!email) {
             this.setState({
                 emailFormValidated: !form.checkValidity(),
             });
         }
         else if (this.validateEmail()) {
-            this.handleTabChange("",1)
+            sendResetCode(email).then(response => {
+                console.log(response)
+                this.handleTabChange("",1)
+            }).catch(err => {
+                console.log(err)
+            })
         } 
         else {
             this.setState({
@@ -88,7 +95,13 @@ class ForgotPassword extends Component {
             });
         }
         else {
-            this.handleTabChange("",2)
+            const {email ,resetCode} = this.state
+            verifyCode(resetCode, email).then(response => {
+                console.log(response)
+                this.handleTabChange("",2)
+            }).catch(err => {
+                console.log(err)
+            })
         }
     }
 
@@ -96,18 +109,24 @@ class ForgotPassword extends Component {
         const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
-        if (!this.state.password && !this.state.confirmPassword) {
+        const {password, confirmPassword, email} = this.state
+        if (!password && !confirmPassword) {
             this.setState({
                 resetFormValidated: !form.checkValidity(),
             });
         }
-        else if(this.state.password === this.state.confirmPassword) {
-            this.handleTabChange("",0)
-        } 
-        else {
+        else if(password !== confirmPassword) {
             this.setState({
                 confirmPasswordError:"Passwords are not matched"
             })
+        } 
+        else {
+            resetPassword(password, email).then(response => {
+                console.log(response)
+            }).catch(err => {
+                console.log(err)
+            })
+            this.handleTabChange("",0)
         }
     }
 
@@ -152,7 +171,7 @@ class ForgotPassword extends Component {
                     Don't worry tell us your email Address <p> you registerd with us</p>
                 </Card.Text>
                 <Card.Text className = "forgot_password_user_message">
-                    We'll send a <span style = {{color:'red'}}>reset code</span> to your email address
+                    We'll send a <span style = {{color:'blue', fontWeight: "bold"}}>reset code</span> to your email address
                 </Card.Text>
 
                 <Form

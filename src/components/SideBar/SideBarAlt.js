@@ -1,4 +1,6 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+import {connect} from 'react-redux'
+import jwt_decode from "jwt-decode";
 
 //Material-UI
 import List from '@material-ui/core/List';
@@ -84,10 +86,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const SideBarAlt = ({itemOnClick, active}) => {
+const SideBarAlt = ({itemOnClick, active, auth}) => {
     const styles = useStyles()
     const [open, setOpen] = useState("")
-    const userRole = "USER_STUDENT"
+    const [userDetails, setUserDetails] = useState(null)
+    const [userRole, setUserRole] = useState("ROLE_STUDENT")
     const icons = {
         HOME : <Dashboard/>,
         COURSES : <Grain/>,
@@ -99,6 +102,21 @@ const SideBarAlt = ({itemOnClick, active}) => {
         CALENDAR : <Today/>,
         PAYMENTS : <Payment/>,
         SIGN_OUT : <ExitToApp/>
+    }
+
+    useEffect(() => {
+        if(auth) {
+            var decoded = decodeToken(auth.accessToken)
+            setUserDetails(decoded)
+            if(decoded) {
+                setUserRole(decoded.role[0].authority)
+            }
+        }
+        // eslint-disable-next-line
+    }, [])
+
+    const decodeToken = (token) => {
+        return jwt_decode(token);
     }
 
     const handleSetOpen = (id) => {
@@ -174,8 +192,8 @@ const SideBarAlt = ({itemOnClick, active}) => {
                     <Avatar src = {avatar}/>
                 </div>
                 <div className = {styles.info}>
-                    <span className = {styles.primary}>Allan Nickman</span>
-                    <span className = {styles.secondary}>admin</span>
+                    <span className = {styles.primary}>{userDetails && userDetails.username}</span>
+                    <span className = {styles.secondary}>{userDetails && userDetails.role[0].authority.toLowerCase()}</span>
                 </div>
             </div>
             <div className = "navigations_root">
@@ -210,4 +228,11 @@ const SideBarAlt = ({itemOnClick, active}) => {
     )
 }
 
-export default SideBarAlt
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+  
+export default connect(mapStateToProps)(SideBarAlt)

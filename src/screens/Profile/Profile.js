@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
+import jwt_decode from "jwt-decode";
 
 import CustomButton from '../../components/Button/CustomButton'
 import EditInfo from './EditInfo'
@@ -7,6 +9,7 @@ import Feedback from './Feedback'
 import Loading from '../../components/Loading/Loading'
 import Interest from "../../components/Card/MyInterestCard/InterestCard"
 import HeaderTopper from '../../components/Header/HeaderTopper'
+import { getProfileDetails } from '../../api/user'
 
 //Boostarp
 import Card from 'react-bootstrap/Card'
@@ -32,6 +35,7 @@ import './Profile.css'
 
 class Profile extends Component {
     state = {
+        id: null,
         loading:false,
         updateValidated: false,
         passwordValidated: false,
@@ -101,6 +105,23 @@ class Profile extends Component {
         DOB: <Cake/>,
         Level: <Grade/>,
         Settings: <Settings/>
+    }
+
+    componentDidMount() {
+        this.getUserProfileDetails()
+    }
+
+    getUserProfileDetails = () => {
+        const auth = this.props.auth
+        if(auth) {
+            const decode =  jwt_decode(auth.accessToken)
+            console.log(auth, decode)
+            getProfileDetails(auth.accessToken, decode.studentId).then(response => {
+                console.log(response)
+            }).catch(err => {
+                console.log(err)
+            })
+        }
     }
 
     handleUpdate = (event) => {
@@ -428,4 +449,10 @@ class Profile extends Component {
     }
 }
 
-export default Profile
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(Profile)
