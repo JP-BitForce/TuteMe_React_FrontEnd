@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import {connect} from 'react-redux'
 
+import { logout } from '../../redux/actions/authAction'
+
 //Boostrap
 import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
@@ -19,7 +21,7 @@ import GrainIcon from '@material-ui/icons/Grain';
 
 import './AppBar.css'
 
-const AppBar = ({auth, history}) => {
+const AppBar = ({auth, history, logoutUser}) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
     const nav = [
@@ -35,6 +37,11 @@ const AppBar = ({auth, history}) => {
 
     const handleSignUpRoute = () => {
         history.push('/signUp')
+    }
+
+    const handleLogout = () => {
+      logoutUser()
+      history.push('/')
     }
 
     const handleClick = (event) => {
@@ -104,7 +111,7 @@ const AppBar = ({auth, history}) => {
                     )
                     :
                     <div className = "setion_desktop_container">
-                      <Button variant="outline-primary" onClick = {handleLoginRoute}> LOG OUT </Button>
+                      <Button variant="outline-primary" onClick = {handleLogout}> LOG OUT </Button>
                     </div>
                   }
                 </div>
@@ -128,4 +135,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(AppBar)
+const mapDispatchToProps = dispatch => {
+  return {
+      logoutUser: () => { dispatch(logout()) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppBar)

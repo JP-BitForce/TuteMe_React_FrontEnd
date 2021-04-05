@@ -3,10 +3,10 @@ import React from 'react'
 //Boostrap
 import Form from "react-bootstrap/Form";
 
-const Dropdown = ({options, onChange}) => {
+const Dropdown = ({options, onChange, value, name}) => {
     return (
         <Form.Group>
-            <Form.Control as="select"  onChange={onChange}>
+            <Form.Control as="select"  onChange={onChange} defaultValue = {value} name = {name}>
                 {
                     options.map(item => {
                         return (

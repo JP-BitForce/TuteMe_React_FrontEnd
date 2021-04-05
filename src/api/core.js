@@ -29,7 +29,7 @@ export const GET = (endpoint, authorization = null) => {
       try {
         const response = await fetch(url, {
           method: "GET",
-          headers,
+          headers
         });
         const data = await response.json();
         if (response.status >= 400) {

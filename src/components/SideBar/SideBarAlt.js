@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
-import jwt_decode from "jwt-decode";
 
 //Material-UI
 import List from '@material-ui/core/List';
@@ -106,18 +105,11 @@ const SideBarAlt = ({itemOnClick, active, auth}) => {
 
     useEffect(() => {
         if(auth) {
-            var decoded = decodeToken(auth.accessToken)
-            setUserDetails(decoded)
-            if(decoded) {
-                setUserRole(decoded.role[0].authority)
-            }
+            setUserDetails(auth)
+            setUserRole(auth.role)
         }
         // eslint-disable-next-line
     }, [])
-
-    const decodeToken = (token) => {
-        return jwt_decode(token);
-    }
 
     const handleSetOpen = (id) => {
         if (open === id) {
@@ -192,8 +184,8 @@ const SideBarAlt = ({itemOnClick, active, auth}) => {
                     <Avatar src = {avatar}/>
                 </div>
                 <div className = {styles.info}>
-                    <span className = {styles.primary}>{userDetails && userDetails.username}</span>
-                    <span className = {styles.secondary}>{userDetails && userDetails.role[0].authority.toLowerCase()}</span>
+                    <span className = {styles.primary}>{userDetails && userDetails.email}</span>
+                    <span className = {styles.secondary}>{userDetails && userDetails.role.toLowerCase()}</span>
                 </div>
             </div>
             <div className = "navigations_root">

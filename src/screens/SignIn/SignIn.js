@@ -31,7 +31,7 @@ class SignIn extends Component {
         emailError: null,
         apiCalling: false,
         signInSuccess: false,
-        severity: "sucess",
+        severity: "success",
         snackBarOn: false,
         snackBarMessage: ""
     }
@@ -81,8 +81,12 @@ class SignIn extends Component {
 
             signInUser(request).then(response => {
                 const loginResponse = {
-                    accessToken: response.accessToken,
-                    expiryTime: response.expandTime
+                    accessToken: response.token,
+                    expiryTime: response.expirationInMilliseconds,
+                    email: response.email,
+                    userId: response.userId,
+                    role: response.role,
+                    profileId: response.profileId
                 }
                 this.props.storeLoginResponse(loginResponse)
                 this.setState ({
@@ -108,7 +112,7 @@ class SignIn extends Component {
     handleLoginSuceesRoute = () => {
         setTimeout(() => {
             this.props.history.push('/')
-        }, 2000)
+        }, 1000)
     }
 
     handleSnackBarClose = () => {
@@ -124,7 +128,8 @@ class SignIn extends Component {
 
     handleInputOnChange = (event) => {
         this.setState({
-            [event.target.name] : event.target.value
+            [event.target.name] : event.target.value,
+            emailError: null
         })
     }
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
-import jwt_decode from "jwt-decode";
 
 import CustomButton from '../../components/Button/CustomButton'
 import EditInfo from './EditInfo'
@@ -9,7 +8,10 @@ import Feedback from './Feedback'
 import Loading from '../../components/Loading/Loading'
 import Interest from "../../components/Card/MyInterestCard/InterestCard"
 import HeaderTopper from '../../components/Header/HeaderTopper'
-import { getProfileDetails } from '../../api/user'
+import SnackBar from '../../components/SnackBar/SnackBar'
+import { getProfileDetails, updateStudentProfile } from '../../api/student'
+import { addSystemFeedback } from '../../api/feedback'
+import { setNotification, getNotificationSetting } from '../../api/notification'
 
 //Boostarp
 import Card from 'react-bootstrap/Card'
@@ -20,6 +22,8 @@ import Grid from '@material-ui/core/Grid';
 import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import CameraIcon from '@material-ui/icons/PhotoCamera';
 import PersonPinIcon from '@material-ui/icons/PersonPin';
 import Edit from '@material-ui/icons/Edit';
@@ -29,8 +33,10 @@ import MailIcon from '@material-ui/icons/Mail';
 import Cake from '@material-ui/icons/Cake';
 import Grade from '@material-ui/icons/Grade';
 import Settings from '@material-ui/icons/Settings';
+import PermIdentity from '@material-ui/icons/Face';
 
 import ProfileImage from '../../assets/images/shared/minimal_avatar.jpg'
+import sharedJson from '../../json/shared.json'
 import './Profile.css'
 
 class Profile extends Component {
@@ -56,7 +62,6 @@ class Profile extends Component {
         tabValue: 0,
         feedbackFormValidated: false,
         feedbackSubmitLoading: false,
-        feedbackName: "",
         feedbackEmail: "",
         feedbackMessage: "",
         feedbackRate: 0,
@@ -65,10 +70,18 @@ class Profile extends Component {
         blog_notify: false,
         course_notify: false,
         tutor_notify: false,
-        childNav: ["Profile","General"]
+        childNav: ["Profile","General"],
+        fetchError: null,
+        profileDetails: null,
+        gender: "Male",
+        level: "Intemediate",
+        imageUrl: null,
+        updateSuccess: false,
+        severity: "success",
+        snackBarOn: false,
+        snackBarMessage: "",
+        notificatonLoading: false
     }
-
-    initialState = this.state
 
     tab_links = ["General", "Edit", "Feedback", "Settings"]
 
@@ -76,8 +89,8 @@ class Profile extends Component {
         {
             caption: "Activity",
             items: [
-                {id : "one_step_notify", message: "Email me when someone comments on my one-step"},
-                {id : "blog_notify", message: "Email me when someone comments on my blog"},
+                {id : "one_step_notify", message: "Email me when someone comment on my one-step"},
+                {id : "blog_notify", message: "Email me when someone comment on my blog"},
             ],
         },
         {
@@ -89,13 +102,6 @@ class Profile extends Component {
         }
     ]
 
-    dummyAbout = [
-        {name: "Location", content: "Live at  Algeria"},
-        {name: "Email", content: "Dena75@yahoo.com"},
-        {name: "DOB", content: "01/01/1940"},
-        {name: "Level", content: "Ordinary"}
-    ]
-
     icons = {
         General: <PersonPinIcon/>,
         Edit: <Edit/>,
@@ -104,22 +110,40 @@ class Profile extends Component {
         Email: <MailIcon/>,
         DOB: <Cake/>,
         Level: <Grade/>,
-        Settings: <Settings/>
+        Settings: <Settings/>,
+        Gender: <PermIdentity/>
     }
 
     componentDidMount() {
         this.getUserProfileDetails()
+        this.getNotificationSettings()
     }
 
     getUserProfileDetails = () => {
         const auth = this.props.auth
         if(auth) {
-            const decode =  jwt_decode(auth.accessToken)
-            console.log(auth, decode)
-            getProfileDetails(auth.accessToken, decode.studentId).then(response => {
-                console.log(response)
+            this.setState({ loading: true })
+            getProfileDetails(auth.accessToken, auth.profileId).then(response => {
+                this.setProfileData(response)
             }).catch(err => {
-                console.log(err)
+                this.setState({ 
+                    loading: false,
+                    profileDetails: null,
+                    fetchError: `${err.message}, please try again`
+                })
+            })
+        }
+    }
+
+    getNotificationSettings = () => {
+        const auth = this.props.auth
+        if(auth) {
+            getNotificationSetting(auth.accessToken, auth.userId).then(response => {
+                this.setNotificationData(response)
+            }).catch(err => {
+                this.setState({
+                    loading: false,
+                })
             })
         }
     }
@@ -132,6 +156,69 @@ class Profile extends Component {
             updateValidated: !form.checkValidity(),
             updateLoading:true
         });
+
+        const auth = this.props.auth
+        const { firstName, lastName, email, gender, dob, imageUrl, city, district, level, bio } = this.state
+
+        const userDetails = { firstName, lastName, email, gender, dob, imageUrl, city, district, level, bio }
+        updateStudentProfile(auth.accessToken, auth.profileId, userDetails).then(response => {
+            this.setProfileData(response)
+            this.setState({
+                updateLoading: false,
+                updateSuccess: true,
+                severity: "success",
+                snackBarOn: true,
+                snackBarMessage: "Profile updated successfully"
+            })
+        }).catch(err => {
+            this.setState({ 
+                updateLoading: false,
+                snackBarMessage: `Failed to update, please try again`,
+                updateSuccess: false,
+                severity: "error",
+                snackBarOn: true,
+            })
+        })
+    }
+
+    submitFeedback = (event) => {
+        const form = event.currentTarget;
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({
+            feedbackFormValidated: !form.checkValidity(),
+            feedbackSubmitLoading:true
+        });
+
+        const auth = this.props.auth
+        const { feedbackEmail, feedbackMessage, feedbackRate, feedbackRadio} = this.state
+        const request = {
+            userId: auth.userId,
+            profileId: auth.profileId,
+            email: feedbackEmail,
+            feedback: feedbackMessage,
+            rating: feedbackRate,
+            isServiceFind: feedbackRadio === "yes" 
+        }
+        addSystemFeedback(auth.accessToken, request).then(response => {
+            this.setState({
+                feedbackSubmitLoading: false,
+                severity: "success",
+                snackBarOn: true,
+                snackBarMessage: "Feedback adding successfull",
+                feedbackEmail: "",
+                feedbackMessage: "",
+                feedbackRate: 0,
+                feedbackRadio: "yes",
+            })
+        }).catch(err => {
+            this.setState({
+                feedbackSubmitLoading: false,
+                snackBarMessage: `Failed to add feedback, please try again`,
+                severity: "error",
+                snackBarOn: true,
+            })
+        })
     }
 
     changePassword = (event) => {
@@ -144,14 +231,69 @@ class Profile extends Component {
         });
     }
 
-    submitFeedback = (event) => {
-        const form = event.currentTarget;
-        event.preventDefault();
-        event.stopPropagation();
+    handleNotificationSettings = () => {
         this.setState({
-            feedbackFormValidated: !form.checkValidity(),
-            feedbackSubmitLoading:true
-        });
+            notificatonLoading: true
+        })
+
+        const auth = this.props.auth
+        const {one_step_notify, blog_notify, course_notify, tutor_notify} = this.state
+        const request = {
+            commentOneStep: one_step_notify,
+            commentBlog: blog_notify,
+            courseUpdate: course_notify,
+            tutorUpdate: tutor_notify
+        }
+        setNotification(auth.accessToken, request, auth.userId).then(response => {
+            this.setState({
+                notificatonLoading: false,
+                severity: "success",
+                snackBarOn: true,
+                snackBarMessage: "Notification setings added successfully",
+            })
+            this.setNotificationData(response)
+        }).catch(err => {
+            this.setState({
+                notificatonLoading: false,
+                snackBarMessage: `Failed to set notification settings, please try again`,
+                severity: "error",
+                snackBarOn: true,
+            })
+        })
+    }
+
+    setNotificationData = (response) => {
+        this.setState({
+            one_step_notify: response.commentOneStep,
+            blog_notify: response.commentBlog,
+            course_notify: response.courseUpdate,
+            tutor_notify: response.tutorUpdate,
+            loading: false,
+        })
+    }
+
+    setProfileData = (response) => {
+        this.setState({
+            profileDetails: response,
+            loading: false,
+            firstName: response.firstName,
+            lastName: response.lastName,
+            email: response.email,
+            dob: response.dob,
+            city: response.city,
+            district: response.district,
+            bio: response.bio,
+            gender: response.gender,
+            level: response.level,
+            fetchError: null
+        })
+    }
+
+    handleSnackBarClose = () => {
+        this.setState({
+            snackBarOn: false,
+            snackBarMessage: ""
+        })
     }
 
     handleInputChange = (event) => {
@@ -181,7 +323,6 @@ class Profile extends Component {
             childNav.push("Settings")
         }
         this.setState({
-            ...this.initialState,
             tabValue: newValue,
             childNav
         })
@@ -205,7 +346,14 @@ class Profile extends Component {
                 >
                     <EditInfo values = {this.state} handleOnChange={this.handleInputChange}/>
                     <div className = "save__changes">
-                        <CustomButton label = "Save Changes" type="submit"/>
+                        {
+                            this.state.updateLoading ? 
+                            <div className = "loading_div">
+                                <CircularProgress/>
+                            </div>
+                            :
+                            <CustomButton label = "Save Changes" type="submit"/>
+                        }
                     </div>
                 </Form>
             </Card.Body>
@@ -269,7 +417,7 @@ class Profile extends Component {
                         })
                     }
                     <div className = "save__changes">
-                        <CustomButton label = "Save changes"/>
+                        <CustomButton label = "Save changes" onClick = {this.handleNotificationSettings}/>
                     </div>
                 </div>
             </div>
@@ -290,7 +438,14 @@ class Profile extends Component {
                 handleRateOnChange = {this.handleRatingOnChange}
             />
             <div className = "save__changes">
+            {
+                this.state.feedbackSubmitLoading ? 
+                <div className = "loading_div">
+                    <CircularProgress/>
+                </div>
+                :
                 <CustomButton label = "Submit" type = "submit"/>
+            } 
             </div>
             </Form>
         )
@@ -315,6 +470,7 @@ class Profile extends Component {
     }
 
     renderInfoContent = () => {
+        const profileDetails = this.state.profileDetails
         return (
             <div className = "main_info_container">
                 <div className = "info_statistics">
@@ -337,17 +493,32 @@ class Profile extends Component {
                         <span>About</span>
                     </div>
                     <div className = "profile_about_info">
-                        <p>Tart I love sugar plum I love oat cake. Sweet roll caramels I love jujubes. Topping cake wafer..</p>
-                        {
-                            this.dummyAbout.map(item => {
-                                return (
-                                    <div className = "about_general_info">
-                                        {this.icons[item.name]}
-                                        <span>{item.content}</span>
-                                    </div>
-                                )
-                            })
-                        }
+                        <p>{profileDetails && profileDetails.bio ? profileDetails.bio : sharedJson["alt_bio"]}</p>
+                        <div className = "about_general_info">
+                            {this.icons["Location"]}
+                            {
+                                profileDetails && profileDetails.city && profileDetails.district ?
+                                <span>at  {profileDetails.city}, {profileDetails.district}</span>
+                                :
+                                <span> location : N/A</span> 
+                            }
+                        </div>
+                        <div className = "about_general_info">
+                            {this.icons["Email"]}
+                            <span>{profileDetails && profileDetails.email ? profileDetails.email : "Email : N/A"}</span>
+                        </div>
+                        <div className = "about_general_info">
+                            {this.icons["DOB"]}
+                            <span>{profileDetails && profileDetails.dob ? profileDetails.dob : "DOB : N/A"}</span>
+                        </div>
+                        <div className = "about_general_info">
+                            {this.icons["Level"]}
+                            <span>{profileDetails && profileDetails.level ? profileDetails.level : "Level : N/A"}</span>
+                        </div>
+                        <div className = "about_general_info">
+                            {this.icons["Gender"]}
+                            <span>{profileDetails && profileDetails.gender ? profileDetails.gender : "Gender : N/A"}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -378,6 +549,7 @@ class Profile extends Component {
                     ].join(" ")
                 } 
                 onClick = {() => {this.handleTabChange(index)}}
+                key = {index}
             >
                 {this.icons[item]}
                 <span 
@@ -392,6 +564,7 @@ class Profile extends Component {
     }
 
     renderTopContainer = () => {
+        const profileDetails = this.state.profileDetails
         return (
             <div className = "profile_header_container">
                 <div className = "container_top">
@@ -402,8 +575,13 @@ class Profile extends Component {
                         </div>
                     </div>
                     <div className = "profile_section_info">
-                        <h4>Steve Austin</h4>
-                        <p>UI Designer</p>
+                        <h4>
+                        {
+                            profileDetails && profileDetails.firstName && profileDetails.lastName
+                             ? `${profileDetails.firstName} ${profileDetails.lastName}`
+                             : "N/A"
+                        }
+                        </h4>
                     </div>
                 </div>
                 <div className = "container_bottom">
@@ -435,15 +613,31 @@ class Profile extends Component {
         )
     }
 
+    renderApiError = (error) => {
+        return (
+            <span className = "api_error">{error}</span>
+        )
+    }
+
     render() {
+        const {loading, fetchError, snackBarOn, snackBarMessage, severity} = this.state
         return (
             <div className = "profile_root">
                 { 
-                    this.state.loading ?
-                    <Loading/>
+                    loading ? <Loading open = {loading}/>
+                    :
+                    fetchError ? this.renderApiError(fetchError)
                     :
                     this.renderProfileRoot() 
                 }
+                <SnackBar
+                    open = {snackBarOn}
+                    autoHideDuration = {3000}
+                    message = {snackBarMessage}
+                    severity = {severity}
+                    handleClose = {this.handleSnackBarClose}
+                    align = {{ vertical: 'bottom', horizontal: 'center' }}
+                />
             </div>
         )
     }
