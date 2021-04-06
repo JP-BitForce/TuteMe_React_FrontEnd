@@ -17,7 +17,7 @@ const RegisterLeftPanel = ({tag}) => {
         return (
             <div className = "login_paper_left-text">
                 <span className = "login_paper_left_message01">Welcome back</span>
-                <span className = "login_paper_left_message02">Please Login to your continue</span>
+                <span className = "login_paper_left_message02">Please Login to continue</span>
             </div>
         )
     }

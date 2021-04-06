@@ -5,7 +5,7 @@
 }
 
 .container {
-    max-width: 1170px;
+    max-width: 1270px;
     margin: auto;
 }
 
@@ -16,7 +16,7 @@
 
 .footer-col {
     width: 25%;
-    padding: 0 15px;
+    padding: 0 33px;
 }
 
 .footer-col h4 {

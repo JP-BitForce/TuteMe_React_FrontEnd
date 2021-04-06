@@ -1,9 +1,6 @@
 import React from 'react';
 import { Typography, Divider,Grid} from "@material-ui/core/";
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Rating from "../../Rating/Rating"
-import { ArrowRight } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
 
 import EditIcon from '@material-ui/icons/Edit';
