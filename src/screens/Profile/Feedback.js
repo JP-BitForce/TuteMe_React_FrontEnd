@@ -43,7 +43,6 @@ const Feedback = ({values, handleOnChange, handleRateOnChange}) => {
     return (
         <div className = "system_feedback_container">
             <p>Provide system feedback</p>
-            { renderInput("text", "feedbackName", 30, "Name") }
             { renderInput("email", "feedbackEmail", 320, "Email") }
             { renderTextArea("feedbackMessage") }
             <h5 className = "system_feedback_contain_h5">How was your experince ?</h5>

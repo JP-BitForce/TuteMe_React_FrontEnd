@@ -34,17 +34,17 @@
 
     "features_left": [
         {
-            "header":"Ultimate Design",
+            "header":"Online Lessons",
             "src":"features-icon-1",
             "para":"This is a paragraph. Click here to add  and edit your own text here."
         },
         {
-            "header":"Always Free",
+            "header":"One Step",
             "src":"features-icon-2",
             "para":"This is a paragraph. Click here to add  and edit your own text here."
         },
         {
-            "header":"Fast to Take Photo",
+            "header":"Blogs",
             "src":"features-icon-3",
             "para":"This is a paragraph. Click here to add  and edit your own text here."
         }
@@ -52,17 +52,17 @@
 
     "features_right": [
         {
-            "header":"Give Amazing Effects",
+            "header":"Social Collaboration",
             "src":"features-icon-4",
             "para":"This is a paragraph. Click here to add  and edit your own text here."
         },
         {
-            "header":"Take Your Time",
+            "header":"Find tutors & courses",
             "src":"features-icon-5",
             "para":"This is a paragraph. Click here to add  and edit your own text here."
         },
         {
-            "header":"Animate Your Photos",
+            "header":"Online Payments",
             "src":"features-icon-6",
             "para":"This is a paragraph. Click here to add  and edit your own text here."
         }

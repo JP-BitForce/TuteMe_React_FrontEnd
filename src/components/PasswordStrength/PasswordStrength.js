@@ -2,15 +2,13 @@ import React from 'react'
 
 import PasswordStrengthBar from 'react-password-strength-bar';
 
-const PasswordStrength = ({value, min}) => {
+const PasswordStrength = ({value, min, onChangeScore}) => {
     return (
         <div style = {{marginBottom:"2%"}}>
             <PasswordStrengthBar 
                 password={value} 
                 minLength={min}
-                onChangeScore={score => {
-                    console.log(score);
-                }}
+                onChangeScore={score => onChangeScore(score)}
             />
         </div>
     )

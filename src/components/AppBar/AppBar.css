@@ -5,7 +5,7 @@
 .appbar {
     top: 0;
     left: 0;
-    box-shadow: 1px 1px 1px  rgb(185, 183, 183);
+    /* box-shadow: 1px 1px 1px  rgb(185, 183, 183); */
     background-color: rgba(255, 255, 255, .15);  
     backdrop-filter: blur(4px);
 }
@@ -52,4 +52,37 @@
     .section_mobile {
         display: none;
     }
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+  
+.dropdown-content {
+    position: absolute;
+    background-color: #f1f1f1;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    display: block;
+    padding: 10%;
+    width: 130px;
+    text-align: left;
+    text-transform: uppercase;
+    color: #718096;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-top: 10%;
+}
+  
+.dropdown-content span {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+}
+  
+.dropdown-content span:hover {
+    background-color: #ddd;
 }

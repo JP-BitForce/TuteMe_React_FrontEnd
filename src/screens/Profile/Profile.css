@@ -144,6 +144,7 @@
     font-size: 1.25rem;
     line-height: 1.5;
     display: block;
+    text-transform: capitalize;
 }
 
 .profile_section_info p {
@@ -413,4 +414,8 @@
 .feedback_form {
     margin-bottom: 2%;
     padding: 1%;
+}
+
+.api_error {
+    color: red;
 }

@@ -1,7 +1,9 @@
 import React, {useState} from 'react'
+import {connect} from 'react-redux'
 
 import TopBar from './TopBar'
 import SideBarAlt from '../../components/SideBar/SideBarAlt'
+import { logout } from '../../redux/actions/authAction'
 
 import Home from '../Home/Home'
 import Profile from '../Profile/Profile'
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const GettingStarted = () => {
+const GettingStarted = ({logoutUser, history}) => {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -76,7 +78,8 @@ const GettingStarted = () => {
     };
 
     const handleSignOut = () => {
-      
+      logoutUser()
+      history.push('/')
     }
 
     const renderPermanentDrawer = () => {
@@ -152,4 +155,11 @@ const GettingStarted = () => {
     );
 }
 
-export default GettingStarted
+
+const mapDispatchToProps = dispatch => {
+  return {
+      logoutUser: () => { dispatch(logout()) }
+  }
+}
+
+export default connect(null,mapDispatchToProps)(GettingStarted)
