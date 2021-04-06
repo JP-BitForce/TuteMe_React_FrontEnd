@@ -64,6 +64,32 @@ export const PUT = (endpoint, requestBody = {}, authorization) => {
       }
     })
 }
+
+export const MULTIPART = (endpoint, formData, authorization) => {
+  const url = createRequestUrl(endpoint)
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(
+        url,
+        {
+          method: 'post',
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authorization}`
+          },
+        }
+      );
+      const data = await response.json();
+      if (response.status >= 400) {
+        reject(data)
+      }
+      resolve(data)
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
   
 const createRequestUrl = (endpoint) => {
     return `http://localhost:8080/api/${endpoint}`

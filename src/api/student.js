@@ -1,4 +1,4 @@
-import { GET, PUT } from './core';
+import { GET, PUT, MULTIPART } from './core';
 
 export const getEndpointWithPrefix = (endpoint) => {
     return `student/profile/${endpoint}`
@@ -12,4 +12,9 @@ export const getProfileDetails = (token, userId) => {
 export const updateStudentProfile = (token, stId, userDetails) => {
     const endpoint = getEndpointWithPrefix(`${stId}`)
     return PUT(endpoint, userDetails, token)
+}
+
+export const updateStudentProfilePic = (token, userId, formData) => {
+    const endpoint = getEndpointWithPrefix(`upload/${userId}`)
+    return MULTIPART(endpoint, formData, token)
 }

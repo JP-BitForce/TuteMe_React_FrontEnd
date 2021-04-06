@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import InputField from '../../components/Input/InputField'
 import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
 
-const ChangePassword = ({values, handleOnChange}) => {
+const ChangePassword = ({values, handleOnChange, handlePasswordScoreOnChange}) => {
 
     const renderInput = (name, label) => {
         return (
@@ -29,12 +29,23 @@ const ChangePassword = ({values, handleOnChange}) => {
             <Row>
                 <Col sm={6}>
                     { renderInput("newPassword", "New Password") }
+                    { 
+                        values["passwordError"] && <span className = "error">{values["passwordError"]}</span>
+                    }
                     {
-                        values.newPassword && <PasswordStrength value = { values.newPassword } min = { 5 }/> 
+                        values["newPassword"] && 
+                        <PasswordStrength 
+                            value = { values["newPassword"] } 
+                            min = { 5 }
+                            onChangeScore = {handlePasswordScoreOnChange}      
+                        /> 
                     }
                 </Col>
                 <Col sm={6}>
                     { renderInput("confirmPassword", "Confirm Password") }
+                    { 
+                        values["confirmPasswordError"] && <span className = "error">{values["confirmPasswordError"]}</span>
+                    }
                 </Col>
             </Row>
         </div>

@@ -9,9 +9,11 @@ import Loading from '../../components/Loading/Loading'
 import Interest from "../../components/Card/MyInterestCard/InterestCard"
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import SnackBar from '../../components/SnackBar/SnackBar'
-import { getProfileDetails, updateStudentProfile } from '../../api/student'
+import ProfilePicUploader from './ProfilePicUploader'
+import { getProfileDetails, updateStudentProfile, updateStudentProfilePic } from '../../api/student'
 import { addSystemFeedback } from '../../api/feedback'
 import { setNotification, getNotificationSetting } from '../../api/notification'
+import { changePasswordApi } from '../../api/user'
 
 //Boostarp
 import Card from 'react-bootstrap/Card'
@@ -24,7 +26,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import CameraIcon from '@material-ui/icons/PhotoCamera';
 import PersonPinIcon from '@material-ui/icons/PersonPin';
 import Edit from '@material-ui/icons/Edit';
 import FeedbackImg from '@material-ui/icons/Feedback';
@@ -80,7 +81,11 @@ class Profile extends Component {
         severity: "success",
         snackBarOn: false,
         snackBarMessage: "",
-        notificatonLoading: false
+        notificatonLoading: false,
+        confirmPasswordError: null,
+        passwordScore: 0,
+        passwordError: null,
+        profilePic: null,
     }
 
     tab_links = ["General", "Edit", "Feedback", "Settings"]
@@ -141,9 +146,7 @@ class Profile extends Component {
             getNotificationSetting(auth.accessToken, auth.userId).then(response => {
                 this.setNotificationData(response)
             }).catch(err => {
-                this.setState({
-                    loading: false,
-                })
+                this.setState({ loading: false })
             })
         }
     }
@@ -166,18 +169,14 @@ class Profile extends Component {
             this.setState({
                 updateLoading: false,
                 updateSuccess: true,
-                severity: "success",
-                snackBarOn: true,
-                snackBarMessage: "Profile updated successfully"
             })
+            this.setSnackBarSuccess("Profile updated successfully")
         }).catch(err => {
             this.setState({ 
                 updateLoading: false,
-                snackBarMessage: `Failed to update, please try again`,
                 updateSuccess: false,
-                severity: "error",
-                snackBarOn: true,
             })
+            this.setSnackBarError(`Failed to update, please try again`)
         })
     }
 
@@ -187,38 +186,34 @@ class Profile extends Component {
         event.stopPropagation();
         this.setState({
             feedbackFormValidated: !form.checkValidity(),
-            feedbackSubmitLoading:true
         });
 
         const auth = this.props.auth
         const { feedbackEmail, feedbackMessage, feedbackRate, feedbackRadio} = this.state
-        const request = {
-            userId: auth.userId,
-            profileId: auth.profileId,
-            email: feedbackEmail,
-            feedback: feedbackMessage,
-            rating: feedbackRate,
-            isServiceFind: feedbackRadio === "yes" 
+        if (feedbackEmail && feedbackMessage && feedbackRate && feedbackRadio) {
+            const request = {
+                userId: auth.userId,
+                profileId: auth.profileId,
+                email: feedbackEmail,
+                feedback: feedbackMessage,
+                rating: feedbackRate,
+                isServiceFind: feedbackRadio === "yes" 
+            }
+            this.setState({ feedbackSubmitLoading:true })
+            addSystemFeedback(auth.accessToken, request).then(response => {
+                this.setState({
+                    feedbackSubmitLoading: false,
+                    feedbackEmail: "",
+                    feedbackMessage: "",
+                    feedbackRate: 0,
+                    feedbackRadio: "yes",
+                })
+                this.setSnackBarSuccess("Feedback adding successfull")
+            }).catch(err => {
+                this.setState({ feedbackSubmitLoading: false })
+                this.setSnackBarError(`Failed to add feedback, please try again`)
+            })
         }
-        addSystemFeedback(auth.accessToken, request).then(response => {
-            this.setState({
-                feedbackSubmitLoading: false,
-                severity: "success",
-                snackBarOn: true,
-                snackBarMessage: "Feedback adding successfull",
-                feedbackEmail: "",
-                feedbackMessage: "",
-                feedbackRate: 0,
-                feedbackRadio: "yes",
-            })
-        }).catch(err => {
-            this.setState({
-                feedbackSubmitLoading: false,
-                snackBarMessage: `Failed to add feedback, please try again`,
-                severity: "error",
-                snackBarOn: true,
-            })
-        })
     }
 
     changePassword = (event) => {
@@ -226,16 +221,46 @@ class Profile extends Component {
         event.preventDefault();
         event.stopPropagation();
         this.setState({
-            passwordValidated: !form.checkValidity(),
-            changePasswordLoading:true
+            passwordValidated: !form.checkValidity()
         });
+
+        const { oldPassword, newPassword, confirmPassword, passwordScore } = this.state
+        if (newPassword && passwordScore < 2) {
+            this.setState({
+                passwordError: "Password not strong enough!"
+            })
+        } else if (newPassword !== confirmPassword) {
+            this.setState({
+                confirmPasswordError: "Passwords not matched"
+            })
+        }
+        else {
+            if (oldPassword && newPassword && confirmPassword) {
+                const auth = this.props.auth
+                const request = { oldPassword, newPassword }
+                this.setState({ changePasswordLoading:true })
+                changePasswordApi(auth.accessToken, request, auth.userId).then(response => {
+                    if (response.success) {
+                        this.setState({
+                            oldPassword: "",
+                            newPassword: "",
+                            confirmPassword: "",
+                            passwordError: null,
+                            confirmPasswordError: null,
+                            changePasswordLoading: false
+                        })
+                        this.setSnackBarSuccess("New password changed successfully")
+                    }
+                }).catch(err => {
+                    this.setState({ changePasswordLoading: false })
+                    this.setSnackBarError(`${err.message}, please try again`)
+                })
+            }
+        }
     }
 
     handleNotificationSettings = () => {
-        this.setState({
-            notificatonLoading: true
-        })
-
+        this.setState({ notificatonLoading: true })
         const auth = this.props.auth
         const {one_step_notify, blog_notify, course_notify, tutor_notify} = this.state
         const request = {
@@ -245,20 +270,51 @@ class Profile extends Component {
             tutorUpdate: tutor_notify
         }
         setNotification(auth.accessToken, request, auth.userId).then(response => {
-            this.setState({
-                notificatonLoading: false,
-                severity: "success",
-                snackBarOn: true,
-                snackBarMessage: "Notification setings added successfully",
-            })
+            this.setState({ notificatonLoading: false })
+            this.setSnackBarSuccess("Notification setings added successfully")
             this.setNotificationData(response)
         }).catch(err => {
-            this.setState({
-                notificatonLoading: false,
-                snackBarMessage: `Failed to set notification settings, please try again`,
-                severity: "error",
-                snackBarOn: true,
-            })
+            this.setState({ notificatonLoading: false })
+            this.setSnackBarError(`Failed to set notification settings, please try again`)
+        })
+    }
+
+    handleProfilePicUpload = async(file) => {
+        let reader = new FileReader()
+        reader.onloadend = () => {
+            this.setState({ profilePic: reader.result });
+        }
+        reader.readAsDataURL(file)
+
+        const formData = new FormData()
+        formData.append("file", file);
+        const auth = this.props.auth
+        updateStudentProfilePic(auth.accessToken, auth.userId, formData).then(response => {
+            this.setSnackBarSuccess("Profile Picture updated successfully")
+        }).catch(err => {
+            this.setSnackBarError("Unable update, please try again")
+        })
+    }
+
+    setSnackBarSuccess = (msg) => {
+        this.setState({
+            severity: "success",
+            snackBarOn: true,
+            snackBarMessage: msg,
+        })
+    }
+
+    setSnackBarError = (msg) => {
+        this.setState({
+            severity: "error",
+            snackBarOn: true,
+            snackBarMessage: msg,
+        })
+    }
+
+    handlePasswordScoreOnChange = (score) => {
+        this.setState({
+            passwordScore: score
         })
     }
 
@@ -285,7 +341,7 @@ class Profile extends Component {
             bio: response.bio,
             gender: response.gender,
             level: response.level,
-            fetchError: null
+            fetchError: null,
         })
     }
 
@@ -298,7 +354,9 @@ class Profile extends Component {
 
     handleInputChange = (event) => {
         this.setState({
-            [event.target.name]: event.target.value
+            [event.target.name]: event.target.value,
+            passwordError: null,
+            confirmPasswordError: null
         })
     }
 
@@ -324,7 +382,12 @@ class Profile extends Component {
         }
         this.setState({
             tabValue: newValue,
-            childNav
+            childNav,
+            passwordValidated: false,
+            updateValidated: false,
+            feedbackFormValidated: false,
+            passwordError: null,
+            confirmPasswordError: null
         })
     }
 
@@ -361,18 +424,26 @@ class Profile extends Component {
     }
 
     renderPasswordTab = () => {
+        const {passwordValidated, changePasswordLoading} = this.state
         return (
             <Card.Body className = "edit_card_body">
                 <p>Change Password</p>
                 <Form
                     onSubmit={this.changePassword}
                     noValidate
-                    validated={this.state.passwordValidated}
+                    validated={passwordValidated}
                     className = "edit_card_body_form"
                 >
-                <ChangePassword values = {this.state} handleOnChange={this.handleInputChange}/>
+                <ChangePassword 
+                    values = {this.state} 
+                    handleOnChange = {this.handleInputChange}
+                    handlePasswordScoreOnChange = {this.handlePasswordScoreOnChange}
+                />
                 <div className = "save__changes">
-                    <CustomButton label = "Update Password" type="submit"/>
+                    {
+                        changePasswordLoading ? <CircularProgress/> :
+                        <CustomButton label = "Update Password" type="submit"/>
+                    }
                 </div>
                 </Form>
             </Card.Body>
@@ -564,15 +635,13 @@ class Profile extends Component {
     }
 
     renderTopContainer = () => {
-        const profileDetails = this.state.profileDetails
+        const {profileDetails, profilePic} = this.state
         return (
             <div className = "profile_header_container">
                 <div className = "container_top">
                     <div className = "profile_avatar_alt">
-                        <img src = {ProfileImage} alt = "avatar" className = "profile_avatar_img"/>
-                        <div className="overlay">
-                            <CameraIcon/>
-                        </div>
+                        <img src = {profilePic ? profilePic : ProfileImage} alt = "avatar" className = "profile_avatar_img"/>
+                        <ProfilePicUploader handleProfilePicUpload = {this.handleProfilePicUpload}/>
                     </div>
                     <div className = "profile_section_info">
                         <h4>
@@ -636,7 +705,7 @@ class Profile extends Component {
                     message = {snackBarMessage}
                     severity = {severity}
                     handleClose = {this.handleSnackBarClose}
-                    align = {{ vertical: 'bottom', horizontal: 'center' }}
+                    align = {{ vertical: 'top', horizontal: 'right' }}
                 />
             </div>
         )
