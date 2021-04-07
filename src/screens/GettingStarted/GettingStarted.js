@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 
 import TopBar from './TopBar'
 import SideBarAlt from '../../components/SideBar/SideBarAlt'
+import Modal from '../../components/Modal/SignOutModal'
 import { logout } from '../../redux/actions/authAction'
 
 import Home from '../Home/Home'
@@ -54,12 +55,17 @@ const GettingStarted = ({logoutUser, history}) => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
     const [active, setActiveItem] = useState("HOME")
+    const [modalOpen, setModalOpen] = useState(false)
   
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const handleModalClode = () => {
+      setModalOpen(false)
+    }
     
     const handleSetActiveItem = (id) => {
       if (id === "SIGN_OUT") {
-        handleSignOut()
+        setModalOpen(true)
       } else {
         setActiveItem(id)
       }
@@ -151,6 +157,14 @@ const GettingStarted = ({logoutUser, history}) => {
                 active === "PAYMENTS"  && <Payments/>
               }
           </main>
+          <Modal
+            open = {modalOpen}
+            handleClose = {handleModalClode}
+            title = "Alert!"
+            handleCancel = {handleModalClode}
+            handleOk = {handleSignOut}
+            content = "Are you sure about sign-out ?"
+          />
       </div>
     );
 }

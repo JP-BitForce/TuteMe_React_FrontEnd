@@ -5,6 +5,10 @@ import ChipButton from '../../components/Button/ChipButton'
 import BlogCard from '../../components/Card/BlogCard'
 import Selector from '../../components/Input/Selector'
 import HeaderCard from '../../components/Header/HeaderCard'
+import NewBlog from './NewBlog'
+
+//Boostarp
+import Form from "react-bootstrap/Form";
 
 //Material-UI
 import TextField from '@material-ui/core/TextField';
@@ -26,8 +30,13 @@ class Blog extends Component {
         searchValue: "",
         filterValue: "Latest",
         filterOptions: ["Latest", "Oldest", "Popular", "My Blogs"],
-        tabValue: 0,
-
+        tabValue: 2,
+        currentTab: "All",
+        title: "",
+        description: "",
+        content: "",
+        cover: "",
+        addBlogFormValidated: false
     }
 
     tab_links = ["All", "Own"]
@@ -56,9 +65,24 @@ class Blog extends Component {
         },
     ]
 
+    handleAddNewBlog = (event) => {
+        const form = event.currentTarget;
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({
+            addBlogFormValidated: !form.checkValidity(),
+        });
+    }
+
     handleBlogsSearch = (event) => {
         event.preventDefault();
         event.stopPropagation();
+    }
+
+    handleInputOnChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value
+        })
     }
 
     handleSearchOnChange = (event) => {
@@ -75,7 +99,15 @@ class Blog extends Component {
 
     handleTabChange = (newValue) => {
         this.setState({
-            tabValue: newValue
+            tabValue: newValue,
+            currentTab: this.tab_links[newValue]
+        })
+    }
+
+    addNewBlockOnClick = () => {
+        this.setState({
+            tabValue: 2,
+            currentTab: "New"
         })
     }
 
@@ -110,11 +142,15 @@ class Blog extends Component {
                                 <span className = "seperator_dot"/>
                             </li>
                             <li>Blog</li>
+                            <li aria-hidden = {true} className = "MuiBreadcrumbs-separator css-1wuw8dw-MuiBreadcrumbs-separator">
+                                <span className = "seperator_dot"/>
+                            </li>
+                            <li>{this.state.currentTab}</li>
                         </ol>
                     </div>
                 </div>
                 <div className = "header_content_right">
-                    <ChipButton label = "New Blog" icon = {<Add/>}/> 
+                    <ChipButton label = "New Blog" icon = {<Add/>} handleClick = {this.addNewBlockOnClick}/> 
                 </div>
             </div>
         )
@@ -146,6 +182,67 @@ class Blog extends Component {
         )
     }
 
+    renderAllBlogContainer = () => {
+        return (
+            <>
+            <div className = "blog_search_block">
+                <form noValidate autoComplete="off" onSubmit = {this.handleBlogsSearch}>
+                    { this.renderSearchField() }
+                </form>
+                <Selector
+                    value = {this.state.filterValue}
+                    onChange = {this.handleFilterOnChnage}
+                    options = {this.state.filterOptions}
+                />
+            </div>
+            { this.renderBlogs() }
+            </>
+        )
+    }
+
+    renderOwnBlogContainer = () => {
+        return (
+            <>
+            <div className = "blog_search_block">
+                <form noValidate autoComplete="off" onSubmit = {this.handleBlogsSearch}>
+                    { this.renderSearchField() }
+                </form>
+                <Selector
+                    value = {this.state.filterValue}
+                    onChange = {this.handleFilterOnChnage}
+                    options = {this.state.filterOptions}
+                />
+            </div>
+            </>
+        )
+    }
+
+    renderCreateNewBlock = () => {
+        return (
+            <div className = "create_new_block_container_root">
+                <Form
+                    onSubmit={this.handleAddNewBlog}
+                    noValidate
+                    validated={this.state.addBlogFormValidated}
+                >
+                    <NewBlog
+                        values = {this.state}
+                        handleOnChange = {this.handleInputOnChange}
+                    />
+                </Form>
+            </div>
+        )
+    }
+
+    renderMainContainer = () => {
+        switch(this.state.tabValue) {
+            case 0 : return this.renderAllBlogContainer()
+            case 1 : return this.renderOwnBlogContainer()
+            case 2 : return this.renderCreateNewBlock()
+            default : return this.renderAllBlogContainer()
+        }
+    }
+
     renderRootContainer = () => {
         return (
             <div className = "blog_root_container">
@@ -162,17 +259,7 @@ class Blog extends Component {
                     />
                 </div>
                 <div className = "blog_main_container">
-                    <div className = "blog_search_block">
-                        <form noValidate autoComplete="off" onSubmit = {this.handleBlogsSearch}>
-                            { this.renderSearchField() }
-                        </form>
-                        <Selector
-                            value = {this.state.filterValue}
-                            onChange = {this.handleFilterOnChnage}
-                            options = {this.state.filterOptions}
-                        />
-                    </div>
-                    { this.renderBlogs() }
+                    { this.renderMainContainer() }
                 </div>
             </div>
         )

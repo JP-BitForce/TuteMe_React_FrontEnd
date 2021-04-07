@@ -1,10 +1,10 @@
 .blog_root_div {
-    padding: 3%;
+    padding: 2%;
     background-color: white;
 }
 
 .blog_root_header {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .header_content {
@@ -78,4 +78,189 @@
 
 .blogs_container {
     margin-top: 1%;
+}
+
+.css-4pdmu4-MuiBreadcrumbs-ol li:not(:last-child) {
+    font-weight: 550;
+}
+
+.create_new_block_container_root {
+    background-color: rgb(255, 255, 255);
+    color: rgb(33, 43, 54);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    overflow: hidden;
+    box-shadow: rgb(145 158 171 / 24%) 0px 0px 2px 0px, rgb(145 158 171 / 24%) 0px 16px 32px -4px;
+    border-radius: 16px;
+    position: relative;
+    z-index: 0;
+    padding: 3%;
+}
+
+.new_blog_content {
+    margin-top: 3%;
+    text-align: left;
+}
+
+.new_blog_content_h6 {
+    margin: 0px 0px 8px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.57143;
+    color: rgb(99, 115, 129);
+}
+
+.content_conainer {
+    border: solid 1px rgba(145, 158, 171, 0.32);
+    border-radius: 8px;
+}
+
+.content_container_top {
+    border: none;
+    border-bottom: solid 1px rgba(145, 158, 171, 0.32);
+    padding: 2%;
+}
+
+.font_format_div {
+    display: flex;
+    flex-direction: row;
+}
+  
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+}
+  
+.dropdown-content {
+    display: flex;
+    background-color: #f6f6f6;
+    min-width: 230px;
+    border: 1px solid #ddd;
+    z-index: 2;
+    flex-direction: column;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.dropdown-content::-webkit-scrollbar {
+    width: 20px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb:hover {
+    width: 20px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+    border: 6px solid transparent;
+    background-clip: content-box; 
+}
+  
+.dropdown-content span {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-family: "Helvetica Neue","Helvetica","Arial",sans-serif;
+}
+  
+.dropdown-content span:hover {
+    background-color: #dfdede
+}
+
+.content_container_main {
+    padding: 1%;
+}
+
+.vertical_seperator {
+    height: 20px;
+}
+
+.blog_cover_root {
+    text-align: left;
+    margin-bottom: 2%;
+}
+
+.blog_cover {
+    border: 1px dashed rgba(145, 158, 171, 0.32);
+    display: flex;
+    outline: none;
+    padding: 35px 0px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    transition: padding 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    align-items: center;
+    border-radius: 8px;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #F4F6F8;
+    flex-direction: row;
+}
+
+.upload_img_src {
+    height: 130px;
+    display: block;
+    max-width: 100%;
+    cursor: pointer;
+}
+
+.blog_cover_text h5 {
+    margin: 0px 0px 8px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    text-align: left;
+    margin-left: 1%;
+}
+
+.blog_cover_text p {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.57143;
+    color: rgb(99, 115, 129);
+    text-align: left;
+    margin-left: 1%;
+}
+
+.button_footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2%;
+}
+
+.ql-editor_container {
+    border: none;
+    font-size: 1rem;
+    font-family: Be Vietnam, sans-serif;
+    font-weight: 500;
+    line-height: 1.5;
+    box-sizing: border-box;
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    height: 100%;
+    margin: 0;
+    position: relative;
+}
+
+.ql-editor {
+    box-sizing: border-box;
+    line-height: 1.42;
+    height: 100%;
+    outline: none;
+    overflow-y: auto;
+    padding: 12px 15px;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    min-height: 200px;
+}
+
+.ql-cursor {
+    cursor: text;
 }

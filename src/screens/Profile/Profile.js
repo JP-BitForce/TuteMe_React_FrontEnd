@@ -528,7 +528,7 @@ class Profile extends Component {
             case 1: return this.renderEditTab();
             case 2: return this.renderFeedbackTab();;
             case 3: return this.renderSettings();
-            default: return null
+            default: return <Interest/>
         }
     }
 
