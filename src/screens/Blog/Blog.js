@@ -6,6 +6,7 @@ import BlogCard from '../../components/Card/BlogCard'
 import Selector from '../../components/Input/Selector'
 import HeaderCard from '../../components/Header/HeaderCard'
 import NewBlog from './NewBlog'
+import BlogPreview from './BlogPreview'
 
 //Boostarp
 import Form from "react-bootstrap/Form";
@@ -35,8 +36,10 @@ class Blog extends Component {
         title: "",
         description: "",
         content: "",
-        cover: "",
-        addBlogFormValidated: false
+        addBlogFormValidated: false,
+        file: null,
+        cover: null,
+        previewOn: false
     }
 
     tab_links = ["All", "Own"]
@@ -72,6 +75,9 @@ class Blog extends Component {
         this.setState({
             addBlogFormValidated: !form.checkValidity(),
         });
+
+        // const { title, description, content, file} = this.state
+
     }
 
     handleBlogsSearch = (event) => {
@@ -109,6 +115,36 @@ class Blog extends Component {
             tabValue: 2,
             currentTab: "New"
         })
+    }
+
+    handleQuillOnChange = (value) => {
+        this.setState({ content: value })
+    }
+
+    handleCoverPicOnSelect = (file) => {
+        let reader = new FileReader()
+        reader.onloadend = () => {
+            this.setState({ 
+                cover: reader.result,
+                file 
+            });
+        }
+        reader.readAsDataURL(file)
+    }
+
+    handleImgRemover = () => {
+        this.setState({ 
+            cover: null,
+            file : null
+        });
+    }
+
+    handlePreviewOnClick = () => {
+        this.setState({ previewOn: true })
+    }
+
+    handlePreviewOnClose = () => {
+        this.setState({ previewOn: false })
     }
 
     renderSearchField = () => {
@@ -228,6 +264,10 @@ class Blog extends Component {
                     <NewBlog
                         values = {this.state}
                         handleOnChange = {this.handleInputOnChange}
+                        handleQuillOnChange = {this.handleQuillOnChange}
+                        handleCoverPicOnSelect = {this.handleCoverPicOnSelect}
+                        handleImgRemover = {this.handleImgRemover}
+                        handlePreviewOnClick = {this.handlePreviewOnClick}
                     />
                 </Form>
             </div>
@@ -266,6 +306,7 @@ class Blog extends Component {
     }
 
     render() {
+        const {previewOn, title, content, cover} = this.state
         return (
             <div className = "blog_root_div">
                 {
@@ -274,6 +315,13 @@ class Blog extends Component {
                     :
                     this.renderRootContainer()
                 }
+                <BlogPreview
+                    open = {previewOn}
+                    handleClose = {this.handlePreviewOnClose}
+                    title = {title}
+                    content = {content}
+                    cover = {cover}
+                />
             </div>
         )
     }
