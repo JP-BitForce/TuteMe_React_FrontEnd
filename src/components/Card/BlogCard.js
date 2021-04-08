@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     }),
 })
 
-const BlogCard = ({src, avatar, date, description, comments, likes}) => {
+const BlogCard = ({src, avatar, date, description, comments, likes, content, title}) => {
     const styles = useStyles({img: src})
     return (
         <div className = "blog_card">
@@ -29,8 +29,9 @@ const BlogCard = ({src, avatar, date, description, comments, likes}) => {
                 </div>
             </div>
             <div className = "blog_card_content">
-                <span>{date}</span>
-                <p>{description}</p>
+                <span className = "blog_card_content_date">{date}</span>
+                <p className = "blog_card_content_title">{title}</p>
+                <p className = "blog_card_content_des">{description}</p>
                 <div className = "blog_card_footer">
                     <div className = "blog_footer__content">
                         <Comment/>
