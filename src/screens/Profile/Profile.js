@@ -124,12 +124,35 @@ class Profile extends Component {
         this.getNotificationSettings()
     }
 
+    getProfilePicture = (url) => {
+        fetch(url, {
+            method: 'get',
+            headers: {
+                Authorization: `Bearer ${this.props.auth.accessToken}`
+            }
+        }).then(res => res.blob())
+        .then(blob => {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            return new Promise(resolve => {
+              reader.onloadend = () => {
+                resolve(reader.result);
+              };
+            });
+        })
+        .then(finalResult => { 
+            this.setState({profilePic: finalResult})
+        });
+    }
+
+
     getUserProfileDetails = () => {
         const auth = this.props.auth
         if(auth) {
             this.setState({ loading: true })
             getProfileDetails(auth.accessToken, auth.profileId).then(response => {
                 this.setProfileData(response)
+                this.getProfilePicture(response.imageUrl)
             }).catch(err => {
                 this.setState({ 
                     loading: false,
@@ -528,7 +551,7 @@ class Profile extends Component {
             case 1: return this.renderEditTab();
             case 2: return this.renderFeedbackTab();;
             case 3: return this.renderSettings();
-            default: return null
+            default: return <Interest/>
         }
     }
 
