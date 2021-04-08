@@ -3,7 +3,6 @@ import SignUp from '../screens/SignUp/SignUp'
 import LandingPage from '../screens/LandingPage/LandingPage'
 import ForgotPassword from '../screens/ForwardPassword/ForgotPassword'
 import GettingStarted from '../screens/GettingStarted/GettingStarted'
-import InterestCard from '../components/Card/MyInterestCard/EditInterestForm/EditInterestCard'
 
 const routes = {
     data: [
@@ -42,13 +41,7 @@ const routes = {
         type: "",
         children: [],
       },
-      {
-        name: "Interest-Card",
-        path: "/interestCard",
-        component: InterestCard,
-        type: "",
-        children: [],
-      }
+  
     ],
 
     sidebarNav : [
