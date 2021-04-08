@@ -194,3 +194,8 @@
     margin-left: 15px;
     cursor: pointer;
 }
+
+.pagination_div {
+    display: flex;
+    justify-content: flex-end;
+}
