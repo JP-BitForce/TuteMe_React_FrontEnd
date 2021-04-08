@@ -2,15 +2,15 @@
     "link":[
         {
             "header": "Company",
-            "children": ["about us", "contact us", "our services", "privacy policy"]
+            "children": ["Contact us", "our services", "privacy policy"]
         },
         {
             "header": "Get Help",
-            "children": ["FAQ", "returns", "Materials", "Payment options"]
+            "children": ["FAQ", "returns", "Payment options"]
         },
         {
-            "header": "Features",
-            "children": ["Online Courses", "Chat", "One-Step", "Feedback Provider"]
+            "header": "Pages",
+            "children": ["Courses", "tutors"]
         }
     ],
 

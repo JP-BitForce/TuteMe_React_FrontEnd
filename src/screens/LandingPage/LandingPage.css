@@ -95,7 +95,6 @@ h1::before {
 
 .details {
     margin-bottom: 80px;
-	color: #6b6868;
     padding: 1%;
 }
 
@@ -134,7 +133,6 @@ h1::before {
 
 .features{
 	margin-bottom: 80px;
-	color: #6b6868;
     align-items: center;
 }
 
@@ -184,6 +182,7 @@ h1::before {
 
 .features-list h4{
 	text-transform: uppercase;
+    font-size: 1.1rem;
 }
 
 .appmockup{
@@ -243,22 +242,178 @@ h1::before {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-
-.section_count {
-    width: 90%;
-    margin-left: 5%;
-    box-shadow: 1px 1px 1px  rgb(185, 183, 183);
-    background-color: rgba(255, 255, 255, .15);  
-    backdrop-filter: blur(4px);
-    margin-bottom: 2%;
-    align-items: center;
-    justify-content: space-around;
-    padding: 2%;
-    display: flex;
-    flex-direction: row;
-}
-
 .course_grid_container {
     padding: 1%;
     margin-bottom: 2%;
+}
+
+
+/* ................... */
+
+.content_top_root {
+    position: relative;
+    z-index: 0;
+    background-image: url("../../assets/images/landing page/background1.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    position: relative;
+    width: 100%;
+    display: block;
+    height: 90vh;
+}
+
+.content_top__container {
+    width: 100%;
+    padding-right: var(--bs-gutter-x, 0.75rem);
+    padding-left: var(--bs-gutter-x, 0.75rem);
+    margin-right: auto;
+    margin-left: auto;
+    color: white;
+}
+
+@media (min-width: 992px) {
+    .col-lg__1 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        width: 41.66667%;
+    }
+}
+
+.pt-5 {
+    padding-top: 15rem !important;
+}
+
+.content_top_block {
+   text-align: left;
+   align-self: center;
+   right: 0;
+   padding-top: 12rem !important;
+   margin-left: 3%;
+}
+
+.landing_content__main_conatiner {
+    display: flex;
+    margin-top: 2%;
+    flex-direction: column;
+}
+
+.section_count {
+    margin-bottom: 2%;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 0;
+    background-image: url("../../assets/images/landing page/background2.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    min-height: 20rem;
+    padding-left: 8%;
+}
+
+.landing_content_section_features {
+    margin-bottom: 2%;
+    margin-top: 2%;
+}
+
+.landing_section_features__1 {
+    padding: 5%;
+}
+
+.student_feedback_root {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 2%;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 0;
+    background-image: url("../../assets/images/landing page/background2.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    width: 100%;
+}
+
+.student_feedback__top {
+    align-items: center;
+    justify-content: center;
+}
+
+.student_feedback__top_block {
+    color: white;
+}
+
+.student_feedback__top_block h1 {
+    font-size: 2.7rem;
+    font-weight: 600;
+}
+
+.student_feedback__top_block p {
+    width: 60%;
+    margin-left: 20%;
+}
+
+.student_feedback_card {
+    display: block;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(0, 0, 0, 0.8);
+    padding: 3%;
+}
+
+.feedback_user_image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.feedback_text_block {
+    width: calc(100% - 120px);
+    position: relative;
+    margin-left: 0.5rem !important;
+    text-align: left;
+    color: white;
+}
+
+.feedback_text_block span {
+    font-size: 1.5rem;
+    color: blue;
+    font-weight: bold;
+}
+
+.landing_subscribe_newsletter {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 0;
+    background-image: url("../../assets/images/landing page/background2.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    text-align: left;
+    color: white;
+    min-height: 15rem;
 }

@@ -1,41 +1,44 @@
 import React, { Component } from 'react'
 
-//Boostrap
-import Card from 'react-bootstrap/Card'
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
+import RegisterMobilePanel from '../../components/RegisterMobilePanel/RegisterMobilePanel'
+import SnackBar from '../../components/SnackBar/SnackBar'
+import Selector from '../../components/Input/Selector'
+import { signUpUser } from '../../api/auth'
+import './SignUpForm'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
+import Avatar from '@material-ui/core/Avatar';
 
 import './SignUp.css'
-
-import InputField from '../../components/Input/InputField'
-import PasswordInput from '../../components/PasswordInput/PasswordInput'
-import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
-import RegisterLeftPanel from '../../components/RegisterLeftPanel/RegisterLeftPanel'
-import RegisterMobilePanel from '../../components/RegisterMobilePanel/RegisterMobilePanel'
-import CustomButton from '../../components/Button/CustomButton'
+import google from '../../assets/images/social/google.png'
+import facebook from '../../assets/images/social/facebook.png'
+import SignUpForm from './SignUpForm'
 
 class SignUp extends Component {
     state = {
         validated:false,
         firstName:null,
         lastName:null,
-        dob:null,
         email:null,
         password:null,
         confirmPassword:null,
-        promoChecked:false,
+        passwordError: null,
         passwordMatchError:null,
         emailError:null,
-        type:"password",
         mobileView:false,
-        loading:false
+        loading:false,
+        passwordScore: 0,
+        signUpSuccess: false,
+        apiCalling: false,
+        severity: "success",
+        snackBarMessage: "",
+        snackBarOn: false,
+        userType: "student"
     }
 
     componentDidMount() {
@@ -54,31 +57,9 @@ class SignUp extends Component {
         window.removeEventListener("resize", this.resize.bind(this));
     }
 
+    
     handleHomeRoute = () => {
-        window.location.replace('/')
-    }
-
-    checkPasswordMatch = () => {
-        if(this.state.password === this.state.confirmPassword){
-            return true
-        } else {
-            this.setState({
-                passwordMatchError:"Password and Confirm Password did not match"
-            })
-            return false
-        }
-    }
-
-    validateEmail = () => {
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const result = pattern.test(this.state.email);
-        if (!result) {
-            this.setState({
-              emailError: "Enter a valid email address",
-            });
-        } 
-
-        return result
+       window.location.replace('/') 
     }
 
     handleSubmit = (event) => {
@@ -89,175 +70,164 @@ class SignUp extends Component {
           validated: !form.checkValidity(),
         });
 
-        if (this.checkPasswordMatch() && this.validateEmail()) {
-            const data = {
-                firstName : this.state.firstName,
-                lastName : this.state.lastName,
-                dob : this.state.dob,
-                email : this.state.email,
-                password: this.state.password,
-                promoChecked : this.state.promoChecked
-            }
+        const {firstName, lastName, email, password, passwordScore, userType} = this.state
 
-            console.log(data)
+        if (!this.validateEmail()) {
+            this.setState({
+                emailError: "Enter a valid email address",
+            })
+            return
+        }
+
+        if (passwordScore < 2) {
+            this.setState({
+                passwordError: "Password not strong enough!"
+            })
+            return
+        }
+
+        if(!this.checkPasswordMatch()) {
+            this.setState({
+                passwordMatchError:"Password and Confirm Password did not match"
+            })
+            return
         }
         
-    }
-
-    handleCommonTypeInputChange = (event) => {
-        this.setState({
-            [event.target.name] : event.target.value
-        })
-    }
-
-    handleAcceptPromotoion = () => {
-        this.setState({
-            promoChecked: !this.state.promoChecked
-        })
-    }
-
-    handleVisibility = () => {
-        if(this.state.type === "password") {
-            this.setState({ type:"text" })
-        } else {
-            this.setState({ type:"password" })
+        if (email) {
+            this.setState({ 
+                apiCalling: true,
+                passwordError: null,
+                passwordMatchError: null,
+                emailError: null
+            })
+            const request = { firstName, lastName, email, password }
+            signUpUser(request, userType).then(response => {
+                if (response.success) {
+                    this.setState({
+                        signUpSuccess: true,
+                        apiCalling: false,
+                        severity: "success",
+                        snackBarMessage: response.message,
+                        snackBarOn: true,
+                    })
+                    this.setInfoSnackBar()
+                } else {
+                    this.setSignUpErrorState(response.message)
+                }
+            }).catch(err => {
+                this.setSignUpErrorState(err.message)
+            })
         }
     }
 
-    renderCheckBox = (checked, onChange, label) => {
+    setSignUpErrorState = (message) => {
+        this.setState({
+            signUpSuccess: false,
+            apiCalling: false,
+            severity: "error",
+            snackBarOn: true,
+            snackBarMessage: message,
+        })
+    }
+
+    setInfoSnackBar = () => {
+        setTimeout(() => {
+            this.setState({
+                severity: "info",
+                snackBarMessage: "Now you can log into system",
+                snackBarOn: true,
+                firstName:null,
+                lastName:null,
+                email:null,
+                password:null,
+                confirmPassword:null
+            })
+            window.location.replace('/signIn')
+        }, 4000)
+    }
+
+    checkPasswordMatch = () => {
+        var result = false
+        if(this.state.password === this.state.confirmPassword){
+            result = true
+        }
+        return result
+    }
+
+    validateEmail = () => {
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return pattern.test(this.state.email);
+    }
+
+    handlePasswordScoreOnChange =  (score) => {
+        this.setState({
+            passwordScore: score
+        })
+    }
+
+    handleInputOnChange = (event) => {
+        this.setState({
+            [event.target.name] : event.target.value,
+            passwordError: null
+        })
+    }
+
+    handleSnackBarClose = () => {
+        this.setState({
+            snackBarOn: false,
+            snackBarMessage: ""
+        })
+    }
+
+    renderSocial = () => {
         return (
-            <Form.Group>
-                <Form.Check
-                checked = {checked}
-                onChange = {onChange}
-                type = "checkbox"
-                name = "checked"
-                readOnly
-                label = {label}
-                />
-          </Form.Group>
+            <div className = "social_signup_block">
+                <div className = "social_signup_blocks">
+                    <div className = "social_signup_item">
+                        <div className = "social_signup_item_card">
+                            <Avatar src = {google} style = {{width: "25px", height: "25px", marginRight: "5px"}}/>
+                            Google
+                        </div>
+                    </div>
+                    <div className = "social_signup_item">
+                        <div className = "social_signup_item_card">
+                            <Avatar src = {facebook} style = {{width: "26px", height: "25px", marginRight: "5px"}}/>
+                            Facebook
+                        </div>
+                    </div>
+                </div>
+                <div className = "divider">
+                    <span className = "divider_span">or</span>
+                </div>
+            </div>
         )
     }
 
     renderForm = () => {
         return (
-            <Card.Body>
-                    <Row>
-                        <span className = "already_member">Already a member ? <a href="/signIn">SIGN IN</a> </span>
-                    </Row>
-
-                    <Card.Title className = "signUp_from_title">Sign Up</Card.Title>
-                    <Form
-                        onSubmit={this.handleSubmit}
-                        noValidate
-                        validated={this.state.validated}
-                    >
-                        <Row>
-                            <Col sm={6}>
-                                <InputField 
-                                    type = "text"
-                                    name = "firstName"
-                                    value = { this.state.firstName }
-                                    onChange = { this.handleCommonTypeInputChange }
-                                    max = { 20 }
-                                    placeholder = "First Name"
-                                />
-                            </Col>
-                            <Col sm={6}>
-                                <InputField 
-                                    type = "text"
-                                    name = "lastName"
-                                    value = { this.state.lastName }
-                                    onChange = { this.handleCommonTypeInputChange }
-                                    max = { 20 }
-                                    placeholder = "Last Name"
-                                />
-                                </Col>
-                            </Row>
-
-                            <Row>
-                                <Col>
-                                    <InputField 
-                                        type = "text"
-                                        name = "dob"
-                                        value = { this.state.dob }
-                                        onChange = { this.handleCommonTypeInputChange }
-                                        max = { 10 }
-                                        placeholder = "Date of Birth"
-                                    />
-                                </Col>
-                            </Row>
-
-                            <Row>
-                                <Col>
-                                    <InputField 
-                                        type = "email"
-                                        name = "email"
-                                        value = { this.state.email }
-                                        onChange = { this.handleCommonTypeInputChange }
-                                        max = { 320 }
-                                        placeholder = "Email"
-                                    />
-                                </Col>
-                            </Row>
-
-                            <Row>
-                                <Col>
-                                    <InputField 
-                                        type = "password"
-                                        name = "password"
-                                        value = { this.state.password }
-                                        onChange = { this.handleCommonTypeInputChange }
-                                        max = { 30 }
-                                        placeholder = "Password"
-                                    />
-                                </Col>
-                            </Row>
-                            {
-                                this.state.password ? <PasswordStrength value = { this.state.password } min = { 5 }/> : null
-                            }
-                            
-                            <Row>
-                                <Col>
-                                    <PasswordInput 
-                                        type = { this.state.type }
-                                        name = "confirmPassword"
-                                        value = { this.state.confirmPassword }
-                                        onChange = { this.handleCommonTypeInputChange }
-                                        max = { 30 }
-                                        placeholder = "Confirm Password"  
-                                        onClick = { this.handleVisibility } 
-                                    />
-                                </Col>
-                            </Row>
-
-                            <Grid container>
-                                <Grid item>
-                                    { this.renderCheckBox(this.state.promoChecked, this.handleAcceptPromotoion, "I would like to recieve Tute-Me Promotions to my email")}
-                                </Grid>
-                            </Grid>
-
-                            <Row className = "submit_btn">
-                                <Col>
-                                    <CustomButton label = "Sign-Up" type="submit" fullWidth/>
-                                </Col>
-                            </Row>
-
-                            <Grid container className = "signIn">
-                                <Grid item xs></Grid>
-                                <Grid item>
-                                    <Link href="/signIn" variant="body2">
-                                        {"Already a member? Sign In"}
-                                    </Link>
-                                </Grid>
-                            </Grid>
-
-                            <Row className = "terms_condition_root">
-                                <span className = "terms_condition"> By signing up, I agreed to </span> 
-                                <Link href = "#" variant="body1">Terms & Conditions</Link>
-                            </Row>
-                    </Form>
-            </Card.Body>
+            <div className = "form__root">
+                <div className = "form__top">
+                    <span className = "already_member">Already a member ? <a href="/signIn">SIGN IN</a> </span>
+                    <Selector 
+                        value = {this.state.userType}
+                        onChange = {()=> {}}
+                        options = {["student", "tutor"]}
+                        label = "select your role"
+                    />
+                </div>
+                { this.renderSocial() }
+                <SignUpForm
+                    handleSubmit = {this.handleSubmit}
+                    validated = {this.state.validated}
+                    values = {this.state}
+                    handleInputChange = {this.handleInputOnChange}
+                    handlePasswordScoreOnChange = {this.handlePasswordScoreOnChange}
+                />
+                <div style = {{marginTop: "10px"}}>
+                    <span className = "terms_condition"> By signing up, I agreed to </span> 
+                    <Link href = "#" variant="body1" className = "terms_cond">Terms & Conditions</Link>
+                </div>
+            </div>
         )
     }
 
@@ -287,8 +257,24 @@ class SignUp extends Component {
     }
 
     render() {
+        const {snackBarOn, snackBarMessage, severity} = this.state
         return (
-            !this.state.mobileView ? this.renderDesktopView() : this.renderMobileView()
+            <div>
+                {
+                    !this.state.mobileView ? 
+                    this.renderDesktopView() 
+                    : 
+                    this.renderMobileView()
+                }
+                <SnackBar
+                    open = {snackBarOn}
+                    autoHideDuration = {3000}
+                    message = {snackBarMessage}
+                    severity = {severity}
+                    handleClose = {this.handleSnackBarClose}
+                    align = {{ vertical: 'top', horizontal: 'right' }}
+                />
+            </div>
         )
     }
 }

@@ -1,4 +1,7 @@
 import React, {useState} from 'react'
+import {connect} from 'react-redux'
+
+import { logout } from '../../redux/actions/authAction'
 
 //Boostrap
 import Navbar from 'react-bootstrap/Navbar'
@@ -18,23 +21,27 @@ import GrainIcon from '@material-ui/icons/Grain';
 
 import './AppBar.css'
 
-const AppBar = () => {
+const AppBar = ({auth, history, logoutUser}) => {
   const [anchorEl, setAnchorEl] = useState(null);
-    const auth = false
 
     const nav = [
       {label:"Home", href:"/", icon: <HomeIcon className = "icon" />},
-      {label:"All Courses", href:"/", icon: <GrainIcon className = "icon" />},
+      {label:"Courses", href:"/", icon: <GrainIcon className = "icon" />},
       {label:"Staffs", href:"/", icon: <WhatshotIcon className = "icon" />},
       {label:"Contact", href:"/", icon: <InboxIcon className = "icon" />},
     ];
 
     const handleLoginRoute = () => {
-        window.location.replace('/signIn')
+        history.push('/signIn')
     }
 
     const handleSignUpRoute = () => {
-        window.location.replace('/signUp')
+        history.push('/signUp')
+    }
+
+    const handleLogout = () => {
+      logoutUser()
+      history.push('/')
     }
 
     const handleClick = (event) => {
@@ -43,6 +50,35 @@ const AppBar = () => {
 
     const handleClose = () => {
       setAnchorEl(false)
+    }
+
+    const handleMenuItemOnClick = (item) => {
+      switch(item) {
+        case "SIGN IN" : return handleLoginRoute()
+        case "SIGN UP" : return handleSignUpRoute()
+        case "LOG OUT" : return
+        default : return
+      }
+    }
+
+    const renderMobileMenu = (items) => {
+      return (
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+        {
+          items.map(item => {
+            return (
+              <MenuItem onClick = {() => handleMenuItemOnClick(item)}>{item}</MenuItem>
+            )
+          })
+        }
+        </Menu>
+      )
     }
 
     return (
@@ -65,14 +101,18 @@ const AppBar = () => {
             <Navbar.Collapse className="justify-content-end">
                 <div className = "section_desktop">
                   {
-                    !auth && (
+                    !auth ? (
                       <div className = "setion_desktop_container">
                         <Button variant="outline-primary" onClick = {handleLoginRoute}> SIGN IN </Button>
                         <div className = "horizontal_seperator"/>
-                        <Button variant="outline-primary" onClick = {handleSignUpRoute}> SIGN UP </Button>
+                        <Button variant="outline-primary" onClick = {handleSignUpRoute}> SIGN UP</Button>
                         <div className = "horizontal_seperator"/>
                       </div>
                     )
+                    :
+                    <div className = "setion_desktop_container">
+                      <Button variant="outline-primary" onClick = {handleLogout}> LOG OUT </Button>
+                    </div>
                   }
                 </div>
             </Navbar.Collapse>
@@ -80,31 +120,25 @@ const AppBar = () => {
               <IconButton aria-label="display more actions" edge="end" color="inherit" onClick = {handleClick}>
                 <MoreIcon />
               </IconButton>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                {
-                    auth ? (
-                      <>
-                        <MenuItem>PROFILE</MenuItem>
-                        <MenuItem>LOGOUT</MenuItem>
-                      </>
-                    ) : (
-                      <>
-                        <MenuItem onClick = {handleLoginRoute}>SIGN IN</MenuItem>
-                        <MenuItem onClick = {handleSignUpRoute}>SIGN UP</MenuItem>
-                      </>
-                    )
-                }
-              </Menu>      
+              {
+                auth ? renderMobileMenu(["LOGOUT"]) : renderMobileMenu(["SIGN IN", "SIGN UP"])
+              }    
             </div>
           </Navbar>
         </div>
     )
 }
 
-export default AppBar
+const mapStateToProps = (state) => {
+  return {
+      auth: state.auth.user
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+      logoutUser: () => { dispatch(logout()) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppBar)

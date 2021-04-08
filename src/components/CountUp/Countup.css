@@ -15,24 +15,10 @@
 
 .counter_span {
     font-size: 50px;
+    color: white;
 }
 
 .counter_tilte  {
     font-weight: bold;
-}
-
-@media(max-width: 574px) {
-    .count_img_src {
-        width: 45px;
-        height: 45px;
-    }
-    
-    .counter_span {
-        font-size: 20px;
-    }
-
-    .counter_tilte  {
-        font-weight: bold;
-        font-size: 8px;
-    }
+    color: white;
 }

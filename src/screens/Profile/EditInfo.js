@@ -39,6 +39,7 @@ class EditInfo extends Component {
     }
 
     render() {
+        const {genderOptions, levelOptions, gender, level} = this.props.values
         return (
             <div className = "edit_form">
                 <Row>
@@ -70,14 +71,24 @@ class EditInfo extends Component {
 
                 <Row>
                     <Col sm={6}>
-                        <Dropdown options = {this.props.values.genderOptions}/>
+                        <Dropdown 
+                            options = {genderOptions} 
+                            value = {gender} 
+                            onChange = {this.props.handleOnChange}
+                            name = "gender"
+                        />
                     </Col>
                     <Col sm={6}>
-                        <Dropdown options = {this.props.values.levelOptions}/>
+                        <Dropdown 
+                            options = {levelOptions} 
+                            value = {level} 
+                            onChange = {this.props.handleOnChange}
+                            name = "level"
+                        />
                     </Col>
                 </Row>
 
-                { this.renderTextArea("Bio") }
+                { this.renderTextArea("bio") }
             </div>
         )
     }

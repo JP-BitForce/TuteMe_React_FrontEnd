@@ -1,8 +1,14 @@
 import React from 'react';
 import { Typography, Divider,Grid} from "@material-ui/core/";
 import IconButton from '@material-ui/core/IconButton';
+<<<<<<< HEAD
 import AddIcon from './AddIcon'
 import EditIcon from './EditIcon'
+=======
+import AddIcon from '@material-ui/icons/Add';
+
+import EditIcon from '@material-ui/icons/Edit';
+>>>>>>> a31639c4a25bfe12be7ca19467e56d6720d2d2a0
 const data =[
     {
         name :"SUBJECTS",

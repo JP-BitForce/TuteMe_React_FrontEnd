@@ -67,12 +67,12 @@ const routes = {
             name: "HOME",
             id: "HOME",
             children: [],
-            acceptUserRole : "USER_STUDENT"
+            acceptUserRole : "ROLE_STUDENT"
           },
           {
             name: "ONE-STEP",
             id: "ONE_STEP",
-            acceptUserRole: "USER_STUDENT",
+            acceptUserRole: "ROLE_STUDENT",
             children: []
           }
         ]
@@ -83,7 +83,7 @@ const routes = {
           {
             name: "COURSES",
             id: "COURSES",
-            acceptUserRole: "USER_STUDENT",
+            acceptUserRole: "ROLE_STUDENT",
             children: [
               {
                 name: "MY COURSES",
@@ -99,7 +99,7 @@ const routes = {
             name: "TRUSTED-TUTORS",
             id: "TRUSTED_TUTORS",
             children: [],
-            acceptUserRole : "USER_STUDENT"
+            acceptUserRole : "ROLE_STUDENT"
           },
         ]
       },//END OF PAGES
@@ -110,19 +110,19 @@ const routes = {
             name: "PROFILE",
             id: "MY_PROFILE",
             children: [],
-            acceptUserRole : "USER_STUDENT"
+            acceptUserRole : "ROLE_STUDENT"
           },
           {
             name: "BLOG",
             id: "BLOG",
             children: [],
-            acceptUserRole : "USER_STUDENT"
+            acceptUserRole : "ROLE_STUDENT"
           },
           {
             name: "PAYMENTS",
             id: "PAYMENTS",
             children: [],
-            acceptUserRole : "USER_STUDENT"
+            acceptUserRole : "ROLE_STUDENT"
           },
         ]
       },//END OF MANAGEMENT
@@ -133,13 +133,13 @@ const routes = {
             name: "CHAT",
             id: "MY_CHATS",
             children: [],
-            acceptUserRole : "USER_STUDENT"
+            acceptUserRole : "ROLE_STUDENT"
           },
           {
             name: "CALENDAR",
             id: "CALENDAR",
             children: [],
-            acceptUserRole : "USER_STUDENT"
+            acceptUserRole : "ROLE_STUDENT"
           },
         ]
       }

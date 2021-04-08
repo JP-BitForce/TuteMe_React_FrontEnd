@@ -1,7 +1,10 @@
 import React, {useState} from 'react'
+import {connect} from 'react-redux'
 
 import TopBar from './TopBar'
 import SideBarAlt from '../../components/SideBar/SideBarAlt'
+import Modal from '../../components/Modal/SignOutModal'
+import { logout } from '../../redux/actions/authAction'
 
 import Home from '../Home/Home'
 import Profile from '../Profile/Profile'
@@ -47,17 +50,22 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const GettingStarted = () => {
+const GettingStarted = ({logoutUser, history}) => {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
     const [active, setActiveItem] = useState("HOME")
+    const [modalOpen, setModalOpen] = useState(false)
   
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const handleModalClode = () => {
+      setModalOpen(false)
+    }
     
     const handleSetActiveItem = (id) => {
       if (id === "SIGN_OUT") {
-        handleSignOut()
+        setModalOpen(true)
       } else {
         setActiveItem(id)
       }
@@ -76,7 +84,8 @@ const GettingStarted = () => {
     };
 
     const handleSignOut = () => {
-      
+      logoutUser()
+      history.push('/')
     }
 
     const renderPermanentDrawer = () => {
@@ -148,8 +157,23 @@ const GettingStarted = () => {
                 active === "PAYMENTS"  && <Payments/>
               }
           </main>
+          <Modal
+            open = {modalOpen}
+            handleClose = {handleModalClode}
+            title = "Alert!"
+            handleCancel = {handleModalClode}
+            handleOk = {handleSignOut}
+            content = "Are you sure about sign-out ?"
+          />
       </div>
     );
 }
 
-export default GettingStarted
+
+const mapDispatchToProps = dispatch => {
+  return {
+      logoutUser: () => { dispatch(logout()) }
+  }
+}
+
+export default connect(null,mapDispatchToProps)(GettingStarted)

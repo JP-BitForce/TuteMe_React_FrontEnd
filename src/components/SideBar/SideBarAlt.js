@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+import {connect} from 'react-redux'
 
 //Material-UI
 import List from '@material-ui/core/List';
@@ -84,10 +85,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const SideBarAlt = ({itemOnClick, active}) => {
+const SideBarAlt = ({itemOnClick, active, auth}) => {
     const styles = useStyles()
     const [open, setOpen] = useState("")
-    const userRole = "USER_STUDENT"
+    const [userDetails, setUserDetails] = useState(null)
+    const [userRole, setUserRole] = useState("ROLE_STUDENT")
     const icons = {
         HOME : <Dashboard/>,
         COURSES : <Grain/>,
@@ -100,6 +102,14 @@ const SideBarAlt = ({itemOnClick, active}) => {
         PAYMENTS : <Payment/>,
         SIGN_OUT : <ExitToApp/>
     }
+
+    useEffect(() => {
+        if(auth) {
+            setUserDetails(auth)
+            setUserRole(auth.role)
+        }
+        // eslint-disable-next-line
+    }, [])
 
     const handleSetOpen = (id) => {
         if (open === id) {
@@ -174,8 +184,8 @@ const SideBarAlt = ({itemOnClick, active}) => {
                     <Avatar src = {avatar}/>
                 </div>
                 <div className = {styles.info}>
-                    <span className = {styles.primary}>Allan Nickman</span>
-                    <span className = {styles.secondary}>admin</span>
+                    <span className = {styles.primary}>{userDetails && userDetails.email}</span>
+                    <span className = {styles.secondary}>{userDetails && userDetails.role.toLowerCase()}</span>
                 </div>
             </div>
             <div className = "navigations_root">
@@ -210,4 +220,11 @@ const SideBarAlt = ({itemOnClick, active}) => {
     )
 }
 
-export default SideBarAlt
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+  
+export default connect(mapStateToProps)(SideBarAlt)
