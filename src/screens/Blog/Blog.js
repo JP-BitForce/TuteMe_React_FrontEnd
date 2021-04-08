@@ -8,6 +8,7 @@ import HeaderCard from '../../components/Header/HeaderCard'
 import NewBlog from './NewBlog'
 import BlogPreview from './BlogPreview'
 import SnackBar from '../../components/SnackBar/SnackBar'
+import Pagination from '../../components/Pagination/Paginator'
 import { createNewBlog, getAllBlogs, getOwnBlogs } from '../../api/blog'
 
 //Boostarp
@@ -71,7 +72,7 @@ class Blog extends Component {
             this.setState({
                 loading: false,
                 blogsData: response.blogs,
-                current: response.current,
+                current: response.current+1,
                 total: response.total
             })
         }).catch(err => {
@@ -96,7 +97,7 @@ class Blog extends Component {
             this.setState({
                 loading: false,
                 blogsData: response.blogs,
-                current: response.current,
+                current: response.current+1,
                 total: response.total
             })
         }).catch(err => {
@@ -175,6 +176,18 @@ class Blog extends Component {
             severity: "warning",
             snackBarMessage: msg
         })
+    }
+
+    handlePaginationOnChange = (event, value) => {
+        this.setState({
+            current: value
+        })
+        if(this.state.tabValue === 0) {
+            this.getAllBlogsApi(value-1)
+        }
+        if(this.state.tabValue === 1) {
+            this.getOwnBlogsApi(value-1)
+        }
     }
 
     getImageSource = (blob) => {
@@ -330,6 +343,7 @@ class Blog extends Component {
     }
 
     renderBlogsContainer = () => {
+        const { loading, total, current } = this.state
         return (
             <>
             <div className = "blog_search_block">
@@ -343,12 +357,22 @@ class Blog extends Component {
                 />
             </div>
             { 
-                !this.state.loading ? this.renderBlogs() 
+                !loading ? this.renderBlogs() 
                 :
                 <div className = "loading_div">
                     <CircularProgress/>
                 </div>
             }
+            <div className = "pagination_div">
+                {
+                    !loading &&
+                    <Pagination 
+                        total = {total}
+                        current = {current}
+                        handleOnChange = {this.handlePaginationOnChange}
+                    />
+                }
+            </div>
             </>
         )
     }
