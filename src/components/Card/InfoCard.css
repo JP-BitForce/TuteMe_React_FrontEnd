@@ -257,20 +257,32 @@
     text-align: left;
 }
 
-.blog_card_content span {
+.blog_card_content_date {
     color: rgb(145, 158, 171);
     font-size: 0.8rem;
 }
 
-.blog_card_content p {
+.blog_card_content_title {
     margin: 0px;
     font-family: "Be Vietnam", sans-serif;
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     line-height: 1.57143;
     color: inherit;
     text-decoration: none;
     margin-top: 3%;
+}
+
+.blog_card_content_des {
+    margin: 0px;
+    font-family: "Be Vietnam", sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1.57143;
+    color: inherit;
+    text-decoration: none;
+    margin-top: 3%;
+    color: rgb(145, 158, 171);
 }
 
 .blog_card_footer {

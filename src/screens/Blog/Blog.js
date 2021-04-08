@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 
-import Loading from '../../components/Loading/Loading'
 import ChipButton from '../../components/Button/ChipButton'
 import BlogCard from '../../components/Card/BlogCard'
 import Selector from '../../components/Input/Selector'
@@ -9,7 +8,7 @@ import HeaderCard from '../../components/Header/HeaderCard'
 import NewBlog from './NewBlog'
 import BlogPreview from './BlogPreview'
 import SnackBar from '../../components/SnackBar/SnackBar'
-import { createNewBlog, getAllBlogs } from '../../api/blog'
+import { createNewBlog, getAllBlogs, getOwnBlogs } from '../../api/blog'
 
 //Boostarp
 import Form from "react-bootstrap/Form";
@@ -17,6 +16,8 @@ import Form from "react-bootstrap/Form";
 //Material-UI
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import Grid from '@material-ui/core/Grid';
 import Add from '@material-ui/icons/Add';
 import Search from '@material-ui/icons/Search';
@@ -65,6 +66,7 @@ class Blog extends Component {
 
     getAllBlogsApi = (page) => {
         const auth = this.props.auth
+        this.setState({ loading: true })
         getAllBlogs(auth.accessToken, page).then(response => {
             this.setState({
                 loading: false,
@@ -75,7 +77,35 @@ class Blog extends Component {
         }).catch(err => {
             this.setState({
                 loading: false,
-                fetchError: "Unable to fetch data, please try again"
+                fetchError: "Unable to fetch data, please try again",
+                blogsData: [],
+                current: 0,
+                total: 1
+            })
+        })
+    }
+
+    getOwnBlogsApi = (page) => {
+        const auth = this.props.auth
+        const request = {
+            userId: auth.userId,
+            page
+        }
+        this.setState({ loading: true })
+        getOwnBlogs(auth.accessToken, request).then(response => {
+            this.setState({
+                loading: false,
+                blogsData: response.blogs,
+                current: response.current,
+                total: response.total
+            })
+        }).catch(err => {
+            this.setState({
+                loading: false,
+                fetchError: "Unable to fetch data, please try again",
+                blogsData: [],
+                current: 0,
+                total: 1
             })
         })
     }
@@ -174,6 +204,12 @@ class Blog extends Component {
             tabValue: newValue,
             currentTab: this.tab_links[newValue]
         })
+        if(newValue === 1) {
+            this.getOwnBlogsApi(0)
+        }
+        if (newValue === 0) {
+            this.getAllBlogsApi(0)
+        }
     }
 
     addNewBlockOnClick = () => {
@@ -271,7 +307,7 @@ class Blog extends Component {
                 <Grid container spacing={4}>
                     {
                         this.state.blogsData.map(item => {
-                            const {date, description, comments, likes, coverImg, authorImg } = item
+                            const {date, description, comments, likes, coverImg, authorImg, title, content } = item
                             return (
                                 <Grid item xs={6} sm={6} md={3}>
                                     <BlogCard
@@ -281,6 +317,8 @@ class Blog extends Component {
                                         description = {description}
                                         comments = {comments.length}
                                         likes = {likes}
+                                        title = {title}
+                                        content = {content}
                                     />
                                 </Grid>
                             )
@@ -305,7 +343,11 @@ class Blog extends Component {
                 />
             </div>
             { 
-                !this.state.loading && this.renderBlogs() 
+                !this.state.loading ? this.renderBlogs() 
+                :
+                <div className = "loading_div">
+                    <CircularProgress/>
+                </div>
             }
             </>
         )
@@ -364,12 +406,10 @@ class Blog extends Component {
     }
 
     render() {
-        const {loading, previewOn, title, content, cover, snackBarOn, snackBarMessage, severity} = this.state
+        const {previewOn, title, content, cover, snackBarOn, snackBarMessage, severity} = this.state
         return (
             <div className = "blog_root_div">
                 {
-                    loading ? <Loading open = {loading}/>
-                    :
                     this.renderRootContainer()
                 }
                 <BlogPreview
