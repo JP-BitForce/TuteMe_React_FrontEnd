@@ -17,7 +17,7 @@ import './Blog.css'
 
 const BlogPreview = ({open, handleClose, content, cover, title}) => {
     const descriptionElementRef = useRef(null);
-    
+
     useEffect(() => {
       if (open) {
         const { current: descriptionElement } = descriptionElementRef;
@@ -33,10 +33,10 @@ const BlogPreview = ({open, handleClose, content, cover, title}) => {
                 <CardActionArea>
                     <CardMedia
                         component="img"
-                        alt="Contemplative Reptile"
+                        alt="cover image"
                         height="140"
                         image = {cover}
-                        title="Contemplative Reptile"
+                        title="cover image"
                     />
                     <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
@@ -66,7 +66,11 @@ const BlogPreview = ({open, handleClose, content, cover, title}) => {
                         ref={descriptionElementRef}
                         tabIndex={-1}
                     >
-                    { renderContent() }
+                    { 
+                        content ? renderContent() 
+                        :
+                        <span>No contents to preview</span>
+                    }
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

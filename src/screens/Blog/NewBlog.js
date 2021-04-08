@@ -5,6 +5,7 @@ import Quill from './Quill'
 //Material-UI
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
 import upload from '../../assets/images/Blog/upload.svg'
@@ -112,6 +113,7 @@ const NewBlog = ({
                 fullWidth
                 name = "description"
                 onChange = {handleOnChange}
+                placeholder = "Provide small description about your blog...."
             />
             
             <div className = "new_blog_content">
@@ -125,8 +127,17 @@ const NewBlog = ({
             </div>
 
             <div className = "button_footer">
-                <Button variant="outlined" onClick = {handlePreviewOnClick}>Preview</Button>
-                <Button className = {classes.post_btn} type = "submit">Post</Button>
+                {
+                    values["addNewBlogLoading"] ? 
+                    <div className = "loading_div">
+                        <CircularProgress/>
+                    </div>
+                    :
+                    <>
+                    <Button variant="outlined" onClick = {handlePreviewOnClick}>Preview</Button>
+                    <Button className = {classes.post_btn} type = "submit">Post</Button>
+                    </>
+                }
             </div>
         </div>
     )

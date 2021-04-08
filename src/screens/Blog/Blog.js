@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import ChipButton from '../../components/Button/ChipButton'
@@ -7,6 +8,8 @@ import Selector from '../../components/Input/Selector'
 import HeaderCard from '../../components/Header/HeaderCard'
 import NewBlog from './NewBlog'
 import BlogPreview from './BlogPreview'
+import SnackBar from '../../components/SnackBar/SnackBar'
+import { createNewBlog, getAllBlogs } from '../../api/blog'
 
 //Boostarp
 import Form from "react-bootstrap/Form";
@@ -21,7 +24,6 @@ import Dialpad from '@material-ui/icons/Dialpad';
 import HowToReg from '@material-ui/icons/HowToReg';
 
 import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
-import cover_12 from '../../assets/images/shared/cover_12.jpg'
 import headerImg from '../../assets/images/Blog/headerImg.jpg'
 import './Blog.css'
 
@@ -31,7 +33,7 @@ class Blog extends Component {
         searchValue: "",
         filterValue: "Latest",
         filterOptions: ["Latest", "Oldest", "Popular", "My Blogs"],
-        tabValue: 2,
+        tabValue: 0,
         currentTab: "All",
         title: "",
         description: "",
@@ -39,7 +41,15 @@ class Blog extends Component {
         addBlogFormValidated: false,
         file: null,
         cover: null,
-        previewOn: false
+        previewOn: false,
+        snackBarOn: false,
+        severity: "success",
+        snackBarMessage: "",
+        addNewBlogLoading: false,
+        fetchError: null,
+        blogsData: [],
+        total: 1,
+        current: 0
     }
 
     tab_links = ["All", "Own"]
@@ -49,24 +59,26 @@ class Blog extends Component {
         Own: <HowToReg/>,
     }
 
-    blogs = [
-        {
-            src: cover_12, 
-            avatar: minimal_avatar, 
-            date: "12 November 2020",
-            description: "Katie Griffin loves making that homey art",
-            comments: "11.2k",
-            likes: "24k" 
-        },
-        {
-            src: cover_12, 
-            avatar: minimal_avatar, 
-            date: "12 November 2020",
-            description: "Katie Griffin loves making that homey art",
-            comments: "11.2k",
-            likes: "24k" 
-        },
-    ]
+    componentDidMount() {
+        this.getAllBlogsApi(0)
+    }
+
+    getAllBlogsApi = (page) => {
+        const auth = this.props.auth
+        getAllBlogs(auth.accessToken, page).then(response => {
+            this.setState({
+                loading: false,
+                blogsData: response.blogs,
+                current: response.current,
+                total: response.total
+            })
+        }).catch(err => {
+            this.setState({
+                loading: false,
+                fetchError: "Unable to fetch data, please try again"
+            })
+        })
+    }
 
     handleAddNewBlog = (event) => {
         const form = event.currentTarget;
@@ -76,13 +88,67 @@ class Blog extends Component {
             addBlogFormValidated: !form.checkValidity(),
         });
 
-        // const { title, description, content, file} = this.state
-
+        const { title, description, content, file} = this.state
+        if (title && description && content) {
+            this.setState({ addNewBlogLoading : true })
+            const auth = this.props.auth
+            const userId = auth.userId
+            const blog = {
+                userId,
+                title,
+                description,
+                content
+            }
+            const formData = new FormData()
+            const json = JSON.stringify(blog)
+            const blob = new Blob([json], {
+                type: 'application/json'
+            });
+            formData.append("blog", blob)
+            formData.append("file", file);
+            createNewBlog(auth.accessToken, formData).then(response => {
+                this.setSnackBarSuccess("Blog created successfully")
+                this.setState({ addNewBlogLoading : false })
+            }).catch(err => {
+                this.setSnackBarError("Adding new blog failed, please try again")
+                this.setState({ addNewBlogLoading : false })
+            })
+        } else {
+            this.setSnackBarWarning("Oops! Fields cannot be empty")
+        }
     }
 
     handleBlogsSearch = (event) => {
         event.preventDefault();
         event.stopPropagation();
+    }
+
+    setSnackBarSuccess = (msg) => {
+        this.setState({
+            snackBarOn: true,
+            severity: "success",
+            snackBarMessage: msg
+        })
+    }
+    
+    setSnackBarError = (msg) => {
+        this.setState({
+            snackBarOn: true,
+            severity: "error",
+            snackBarMessage: msg
+        })
+    }
+
+    setSnackBarWarning = (msg) => {
+        this.setState({
+            snackBarOn: true,
+            severity: "warning",
+            snackBarMessage: msg
+        })
+    }
+
+    getImageSource = (blob) => {
+        return `data:image/jpeg;base64,${blob}`
     }
 
     handleInputOnChange = (event) => {
@@ -137,6 +203,13 @@ class Blog extends Component {
             cover: null,
             file : null
         });
+    }
+
+    handleSnackBarClose = () => {
+        this.setState({ 
+            snackBarOn: false,
+            snackBarMessage: ""
+        })
     }
 
     handlePreviewOnClick = () => {
@@ -197,16 +270,16 @@ class Blog extends Component {
             <div className = "blogs_container">
                 <Grid container spacing={4}>
                     {
-                        this.blogs.map(item => {
-                            const {date, avatar, description, comments, likes, src} = item
+                        this.state.blogsData.map(item => {
+                            const {date, description, comments, likes, coverImg, authorImg } = item
                             return (
                                 <Grid item xs={6} sm={6} md={3}>
                                     <BlogCard
-                                        src = {src}
-                                        avatar = {avatar}
+                                        src = {this.getImageSource(coverImg)}
+                                        avatar = {authorImg ? this.getImageSource(authorImg) : minimal_avatar}
                                         date = {date}
                                         description = {description}
-                                        comments = {comments}
+                                        comments = {comments.length}
                                         likes = {likes}
                                     />
                                 </Grid>
@@ -218,7 +291,7 @@ class Blog extends Component {
         )
     }
 
-    renderAllBlogContainer = () => {
+    renderBlogsContainer = () => {
         return (
             <>
             <div className = "blog_search_block">
@@ -231,24 +304,9 @@ class Blog extends Component {
                     options = {this.state.filterOptions}
                 />
             </div>
-            { this.renderBlogs() }
-            </>
-        )
-    }
-
-    renderOwnBlogContainer = () => {
-        return (
-            <>
-            <div className = "blog_search_block">
-                <form noValidate autoComplete="off" onSubmit = {this.handleBlogsSearch}>
-                    { this.renderSearchField() }
-                </form>
-                <Selector
-                    value = {this.state.filterValue}
-                    onChange = {this.handleFilterOnChnage}
-                    options = {this.state.filterOptions}
-                />
-            </div>
+            { 
+                !this.state.loading && this.renderBlogs() 
+            }
             </>
         )
     }
@@ -276,10 +334,10 @@ class Blog extends Component {
 
     renderMainContainer = () => {
         switch(this.state.tabValue) {
-            case 0 : return this.renderAllBlogContainer()
-            case 1 : return this.renderOwnBlogContainer()
+            case 0 : 
+            case 1 : return this.renderBlogsContainer()
             case 2 : return this.renderCreateNewBlock()
-            default : return this.renderAllBlogContainer()
+            default : return this.renderBlogsContainer()
         }
     }
 
@@ -306,12 +364,11 @@ class Blog extends Component {
     }
 
     render() {
-        const {previewOn, title, content, cover} = this.state
+        const {loading, previewOn, title, content, cover, snackBarOn, snackBarMessage, severity} = this.state
         return (
             <div className = "blog_root_div">
                 {
-                    this.state.loading ? 
-                    <Loading/>
+                    loading ? <Loading open = {loading}/>
                     :
                     this.renderRootContainer()
                 }
@@ -322,9 +379,23 @@ class Blog extends Component {
                     content = {content}
                     cover = {cover}
                 />
+                <SnackBar
+                    open = {snackBarOn}
+                    autoHideDuration = {3000}
+                    message = {snackBarMessage}
+                    severity = {severity}
+                    handleClose = {this.handleSnackBarClose}
+                    align = {{ vertical: 'top', horizontal: 'right' }}
+                />
             </div>
         )
     }
 }
 
-export default Blog
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(Blog)
