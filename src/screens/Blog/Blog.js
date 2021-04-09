@@ -460,7 +460,7 @@ class Blog extends Component {
             severity, 
             openBlogFullPreview, 
             selectedBlog, 
-            replyValue } = this.state
+        } = this.state
         return (
             <div className = "blog_root_div">
                 {
@@ -487,8 +487,7 @@ class Blog extends Component {
                         open = {openBlogFullPreview}
                         handleClose = {this.handleBlogPreviewClose}
                         blog = {selectedBlog}
-                        replyValue = {replyValue}
-                        handleInputOnChange = {this.handleInputOnChange}
+                        auth = {this.props.auth}
                     />
                 }
             </div>

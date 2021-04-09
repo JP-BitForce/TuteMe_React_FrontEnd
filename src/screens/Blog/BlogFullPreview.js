@@ -1,4 +1,7 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+
+import Loading from '../../components/Loading/Loading'
+import {getComments, addReply} from '../../api/comment'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -20,6 +23,7 @@ import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import TextField from '@material-ui/core/TextField';
 import Collapse from '@material-ui/core/Collapse';
 import Box from '@material-ui/core/Box';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
@@ -48,11 +52,46 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const BlogFullPreview = ({open, handleClose, blog, handleReply, handleInputOnChange, replyValue}) => {
+const BlogFullPreview = ({open, handleClose, blog, auth}) => {
     const classes = useStyles();
     const [replyOn, setReplyOn] = useState(false)
+    const [replyValue, setReplyValue] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [comments, setComments] = useState([])
+    const [replyLoading, setReplyLoading] = useState(false)
 
-    const {date, description, comments, likes, coverImg, authorImg, title, id, content } = blog
+    const {date, description, likes, coverImg, authorImg, title, id, content } = blog
+
+    useEffect(()=> {
+        getCommentsApi()
+        // eslint-disable-next-line
+    },[])
+
+    const getCommentsApi = () => {
+        setLoading(true)
+        getComments(auth.accessToken, id).then(response => {
+            setComments(response.commentList)
+            setLoading(false)
+        }).catch(err => {
+            setLoading(false)
+        })
+    }
+
+    const handleReply = () => {
+        const request = {
+            userId: auth.userId,
+            blogId: id,
+            commentParentId: 1,
+            reply: replyValue
+        }
+
+        setReplyLoading(true)
+        addReply(auth.accessToken, request).then(response => {
+            setReplyLoading(false)
+        }).catch(err => {
+            setReplyLoading(false)
+        })
+    }
 
     const getImageSource = (blob) => {
         return `data:image/jpeg;base64,${blob}`
@@ -60,6 +99,10 @@ const BlogFullPreview = ({open, handleClose, blog, handleReply, handleInputOnCha
 
     const handleReplyBtnOnClick = () => {
         setReplyOn(!replyOn)
+    }
+
+    const handleInputOnChange = (event) => {
+        setReplyValue(event.target.value)
     }
 
     const renderTop = () => {
@@ -142,16 +185,17 @@ const BlogFullPreview = ({open, handleClose, blog, handleReply, handleInputOnCha
     }
 
     const renderCommentCard = (item) => {
-        const {blogComment, date, user} = item
+        const {date, author, comment, authorImg, replyList} = item
+        console.log(replyList)
         return (
             <div className = "preview_comment_card">
-                <Avatar alt="Remy Sharp" src = {avatar1}/>
+                <Avatar alt="Remy Sharp" src = {getImageSource(authorImg)}/>
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={12} md={11}>
                         <div className = "comment_details">
-                            <span className = "comment_details_span ">{`${user.firstName} ${user.lastName}`}</span>
+                            <span className = "comment_details_span ">{author}</span>
                             <p className = "comment_details_p">
-                                <span className = "comment_text">{blogComment}</span>
+                                <span className = "comment_text">{comment}</span>
                                 <span className = "comment_date">{date}</span>
                             </p>
                         </div>
@@ -187,10 +231,17 @@ const BlogFullPreview = ({open, handleClose, blog, handleReply, handleInputOnCha
                     name = "replyValue"
                     size = "small"
                 />
-                <div className = "reply_con_btns">
-                    <Button onClick = {handleReplyBtnOnClick}>cancel</Button>
-                    <Button color="primary" onClick = {handleReply}>send</Button>
-                </div>
+                {
+                    replyLoading ? 
+                    <div className = "loading_div">
+                        <CircularProgress/>
+                    </div>
+                    :
+                    <div className = "reply_con_btns">
+                        <Button onClick = {handleReplyBtnOnClick}>cancel</Button>
+                        <Button color="primary" onClick = {handleReply}>send</Button>
+                    </div>
+                }
             </div>
         )
     }
@@ -206,14 +257,18 @@ const BlogFullPreview = ({open, handleClose, blog, handleReply, handleInputOnCha
                 </Toolbar>
             </AppBar>
 
-            <Container className = {classes.container}>
-                <div className = "blog_full_preview_root">
-                    { renderTop() }
-                    { renderMain() }
-                    { renderLikes() }
-                    { renderComments() }
-                </div>
-            </Container>
+            {
+                loading ? <Loading open = {loading}/>
+                :
+                <Container className = {classes.container}>
+                    <div className = "blog_full_preview_root">
+                        { renderTop() }
+                        { renderMain() }
+                        { renderLikes() }
+                        { renderComments() }
+                    </div>
+                </Container>
+            }
         </Dialog>
     )
 }
