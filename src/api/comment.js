@@ -13,3 +13,8 @@ export const addReply = (token, body) => {
     const endpoint = getEndpointWithPrefix(`addCommentReply`)
     return POST(endpoint, body, token)
 }
+
+export const addComment = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`addComment`)
+    return POST(endpoint, body, token)
+}
