@@ -26,7 +26,7 @@ const CourseEnrolled = ({src, title, by, rating}) => {
                         </div>
                         <Divider/>
                         <h5>{title}</h5>
-                        <p>Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus eleifend, et auctor lorem hendrerit.</p>
+                        <h6>Donec molestie tincidunt tellus sit amet aliquet</h6>
                         <div className = "course_enrolled_rating">
                             <ReadOnlyRating rate = {rating}/>
                         </div>
