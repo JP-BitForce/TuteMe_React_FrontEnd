@@ -4,29 +4,37 @@ import Loading from '../../components/Loading/Loading'
 import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import CourseEnrolled from '../../components/Card/CourseEnrolled'
+import Pagination from '../../components/Pagination/Paginator'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
 
-import all from '../../assets/images/courses/all.png'
 import headerImg from '../../assets/images/Course/course.jpg'
-import certificate from '../../assets/images/Course/certificate.png'
-import online_materials from '../../assets/images/Course/online_materials.png'
 import reactJs from '../../assets/images/Course/react.jpg'
 import './Courses.css'
 
 class MyCourses extends Component {
     state = {
         loading: false,
-        checked: [0],
         searchValue: "",
-        selected:{category : "ALL", src : all },
+        searchValueError: false,
+        categoryChecked: [0],
+        tutorChecked: [0],
+        typeChecked: [0],
+        allCoursecategories: [],
+        slicedCourseCategories: [],
+        allCourseInstructors: [],
+        slicedCourseInstructors: [],
+        allCourseType: [],
+        slicedCourseType: [],
+        total: 1,
+        current: 1
     }
 
     courseCategories = [
-        "ALL",
+        "All",
         "UI/UX Design",
         "Art & Design",
         "Computer Science",
@@ -40,14 +48,9 @@ class MyCourses extends Component {
         "Management"
     ]
 
-    courseInstuctors = [
-        " Ronald Jackson",
-        "John Dee",
-        "Nathan Messy",
-        " Tony Griffin"
-    ]
+    courseInstuctors = ["All"," Ronald Jackson","John Dee","Nathan Messy"," Tony Griffin"]
 
-    courseType = ["Primary", "Ordinary", "Advanced", "Others"]
+    courseType = ["All", "Primary", "Ordinary", "Advanced"]
 
     dummyCourses = [
         {des:"lorem ipsum", name:"Design for the web", by:"John Smith", rating:4},
@@ -58,79 +61,185 @@ class MyCourses extends Component {
         {des:"lorem ipsum", name:"web with adobe photoshop", by:"Django Caprio", rating:5},
     ]
 
-    cards = [
-        {src : certificate, title : "Certifications", description :"The automated process all your website tasks."},
-        {src : online_materials, title : "E-Materials",  description :"The automated process all your website tasks."},
-    ]
+    componentDidMount() {
+        this.setState({
+            slicedCourseCategories: this.courseCategories.slice(0,5),
+            slicedCourseInstructors: this.courseInstuctors.slice(0,5),
+            slicedCourseType: this.courseType.slice(0,5),
+            allCoursecategories: this.courseCategories,
+            allCourseInstructors: this.courseInstuctors,
+            allCourseType: this.courseType,
+        })
+    }
 
-    categories = [
-        {title : "Course Category", options: this.courseCategories},
-        {title : "Course Instructors", options: this.courseInstuctors},
-        {title : "Course Type", options: this.courseType},
-    ]
+    handleCourseSearch = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!this.state.searchValue) {
+            this.setState({ searchValueError: true })
+        } else {
+            this.setState({ searchValueError: false })
+        }
+    }
 
-    handleSearch = () => {
+    handleFilter = () => {
+        const {
+            categoryChecked, typeChecked, tutorChecked,
+            allCoursecategories, allCourseType, allCourseInstructors
+        } = this.state
+
+        let categoryList = []
+        categoryChecked.filter(idx => {
+            categoryList.push(allCoursecategories[idx])
+            return 0
+        })
+
+        let tutorList = []
+        tutorChecked.filter(idx => {
+            tutorList.push(allCourseInstructors[idx])
+            return 0
+        })
+
+        let typeList = []
+        typeChecked.filter(idx => {
+            typeList.push(allCourseType[idx])
+            return 0
+        })
         
     }
 
-    handleInputOnChange = () => {
-
+    handleInputOnChange = (event) => {
+        const {value, name} = event.target
+        this.setState({
+            [name]: value,
+            searchValueError: false
+        })
     }
 
-    handleToggle = (value) => () => {
-        const checked = this.state.checked
-        const currentIndex = checked.indexOf(value);
+    handleToggle = (type, index) => {
+        switch(type) {
+            case "Course Category": this.handleCheck("categoryChecked", index)
+                                    break;
+            case "Course Instructors": this.handleCheck("tutorChecked", index)
+                                       break;
+            case "Course Type": this.handleCheck("typeChecked", index)
+                                break;
+            default: return
+        }
+    }
+
+    handleCheck = (type, index) => {
+        const checked = this.state[type]
+        const currentIndex = checked.indexOf(index);
         const newChecked = [...checked];
-    
+
         if (currentIndex === -1) {
-          newChecked.push(value);
+          newChecked.push(index);
         } else {
           newChecked.splice(currentIndex, 1);
         }
-    
+
+        this.setState({ [type]: newChecked })
+    }
+
+    handleLoadMore = (type) => {
+        const {
+            allCoursecategories, allCourseInstructors, allCourseType
+        } = this.state
+        switch(type) {
+            case "Course Category": this.handleLoad(allCoursecategories, "slicedCourseCategories")
+                                    break;
+            case "Course Instructors": this.handleLoad(allCourseInstructors, "slicedCourseInstructors")
+                                       break;
+            case "Course Type": this.handleLoad(allCourseType, "slicedCourseType")
+                                break;
+            default: return
+        }
+    }
+
+    handleLoad = (all, state) => {
+        let data = all
+        if(this.state[state] === all) {
+            data = all.slice(0,5)
+        } 
         this.setState({
-            checked: newChecked
+            [state]: data
         })
-    };
+    }
+
+    handlePaginationOnChange = (page) => {
+
+    }
 
     renderListHead = () => {
-        const selected = this.state.selected
+        const {searchValue, searchValueError} = this.state
         return (
             <div className = "courses_list_head">
-                <div className = "header_category">
-                    <div className = "category_icon_small selected_category">
-                        <Avatar src = {selected.src}/>
-                    </div>
-                    <span>
-                        {selected.category}
-                    </span>
-                </div>
-                <form noValidate autoComplete="off" onSubmit = {this.handleCoursesSearch}>
-                    <TextField id="standard-basic" label="serach" onChange = {this.handleSearchOnChange}/>
+                <Button variant="contained" onClick = {this.handleFilter}>Filter courses</Button>
+                <form noValidate autoComplete="off" onSubmit = {this.handleCourseSearch}>
+                    <TextField
+                        id="standard-basic" 
+                        label="course" 
+                        onChange = {this.handleInputOnChange} 
+                        variant = "outlined"
+                        error = {searchValueError}
+                        value = {searchValue}
+                        helperText = {searchValueError && "Incorrect entry"}
+                        name = "searchValue"
+                        size = "small"
+                    />
+                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">Search</Button>
                 </form>
             </div>
         )
     }
 
     renderCategoryFilters = () => {
-        return this.categories.map(item => {
-            return (
-                <Grid item xs={6} sm={4} md={12}>
+        const {
+            slicedCourseCategories, slicedCourseInstructors, slicedCourseType, 
+            categoryChecked, tutorChecked, typeChecked,
+            allCoursecategories, allCourseInstructors, allCourseType
+        } = this.state
+        return (
+            <>
+                <Grid item xs={6} sm={6} md={12}>
                     <CategoryFilter 
-                        title = {item.title}
-                        options = {item.options}
+                        title = "Course Category"
+                        options = {slicedCourseCategories}
                         handleToggle = {this.handleToggle}
-                        checked = {this.state.checked}
+                        checked = {categoryChecked}
+                        handleLoadMore = {this.handleLoadMore}
+                        total = {allCoursecategories.length}
                     />
                 </Grid>
-            )
-        })
+                <Grid item xs={6} sm={6} md={12}>
+                    <CategoryFilter 
+                        title = "Course Instructors"
+                        options = {slicedCourseInstructors}
+                        handleToggle = {this.handleToggle}
+                        checked = {tutorChecked}
+                        handleLoadMore = {this.handleLoadMore}
+                        total = {allCourseInstructors.length}
+                    />
+                </Grid>
+                <Grid item xs={6} sm={6} md={12}>
+                    <CategoryFilter 
+                        title = "Course Type"
+                        options = {slicedCourseType}
+                        handleToggle = {this.handleToggle}
+                        checked = {typeChecked}
+                        handleLoadMore = {this.handleLoadMore}
+                        total = {allCourseType.length}
+                    />
+                </Grid>
+            </>
+        )
     }
 
-    renderCourseCards = (item) => {
+    renderCourseCards = (item, index) => {
         const {name, by, rating} = item
         return (
-            <Grid item key={name} xs={12} sm={12} md={4}>
+            <Grid item xs={6} sm={6} md={4} key = {index}>
                 <div className = "course_enrolled_card">
                     <CourseEnrolled src = {reactJs} title = {name} by = {by} rating = {rating}/>
                 </div>
@@ -139,26 +248,37 @@ class MyCourses extends Component {
     }
 
     renderCoursesConatiner = () => {
+        const {loading, total, current} = this.state
         return (
             <div className = "my_courses__container">
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={12} md={3}>
-                        <Grid container spacing={4}>
+                        <Grid container spacing={1}>
                             { this.renderCategoryFilters() }
                         </Grid>
                     </Grid>
                     <Grid item xs={12} sm={12} md={9}>
-                        <div maxWidth="md">
+                        <div maxWidth="md" className = "course__list__root">
                         <div maxWidth="md">
                             { this.renderListHead() }
                         </div>
                             <Grid container spacing={4}>
                                 {
-                                    this.dummyCourses.map(item => {
-                                        return this.renderCourseCards(item)
+                                    this.dummyCourses.map((item, index) => {
+                                        return this.renderCourseCards(item, index)
                                     })
                                 }
                             </Grid>
+                        </div>
+                        <div className = "pagination_div">
+                            {
+                                !loading &&
+                                <Pagination 
+                                    total = {total}
+                                    current = {current}
+                                    handleOnChange = {this.handlePaginationOnChange}
+                                />
+                            }
                         </div>
                     </Grid>
                 </Grid>
@@ -181,7 +301,6 @@ class MyCourses extends Component {
                 <Header 
                     title = "EXPLORE COURSES" 
                     src = {headerImg}
-                    cards = {this.cards}
                 />
                 {
                     loading ? 

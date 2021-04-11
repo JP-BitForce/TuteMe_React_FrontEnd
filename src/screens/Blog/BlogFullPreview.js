@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react'
 
-import Loading from '../../components/Loading/Loading'
 import Pagination from '../../components/Pagination/Paginator'
 import {getComments, addReply, addComment} from '../../api/comment'
 

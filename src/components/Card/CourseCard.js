@@ -9,14 +9,14 @@ import Divider from '@material-ui/core/Divider';
 
 import './InfoCard.css'
 
-const CourseCard = ({src, title, by, rating, onClick, price}) => {
+const CourseCard = ({src, title, by, rating, onClick, price, description}) => {
     return (
         <div className = "course_enrolled_item">
             <Grid conatiner>
                 <Grid item xs={12} sm={12} md={12}>
                     <div className = "course_thumnail">
                       <img src = {src} alt = {title} className = "course_thumnail_img"/>
-                      <div className = "course_price">$ 150</div>
+                      <div className = "course_price">${price}</div>
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>
@@ -27,11 +27,15 @@ const CourseCard = ({src, title, by, rating, onClick, price}) => {
                     </div>
                     <Divider/>
                     <h5>{title}</h5>
-                    <p>Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus eleifend, et auctor lorem hendrerit.</p>
-                    <div className = "online_course_footer">
-                      <ReadOnlyRating rate = {rating}/>
-                      <Button size="small" onClick = {onClick}>Enroll now</Button>
-                    </div>
+                    <h6>{description}</h6>
+                    <Grid container spacing={1}>
+                      <Grid item xs={12} sm={12} md={6}>
+                        <ReadOnlyRating rate = {rating}/>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={6}>
+                        <Button size="small" onClick = {onClick} variant="contained">Enroll now</Button>
+                      </Grid>
+                    </Grid>
                   </div>
                 </Grid>
           </Grid>

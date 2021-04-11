@@ -11,58 +11,32 @@ import './Header.css'
 const useStyles = makeStyles({
     root: props => ({
         width: "100%",
-        height: "60vh",
+        height: "45vh",
         backgroundImage: `url(${props.img})`,
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         backgroundSize: 'cover',
     }),
     headerContent: {
-        padding: '10%',
+        padding: '7%',
         textAlign: 'left',
     }
 })
 
-const Header = ({title, src, cards}) => {
+const Header = ({title, src}) => {
     const styles = useStyles({img:src})
-
-    const renderHeaderCard = (src, title, description) => {
-        return (
-            <Grid item xs={6} md={4} sm={6}>
-                <Paper elevation = {3} style = {{padding:"3%", borderRadius:"10px"}}>
-                    <div className = "header_card_container">
-                        <div className = "img_container">
-                            <img src = {src} alt = {title} className = "header_card_img"/>
-                        </div>
-                        <div className = "descriptive_container">
-                            <span className="textPrimary">{title}</span>
-                            <span className="textSecondary">{description}</span>
-                        </div>
-                    </div>
-                </Paper>
-            </Grid>
-        )
-    }
 
     return (
         <Paper elevation = {2}>
             <div className = {styles.root}>
                 <div className = "header_overlay" />
                 <Grid container>
-                    <Grid item md={12}>
+                    <Grid item md={12} xs = {12} sm={12}>
                     <div className = {styles.headerContent}>
                         <Typography component="h1" variant="h3" gutterBottom color="textSecondary">
                             {title}
                         </Typography>
                     </div>
-                    </Grid>
-                    <Grid container spacing={4} style={{padding:"4%"}} item md={12}>
-                        {
-                            cards && cards.map(item => {
-                                const {src, title, description} = item
-                                return renderHeaderCard(src, title, description)
-                            })
-                        }
                     </Grid>
                 </Grid>
             </div>
