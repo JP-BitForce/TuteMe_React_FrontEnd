@@ -55,7 +55,7 @@ const TutorCard = ({media, title, description, onClick, rate}) => {
                 </p>
                 <div className = "online_course_footer">
                       <ReadOnlyRating rate = {rate}/>
-                      <Button size="small" onClick = {onClick}>View More</Button>
+                      <Button size="small" onClick = {onClick} variant = "contained">View More</Button>
                 </div>
             </div>
         </div>

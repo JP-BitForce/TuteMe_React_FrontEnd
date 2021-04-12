@@ -4,9 +4,9 @@ import React from 'react'
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
+import Paper from '@material-ui/core/Paper';
 
 const TutorCategories = ({handleClick, items}) => {
     return (
@@ -16,6 +16,7 @@ const TutorCategories = ({handleClick, items}) => {
                 items.map(item => {
                     return (
                         <Grid item xs={6} sm={4}>
+                            <Paper elevation = {3}>
                             <ListItem
                                 button
                                 divider
@@ -25,8 +26,9 @@ const TutorCategories = ({handleClick, items}) => {
                                 <ListItemIcon>
                                     <Avatar src = {item.src}/>
                                 </ListItemIcon>
-                                <ListItemText primary = {item.title} />
+                                <span>{item.title}</span>
                             </ListItem>
+                            </Paper>
                         </Grid>
                     )
                 })
