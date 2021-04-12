@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import CourseCard from '../../components/Card/CourseCard'
 import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import Pagination from '../../components/Pagination/Paginator'
+import { getCourses, getFilterCategories } from '../../api/course'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
@@ -18,8 +20,6 @@ import './Courses.css'
 class OnlineCourses extends Component {
     state = {
         loading: false,
-        categoryOption: "ALL",
-        categoryOptions: ["ALL"],
         moreCategories: false,
         checked: [0],
         searchValue: "",
@@ -37,41 +37,54 @@ class OnlineCourses extends Component {
         allCoursePrice: [],
         slicedCoursePrice: [],
         total: 1,
-        current: 1
+        current: 1,
+        fetchError: null,
+        coursesData: []
     }
 
-    dummyCourses = [
-        {des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
-        {des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
-    ]
-
-    courseCategories = [
-        "ALL",
-        "UI/UX Design",
-        "Art & Design",
-        "Computer Science",
-        "History & Archelogic",
-        "App Development"
-    ]
-
-    courseInstuctors = ["All", " Ronald Jackson", "John Dee", "Nathan Messy", " Tony Griffin"]
-
-    courseType = ["All", "Primary", "Ordinary", "Advanced"]
-
-    coursePrizes = ["All", "Under $125.00", "$125.00 - $175.00"]
-
     componentDidMount() {
-        this.setState({
-            slicedCourseCategories: this.courseCategories.slice(0,5),
-            slicedCourseInstructors: this.courseInstuctors.slice(0,5),
-            slicedCourseType: this.courseType.slice(0,5),
-            slicedCoursePrice: this.coursePrizes.slice(0,5),
-            allCoursecategories: this.courseCategories,
-            allCourseInstructors: this.courseInstuctors,
-            allCourseType: this.courseType,
-            allCoursePrice: this.coursePrizes
+        this.getCategories()
+        this.getCoursesApi(0)
+    }
+
+    getCategories = () => {
+        const auth = this.props.auth
+        getFilterCategories(auth.accessToken).then(response => {
+            if (response) {
+                this.setState({
+                    slicedCourseCategories: response.courseCategoryList.slice(0,5),
+                    slicedCourseInstructors: response.tutorList.slice(0,5),
+                    slicedCourseType: response.courseLevelList.slice(0,5),
+                    slicedCoursePrice: response.coursePriceCategoryList.slice(0,5),
+                    allCoursecategories: response.courseCategoryList,
+                    allCourseInstructors: response.tutorList,
+                    allCourseType: response.courseLevelList,
+                    allCoursePrice: response.coursePriceCategoryList
+                })
+            }
+        }).catch(err => {
+            this.setState({
+                fetchError: err.message
+            })
+        })
+    }
+
+    getCoursesApi = (page) => {
+        const auth = this.props.auth
+        this.setState({ loading: true })
+        getCourses(auth.accessToken, page).then(response => {
+            this.setState({ 
+                loading: false,
+                coursesData: response.data,
+                total: response.total,
+                current: response.current+1,
+                fetchError: null
+            })
+        }).catch(err => {
+            this.setState({ 
+                loading: false,
+                fetchError: err.message 
+            })
         })
     }
 
@@ -181,17 +194,26 @@ class OnlineCourses extends Component {
     }
 
     handlePaginationOnChange = (page) => {
+        this.getCoursesApi(page-1)
+    }
 
+    getPriceCategories = (data) => {
+        let list = []
+        data.filter(item => {
+            list.push(`Rs ${item.priceMin}.00 - ${item.priceMax}.00`)
+            return 0
+        })
+        return list
     }
 
     renderCourseCard = (item) => {
-        const {name, by, rating} = item
+        const {name, rating} = item
         return (
             <Grid item xs={6} sm={6} md={4}>
                 <CourseCard
                     src = {unity}
                     title = {name}
-                    by = {by}
+                    by = "John Apraham"
                     rating = {rating}
                     price = "150"
                     description = "Donec molestie tincidunt tellus sit amet aliquet"
@@ -233,7 +255,7 @@ class OnlineCourses extends Component {
             {title: "Course Category", options: slicedCourseCategories, checked: categoryChecked, total: allCoursecategories},
             {title: "Course Instructors", options: slicedCourseInstructors, checked: tutorChecked, total: allCourseInstructors },
             {title: "Course Type", options: slicedCourseType, checked: typeChecked, total: allCourseType},
-            {title: "Course Price", options: slicedCoursePrice, checked: priceChecked, total: allCoursePrice},
+            {title: "Course Price", options: this.getPriceCategories(slicedCoursePrice), checked: priceChecked, total: allCoursePrice},
         ]
         return filters.map(item => {
             return (
@@ -252,7 +274,7 @@ class OnlineCourses extends Component {
     }
 
     renderCourseList = () =>{
-        const {loading, total, current} = this.state
+        const {loading, total, current, coursesData} = this.state
         return (
             <div className = "online_course_list_container">
                 <Grid container spacing={4}>
@@ -267,7 +289,7 @@ class OnlineCourses extends Component {
                         </div>
                         <Grid container spacing={2}>
                             {
-                                this.dummyCourses.map(item => {
+                                coursesData.map(item => {
                                     return this.renderCourseCard(item)
                                 })
                             }
@@ -307,4 +329,10 @@ class OnlineCourses extends Component {
     }
 }
 
-export default OnlineCourses
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(OnlineCourses)

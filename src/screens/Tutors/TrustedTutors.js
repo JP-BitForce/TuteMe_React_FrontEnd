@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import TutorCard from '../../components/Card/TutorCard'
 import Modal from '../../components/Modal/Modal'
 import TutorCategories from './TutorCategories'
 import Header from '../../components/Header/Header'
+import Pagination from '../../components/Pagination/Paginator'
+import { getTutors } from '../../api/tutor'
 
 //Material-UI
 import Avatar from '@material-ui/core/Avatar';
@@ -15,10 +18,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
 import all from '../../assets/images/courses/all.png'
-import tutor1 from '../../assets/images/dummy tutors/1.jpg'
-import tutor2 from '../../assets/images/dummy tutors/2.jpg'
 import tutor3 from '../../assets/images/dummy tutors/3.jpg'
-import tutor4 from '../../assets/images/dummy tutors/4.jpg'
 import headerImg from '../../assets/images/tutors/headerImg.jpg'
 import design from '../../assets/images/shared/design.jpg'
 import development from '../../assets/images/shared/development.jpg'
@@ -35,15 +35,12 @@ class TrustedTutors extends Component {
         categoryOptions: ["All"],
         categoryOption: "All",
         moreCategories: false,
-        searchValueError: false
+        searchValueError: false,
+        total: 1,
+        current: 1,
+        tutorData: [],
+        fetchError: null
     }
-
-    dummyTutors = [
-        {src:tutor1, des:"lorem ipsum", title:"Allan Nickman"},
-        {src:tutor2, des:"lorem ipsum", title:"Emma Watson"},
-        {src:tutor3, des:"lorem ipsum", title:"Daniel Nickman"},
-        {src:tutor4, des:"lorem ipsum", title:"Bob right"},
-    ]
 
     categories = [
         { src: all, title: 'ALL', width: '100%' },
@@ -58,6 +55,25 @@ class TrustedTutors extends Component {
         { src: musics, title: 'Musicals', width: '100%' },
         { src: medical, title: 'Medicalss', width: '100%' },
     ]
+
+    componentDidMount() {
+        this.getTutorsApi(0)
+    }
+
+    getTutorsApi = (page) => {
+        const auth = this.props.auth
+        getTutors(auth.accessToken, page).then(response => {
+            this.setState({
+                total: response.total,
+                current: response.current + 1,
+                tutorData: response.data
+            })
+        }).catch(err => {
+            this.setState({
+                fetchError: err.message
+            })
+        })
+    }
 
     handleTutorSearch = (event) => {
         event.preventDefault();
@@ -100,6 +116,18 @@ class TrustedTutors extends Component {
         this.setState({ selected: item })
     }
 
+    handlePaginationOnChange = (page) => {
+        this.getTutorsApi(page)
+    }
+
+    getTutorName = (user) => {
+        return `${user.firstName} ${user.lastName}`
+    }
+
+    handleViewMore = (idx) => {
+        console.log(this.state.tutorData[idx])
+    }
+
     renderCategoryModal = () => {
         return (
             <Modal
@@ -113,7 +141,6 @@ class TrustedTutors extends Component {
             </Modal>
         )
     }
-
 
     renderCourseCategory = () => {
         return this.categories.slice(0,8).map(image => {
@@ -174,20 +201,23 @@ class TrustedTutors extends Component {
     }
 
     renderTutorList = () => {
+        const {loading, total, current, tutorData} = this.state
         return (
             <div className = "trusted_tutors_list">
                 { this.renderTutorListHead() }
                 <Grid container spacing={3}>
                     {
-                        this.dummyTutors.map((item,index) => {
+                        tutorData.map((item, index) => {
                             return (
-                                <Grid item xs={12} sm={12} md={4}>
+                                <Grid item xs={12} sm={12} md={4} key = {item.id}>
                                     <Paper elevation = {3}>
                                         <TutorCard 
-                                            media={item.src} 
-                                            title={item.title.toUpperCase()} 
-                                            description = {item.des}
-                                            rate = {index+1}
+                                            media={tutor3} 
+                                            title={this.getTutorName(item.user).toUpperCase()} 
+                                            rate = {item.rating}
+                                            subject = "Advanced level Mathematics"
+                                            onClick = {this.handleViewMore}
+                                            id = {index}
                                         />
                                     </Paper>
                                 </Grid>
@@ -195,6 +225,16 @@ class TrustedTutors extends Component {
                         })
                     }
                 </Grid>
+                <div className = "pagination_div">
+                    {
+                        !loading &&
+                        <Pagination 
+                            total = {total}
+                            current = {current}
+                            handleOnChange = {this.handlePaginationOnChange}
+                        />
+                    }
+                </div>
             </div>
         )
     }
@@ -241,5 +281,10 @@ class TrustedTutors extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
 
-export default TrustedTutors
+export default connect(mapStateToProps)(TrustedTutors)

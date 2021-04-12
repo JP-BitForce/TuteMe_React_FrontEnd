@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import CourseEnrolled from '../../components/Card/CourseEnrolled'
 import Pagination from '../../components/Pagination/Paginator'
+import { getEnrolledCourses } from '../../api/course'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
@@ -30,7 +32,9 @@ class MyCourses extends Component {
         allCourseType: [],
         slicedCourseType: [],
         total: 1,
-        current: 1
+        current: 1,
+        coursesData:[],
+        fetchError: null
     }
 
     courseCategories = [
@@ -69,6 +73,25 @@ class MyCourses extends Component {
             allCoursecategories: this.courseCategories,
             allCourseInstructors: this.courseInstuctors,
             allCourseType: this.courseType,
+        })
+    }
+
+    getCoursesApi = (page) => {
+        const auth = this.props.auth
+        this.setState({ loading: true })
+        getEnrolledCourses(auth.accessToken, auth.userId, page).then(response => {
+            this.setState({ 
+                loading: false,
+                total: response.total,
+                current: response.current+1,
+                coursesData: response.data,
+                fetchError: null
+            })
+        }).catch(err => {
+            this.setState({ 
+                loading: false,
+                fetchError: err.message
+            })
         })
     }
 
@@ -313,4 +336,11 @@ class MyCourses extends Component {
     }
 }
 
-export default MyCourses
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(MyCourses)

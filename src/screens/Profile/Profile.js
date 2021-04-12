@@ -154,6 +154,13 @@ class Profile extends Component {
             getProfileDetails(auth.accessToken, auth.profileId).then(response => {
                 this.setProfileData(response)
                 this.getProfilePicture(response.imageUrl)
+                if( !response.bio || !response.city) {
+                    this.setState({
+                        severity: "info",
+                        snackBarOn: true,
+                        snackBarMessage: "You need to update your profile soon!....",
+                    })
+                }
             }).catch(err => {
                 this.setState({ 
                     loading: false,
@@ -725,7 +732,7 @@ class Profile extends Component {
                 }
                 <SnackBar
                     open = {snackBarOn}
-                    autoHideDuration = {3000}
+                    autoHideDuration = {5000}
                     message = {snackBarMessage}
                     severity = {severity}
                     handleClose = {this.handleSnackBarClose}
