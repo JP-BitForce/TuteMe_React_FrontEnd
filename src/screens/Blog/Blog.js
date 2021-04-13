@@ -95,7 +95,7 @@ class Blog extends Component {
     getOwnBlogsApi = (page) => {
         const auth = this.props.auth
         const request = {
-            userId: auth.userId,
+            userId: auth.profileId,
             page
         }
         this.setState({ loading: true })

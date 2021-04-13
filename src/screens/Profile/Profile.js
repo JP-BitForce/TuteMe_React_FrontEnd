@@ -579,12 +579,12 @@ class Profile extends Component {
                     <div className = "info_statistics_block">
                         <div className = "css-1lomthf">
                             <div className = "profile_stat">
-                                <h4>151</h4>
+                                <h4>{profileDetails && profileDetails.courseCount}</h4>
                                 <p>Enrolled Courses</p>
                             </div>
                             <hr/>
                             <div className = "profile_stat">
-                                <h4>235</h4>
+                                <h4>{profileDetails && profileDetails.tutorCount}</h4>
                                 <p>Following Tutors</p>
                             </div>
                         </div>

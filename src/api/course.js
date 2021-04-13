@@ -18,3 +18,8 @@ export const getFilterCategories = (token) => {
     const endpoint = getEndpointWithPrefix(`getFilterCategories`)
     return GET(endpoint, token)
 }
+
+export const getCourseCategories = (token, page) => {
+    const endpoint = getEndpointWithPrefix(`category/getAll/${page}`)
+    return GET(endpoint, token)
+}

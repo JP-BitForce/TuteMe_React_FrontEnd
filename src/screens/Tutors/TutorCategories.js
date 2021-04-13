@@ -9,6 +9,11 @@ import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
 
 const TutorCategories = ({handleClick, items}) => {
+
+    const getImageSource = (blob) => {
+        return `data:image/jpeg;base64,${blob}`
+    }
+
     return (
         <List component="div" role="list"> 
             <Grid container spacing={3}>
@@ -24,9 +29,9 @@ const TutorCategories = ({handleClick, items}) => {
                                 role="listitem"
                             >
                                 <ListItemIcon>
-                                    <Avatar src = {item.src}/>
+                                    <Avatar src = {getImageSource(item.src)}/>
                                 </ListItemIcon>
-                                <span>{item.title}</span>
+                                <span>{item.category}</span>
                             </ListItem>
                             </Paper>
                         </Grid>

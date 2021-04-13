@@ -79,7 +79,7 @@ class MyCourses extends Component {
     getCoursesApi = (page) => {
         const auth = this.props.auth
         this.setState({ loading: true })
-        getEnrolledCourses(auth.accessToken, auth.userId, page).then(response => {
+        getEnrolledCourses(auth.accessToken, auth.profileId, page).then(response => {
             this.setState({ 
                 loading: false,
                 total: response.total,

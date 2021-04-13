@@ -31,7 +31,7 @@ const TutorCard = ({media, title, onClick, rate, subject, id}) => {
     return (
         <div className = "tutor_div_root">
             <div className = "tutor_card_top">
-                <Avatar src = {media} style = {{width : "100px", height: "100px"}}/>
+                <Avatar src = {media} style = {{width : "120px", height: "120px"}}/>
                 <div className = "tutor_card_top_info">
                     <link rel = "stylesheet" type = "text/css" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
                     <h3>{title}</h3>
@@ -50,8 +50,10 @@ const TutorCard = ({media, title, onClick, rate, subject, id}) => {
             </div>
             <div className = "tutor_des_container">
                 <div className = "online_course_footer">
-                      <ReadOnlyRating rate = {rate}/>
-                      <Button size="small" onClick = {() => onClick(id)} variant = "contained">View More</Button>
+                    <span>
+                        Rating : <ReadOnlyRating rate = {rate}/>
+                    </span>
+                    <Button size="small" onClick = {() => onClick(id)} variant = "contained">View More</Button>
                 </div>
             </div>
         </div>
