@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
         textAlign: "left"
     },
     primary: {
-        fontSize: "1rem",
+        fontSize: "0.7rem",
     },
     secondary: {
         color: "#555",
