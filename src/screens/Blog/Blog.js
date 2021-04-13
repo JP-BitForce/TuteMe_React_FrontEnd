@@ -9,6 +9,7 @@ import NewBlog from './NewBlog'
 import BlogPreview from './BlogPreview'
 import SnackBar from '../../components/SnackBar/SnackBar'
 import Pagination from '../../components/Pagination/Paginator'
+import BlogFullPreview from './BlogFullPreview'
 import { createNewBlog, getAllBlogs, getOwnBlogs } from '../../api/blog'
 
 //Boostarp
@@ -51,7 +52,10 @@ class Blog extends Component {
         fetchError: null,
         blogsData: [],
         total: 1,
-        current: 0
+        current: 0,
+        selectedBlog: null,
+        openBlogFullPreview: false,
+        replyValue: ""
     }
 
     tab_links = ["All", "Own"]
@@ -67,29 +71,31 @@ class Blog extends Component {
 
     getAllBlogsApi = (page) => {
         const auth = this.props.auth
-        this.setState({ loading: true })
-        getAllBlogs(auth.accessToken, page).then(response => {
-            this.setState({
-                loading: false,
-                blogsData: response.blogs,
-                current: response.current+1,
-                total: response.total
+        if(auth) {
+            this.setState({ loading: true })
+            getAllBlogs(auth.accessToken, page).then(response => {
+                this.setState({
+                    loading: false,
+                    blogsData: response.blogs,
+                    current: response.current+1,
+                    total: response.total
+                })
+            }).catch(err => {
+                this.setState({
+                    loading: false,
+                    fetchError: "Unable to fetch data, please try again",
+                    blogsData: [],
+                    current: 0,
+                    total: 1
+                })
             })
-        }).catch(err => {
-            this.setState({
-                loading: false,
-                fetchError: "Unable to fetch data, please try again",
-                blogsData: [],
-                current: 0,
-                total: 1
-            })
-        })
+        }
     }
 
     getOwnBlogsApi = (page) => {
         const auth = this.props.auth
         const request = {
-            userId: auth.userId,
+            userId: auth.profileId,
             page
         }
         this.setState({ loading: true })
@@ -269,6 +275,21 @@ class Blog extends Component {
         this.setState({ previewOn: false })
     }
 
+    handleBlogOnClick = (id) => {
+        const blog = this.state.blogsData.filter(item => item.id === id)
+        this.setState({ 
+            selectedBlog: blog.length > 0 && blog[0],
+            openBlogFullPreview: true 
+        })
+    }
+
+    handleBlogPreviewClose = () => {
+        this.setState({ 
+            selectedBlog: null,
+            openBlogFullPreview: false 
+        })
+    }
+
     renderSearchField = () => {
         return (
             <TextField 
@@ -320,9 +341,9 @@ class Blog extends Component {
                 <Grid container spacing={4}>
                     {
                         this.state.blogsData.map(item => {
-                            const {date, description, comments, likes, coverImg, authorImg, title, content } = item
+                            const {date, description, comments, likes, coverImg, authorImg, title, id } = item
                             return (
-                                <Grid item xs={6} sm={6} md={3}>
+                                <Grid item xs={6} sm={6} md={3} key = {id}>
                                     <BlogCard
                                         src = {this.getImageSource(coverImg)}
                                         avatar = {authorImg ? this.getImageSource(authorImg) : minimal_avatar}
@@ -331,7 +352,8 @@ class Blog extends Component {
                                         comments = {comments.length}
                                         likes = {likes}
                                         title = {title}
-                                        content = {content}
+                                        handleBlogOnClick = {this.handleBlogOnClick}
+                                        id = {id}
                                     />
                                 </Grid>
                             )
@@ -430,7 +452,17 @@ class Blog extends Component {
     }
 
     render() {
-        const {previewOn, title, content, cover, snackBarOn, snackBarMessage, severity} = this.state
+        const {
+            previewOn, 
+            title, 
+            content, 
+            cover, 
+            snackBarOn, 
+            snackBarMessage, 
+            severity, 
+            openBlogFullPreview, 
+            selectedBlog, 
+        } = this.state
         return (
             <div className = "blog_root_div">
                 {
@@ -451,6 +483,15 @@ class Blog extends Component {
                     handleClose = {this.handleSnackBarClose}
                     align = {{ vertical: 'top', horizontal: 'right' }}
                 />
+                {
+                    selectedBlog && 
+                    <BlogFullPreview 
+                        open = {openBlogFullPreview}
+                        handleClose = {this.handleBlogPreviewClose}
+                        blog = {selectedBlog}
+                        auth = {this.props.auth}
+                    />
+                }
             </div>
         )
     }

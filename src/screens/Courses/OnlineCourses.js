@@ -1,216 +1,272 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import CourseCard from '../../components/Card/CourseCard'
-import Modal from '../../components/Modal/Modal'
-import CourseCategories from './CourseCategories'
 import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
+import Pagination from '../../components/Pagination/Paginator'
+import { getCourses, getFilterCategories } from '../../api/course'
 
 //Material-UI
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
 
-import all from '../../assets/images/courses/all.png'
-import javascript from '../../assets/images/courses/javascript.png'
-import reactnative from '../../assets/images/courses/react-native.png'
-import maths from '../../assets/images/courses/maths.png'
-import bio from '../../assets/images/courses/bio.png'
-import musical from '../../assets/images/courses/musical.png'
-import accounting from '../../assets/images/courses/accounting.png'
-import music_2 from '../../assets/images/courses/music_2.png'
 import headerImg from '../../assets/images/Course/online_headerImg.jpg'
-import certificate from '../../assets/images/Course/certificate.png'
-import prizing from '../../assets/images/Course/prizing.png'
 import unity from '../../assets/images/Course/unity.jpg'
 import './Courses.css'
 
 class OnlineCourses extends Component {
     state = {
         loading: false,
-        categoryOption: "ALL",
-        categoryOptions: ["ALL"],
-        selected:{category : "ALL", src : all },
         moreCategories: false,
-        checked: [0]
+        checked: [0],
+        searchValue: "",
+        searchValueError: false,
+        categoryChecked: [0],
+        tutorChecked: [0],
+        typeChecked: [0],
+        priceChecked: [0],
+        allCoursecategories: [],
+        slicedCourseCategories: [],
+        allCourseInstructors: [],
+        slicedCourseInstructors: [],
+        allCourseType: [],
+        slicedCourseType: [],
+        allCoursePrice: [],
+        slicedCoursePrice: [],
+        total: 1,
+        current: 1,
+        fetchError: null,
+        coursesData: []
     }
 
-    dummyCourseCategories = [
-        {category : "ALL", src : all },
-        {category : "UI/UX Design", src : javascript },
-        {category : "Art & Design", src : reactnative },
-        {category : "Computer Science", src : maths },
-        {category : "History & Archelogic", src : bio },
-        {category : "App Development", src : bio },
-        {category : "Health & Fitness", src : bio },
-        {category : "Graphic Design", src : javascript },
-        {category : "Marketing", src : accounting },
-        {category : "Music", src : musical },
-        {category : "Buisness", src : accounting },
-        {category : "Management", src : accounting },
-    ]
-
-    dummyCourses = [
-        {src:reactnative, des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {src:music_2, des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
-        {src:javascript, des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {src:maths, des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
-    ]
-
-    cards = [
-        {src : certificate, title : "Certificate Courses", description :"The automated process all your website tasks."},
-        {src : prizing, title : "Prizing courses ",  description :"The automated process all your website tasks."},
-    ]
-
-    courseCategories = [
-        "ALL",
-        "UI/UX Design",
-        "Art & Design",
-        "Computer Science",
-        "History & Archelogic",
-        "App Development"
-    ]
-
-    courseInstuctors = ["All", " Ronald Jackson", "John Dee", "Nathan Messy", " Tony Griffin"]
-
-    courseType = ["All", "Primary", "Ordinary", "Advanced", "Others"]
-
-    coursePrizes = ["All", "Under $125.00", "$125.00 - $175.00"]
-
-    categories = [
-        {title : "Category", options : this.courseCategories},
-        {title : "Instructors", options : this.courseInstuctors},
-        {title : "Type", options : this.courseType},
-        {title : "Price", options : this.coursePrizes}
-    ]
-
-    handleCategoryModalOk = () => {
-
+    componentDidMount() {
+        this.getCategories()
+        this.getCoursesApi(0)
     }
 
-    handleListItemOnClick = (item) => {
-        this.setState({
-            selected: item
+    getCategories = () => {
+        const auth = this.props.auth
+        getFilterCategories(auth.accessToken).then(response => {
+            if (response) {
+                this.setState({
+                    slicedCourseCategories: response.courseCategoryList.slice(0,5),
+                    slicedCourseInstructors: response.tutorList.slice(0,5),
+                    slicedCourseType: response.courseLevelList.slice(0,5),
+                    slicedCoursePrice: response.coursePriceCategoryList.slice(0,5),
+                    allCoursecategories: response.courseCategoryList,
+                    allCourseInstructors: response.tutorList,
+                    allCourseType: response.courseLevelList,
+                    allCoursePrice: response.coursePriceCategoryList
+                })
+            }
+        }).catch(err => {
+            this.setState({
+                fetchError: err.message
+            })
         })
     }
 
-    handleCoursesSearch = () => {
-
-    }
-
-    handleSearchOnChange = () => {
-
-    }
-
-    handleMoreCategories = () => {
-        this.setState({
-            moreCategories: !this.state.moreCategories
+    getCoursesApi = (page) => {
+        const auth = this.props.auth
+        this.setState({ loading: true })
+        getCourses(auth.accessToken, page).then(response => {
+            this.setState({ 
+                loading: false,
+                coursesData: response.data,
+                total: response.total,
+                current: response.current+1,
+                fetchError: null
+            })
+        }).catch(err => {
+            this.setState({ 
+                loading: false,
+                fetchError: err.message 
+            })
         })
     }
 
-    onCategorySelect = (item) => {
+    handleCourseSearch = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!this.state.searchValue) {
+            this.setState({ searchValueError: true })
+        } else {
+            this.setState({ searchValueError: false })
+        }
+    }
+
+    handleFilter = () => {
+        const {
+            categoryChecked, typeChecked, tutorChecked, priceChecked,
+            allCoursecategories, allCourseType, allCourseInstructors, allCoursePrice
+        } = this.state
+
+        let categoryList = []
+        categoryChecked.filter(idx => {
+            categoryList.push(allCoursecategories[idx])
+            return 0
+        })
+
+        let tutorList = []
+        tutorChecked.filter(idx => {
+            tutorList.push(allCourseInstructors[idx])
+            return 0
+        })
+
+        let typeList = []
+        typeChecked.filter(idx => {
+            typeList.push(allCourseType[idx])
+            return 0
+        })
+
+        let priceList = []
+        priceChecked.filter(idx => {
+            priceList.push(allCoursePrice[idx])
+            return 0
+        })
+        
+    }
+
+    handleInputOnChange = (event) => {
+        const {value, name} = event.target
         this.setState({
-            selected: item
+            [name]: value,
+            searchValueError: false
         })
     }
 
-    handleToggle = (value) => () => {
-        const checked = this.state.checked
-        const currentIndex = checked.indexOf(value);
+    handleToggle = (type, index) => {
+        switch(type) {
+            case "Course Category": this.handleCheck("categoryChecked", index)
+                                    break;
+            case "Course Instructors": this.handleCheck("tutorChecked", index)
+                                       break;
+            case "Course Type": this.handleCheck("typeChecked", index)
+                                break;
+            case "Course Price": this.handleCheck("priceChecked", index)
+                                break;
+            default: return
+        }
+    };
+
+    handleCheck = (type, index) => {
+        const checked = this.state[type]
+        const currentIndex = checked.indexOf(index);
         const newChecked = [...checked];
-    
+
         if (currentIndex === -1) {
-          newChecked.push(value);
+          newChecked.push(index);
         } else {
           newChecked.splice(currentIndex, 1);
         }
-    
-        this.setState({
-            checked: newChecked
-        })
-    };
 
-    renderCategoryModal = () => {
-        return (
-            <Modal
-                open = {this.state.moreCategories}
-                handleClose = {this.handleMoreCategories}
-                title = "Select Course Category Here!"
-                handleCancel = {this.handleMoreCategories}
-                handleOk = {this.handleCategoryModalOk}
-            >
-                <CourseCategories 
-                    handleClick = {this.handleListItemOnClick}
-                    items = {this.dummyCourseCategories}
-                />
-            </Modal>
-        )
+        this.setState({ [type]: newChecked })
     }
 
-    renderCategoryItem = (item) => {
-        const {category,src} = item
-        return (
-            <Grid item xs={6} sm={6} md={3}>
-                <Paper elevation = {5}>
-                    <div 
-                        onClick={()=>this.onCategorySelect(item)}
-                        className = {[
-                            "category_item_wrapper",
-                            this.state.selected.category === category && "selected_category"
-                        ].join(" ")}
-                    >
-                        <img src={src} alt={category} className = "category_icon_src"/>
-                        <span>{category}</span>
-                    </div>
-                </Paper>
-            </Grid>
-        )
+    handleLoadMore = (type) => {
+        const {
+            allCoursecategories, allCourseInstructors, allCourseType, allCoursePrice
+        } = this.state
+        switch(type) {
+            case "Course Category": this.handleLoad(allCoursecategories, "slicedCourseCategories")
+                                    break;
+            case "Course Instructors": this.handleLoad(allCourseInstructors, "slicedCourseInstructors")
+                                       break;
+            case "Course Type": this.handleLoad(allCourseType, "slicedCourseType")
+                                break;
+            case "Course Price": this.handleLoad(allCoursePrice, "slicedCoursePrice")
+                                break;
+            default: return
+        }
+    }
+
+    handleLoad = (all, state) => {
+        let data = all
+        if(this.state[state] === all) {
+            data = all.slice(0,5)
+        } 
+        this.setState({
+            [state]: data
+        })
+    }
+
+    handlePaginationOnChange = (page) => {
+        this.getCoursesApi(page-1)
+    }
+
+    getPriceCategories = (data) => {
+        let list = []
+        data.filter(item => {
+            list.push(`Rs ${item.priceMin}.00 - ${item.priceMax}.00`)
+            return 0
+        })
+        return list
     }
 
     renderCourseCard = (item) => {
-        const {name, by, rating} = item
+        const {name, rating} = item
         return (
             <Grid item xs={6} sm={6} md={4}>
                 <CourseCard
                     src = {unity}
                     title = {name}
-                    by = {by}
+                    by = "John Apraham"
                     rating = {rating}
+                    price = "150"
+                    description = "Donec molestie tincidunt tellus sit amet aliquet"
                 />
             </Grid>
         )
     }
 
     renderListHead = () => {
-        const selected = this.state.selected
+        const {searchValue, searchValueError} = this.state
         return (
             <div className = "courses_list_head">
-                <div className = "header_category">
-                    <div className = "category_icon_small selected_category">
-                        <Avatar src = {selected.src}/>
-                    </div>
-                    <span>
-                        {selected.category}
-                    </span>
-                </div>
-                <form noValidate autoComplete="off" onSubmit = {this.handleCoursesSearch}>
-                    <TextField id="standard-basic" label="serach" onChange = {this.handleSearchOnChange}/>
+                <Button variant="contained" onClick = {this.handleFilter}>Filter courses</Button>
+                <form noValidate autoComplete="off" onSubmit = {this.handleCourseSearch}>
+                    <TextField 
+                        id = "standard-basic" 
+                        label = "course" 
+                        onChange = {this.handleInputOnChange}
+                        variant = "outlined"
+                        error = {searchValueError}
+                        value = {searchValue}
+                        helperText = {searchValueError && "Incorrect entry"}
+                        name = "searchValue"
+                        size = "small"
+                    />
+                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">Search</Button>
                 </form>
             </div>
         )
     }
 
     renderCategoryFilters = () => {
-        return this.categories.map(item => {
+        const {
+            categoryChecked, tutorChecked, typeChecked, priceChecked,
+            slicedCourseCategories, slicedCourseInstructors, slicedCoursePrice, slicedCourseType,
+            allCourseInstructors, allCoursePrice, allCourseType, allCoursecategories
+        } = this.state
+        const filters = [
+            {title: "Course Category", options: slicedCourseCategories, checked: categoryChecked, total: allCoursecategories},
+            {title: "Course Instructors", options: slicedCourseInstructors, checked: tutorChecked, total: allCourseInstructors },
+            {title: "Course Type", options: slicedCourseType, checked: typeChecked, total: allCourseType},
+            {title: "Course Price", options: this.getPriceCategories(slicedCoursePrice), checked: priceChecked, total: allCoursePrice},
+        ]
+        return filters.map(item => {
             return (
-                <Grid item xs={6} sm={4} md={12}>
+                <Grid item xs={6} sm={6} md={12}>
                     <CategoryFilter 
                         title = {item.title}
                         options = {item.options}
                         handleToggle = {this.handleToggle}
-                        checked = {this.state.checked}
+                        checked = {item.checked}
+                        handleLoadMore = {this.handleLoadMore}
+                        total = {item.total.length}
                     />
                 </Grid>
             )
@@ -218,6 +274,7 @@ class OnlineCourses extends Component {
     }
 
     renderCourseList = () =>{
+        const {loading, total, current, coursesData} = this.state
         return (
             <div className = "online_course_list_container">
                 <Grid container spacing={4}>
@@ -232,26 +289,23 @@ class OnlineCourses extends Component {
                         </div>
                         <Grid container spacing={2}>
                             {
-                                this.dummyCourses.map(item => {
+                                coursesData.map(item => {
                                     return this.renderCourseCard(item)
                                 })
                             }
                         </Grid>
+                        <div className = "pagination_div">
+                            {
+                                !loading &&
+                                <Pagination 
+                                    total = {total}
+                                    current = {current}
+                                    handleOnChange = {this.handlePaginationOnChange}
+                                />
+                            }
+                        </div>
                     </Grid>
                 </Grid>
-            </div>
-        )
-    }
-
-    renderRoot = () => {
-        return (
-            <div className = "online_courses_container">
-                <div className = "online_course_list_root">
-                    <div className = "more_category">
-                        <span onClick = {this.handleMoreCategories}>More Categories</span>
-                    </div>
-                    { this.renderCourseList() }  
-                </div>   
             </div>
         )
     }
@@ -263,18 +317,22 @@ class OnlineCourses extends Component {
                 <Header 
                     title = "BROWSE ONLINE COURSES" 
                     src = {headerImg}
-                    cards = {this.cards}
                 />
                 {
                     loading ? 
                     <Loading open = {loading} />
                     :
-                    this.renderRoot()
+                    this.renderCourseList()
                 }
-                { this.renderCategoryModal() }
             </div>
         )
     }
 }
 
-export default OnlineCourses
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(OnlineCourses)

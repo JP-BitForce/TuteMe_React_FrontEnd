@@ -19,10 +19,10 @@ const useStyles = makeStyles({
     }),
 })
 
-const BlogCard = ({src, avatar, date, description, comments, likes, content, title}) => {
+const BlogCard = ({src, avatar, date, description, comments, likes, title, handleBlogOnClick, id}) => {
     const styles = useStyles({img: src})
     return (
-        <div className = "blog_card">
+        <div className = "blog_card" onClick = {() => handleBlogOnClick(id)}>
             <div className = {styles.blog_card_top}>
                 <div className = "blog_avatar_block2">
                     <Avatar src = {avatar}/>

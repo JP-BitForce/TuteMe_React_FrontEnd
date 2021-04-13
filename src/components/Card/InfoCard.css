@@ -110,22 +110,10 @@
 
 .course_enrolled_content h5 {
     display: block;
-    font-size: 1.17em;
+    font-size: 0.9em;
     text-transform: uppercase;
     font-weight: 600;
     margin-top: 10px;
-}
-
-.course_enrolled_content p {
-    font-size: 14px;
-    color: #838383;
-    line-height: 2.1;
-    margin-bottom: 1rem;
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
 }
 
 .course_enrolled_rating {
@@ -232,6 +220,7 @@
     border-radius: 16px;
     position: relative;
     z-index: 0;
+    cursor: pointer;
 }
 
 .blog_avatar_block {

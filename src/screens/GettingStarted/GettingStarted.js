@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 
 import TopBar from './TopBar'
@@ -23,7 +23,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import './GettingStarted.css'
 
-// const drawerWidth = 210;
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme) => ({
@@ -50,12 +49,19 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const GettingStarted = ({logoutUser, history}) => {
+const GettingStarted = ({logoutUser, history, auth}) => {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
     const [active, setActiveItem] = useState("HOME")
     const [modalOpen, setModalOpen] = useState(false)
+    
+    useEffect(() => {
+      if(!auth) {
+        history.push('/')
+      }
+      // eslint-disable-next-line
+    }, [])
   
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -169,6 +175,11 @@ const GettingStarted = ({logoutUser, history}) => {
     );
 }
 
+const mapStateToProps = (state) => {
+  return {
+      auth: state.auth.user
+  }
+}
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -176,4 +187,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null,mapDispatchToProps)(GettingStarted)
+export default connect(mapStateToProps,mapDispatchToProps)(GettingStarted)
