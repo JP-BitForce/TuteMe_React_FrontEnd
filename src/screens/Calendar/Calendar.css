@@ -67,3 +67,17 @@
     width: 27px;
     height: 27px;
 }
+
+.date_picker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.date_picker__input {
+    height: 34px;
+    outline-offset: 0px;
+    outline: none;
+    font-size: 0.8rem;
+    padding: 0 15px;
+}

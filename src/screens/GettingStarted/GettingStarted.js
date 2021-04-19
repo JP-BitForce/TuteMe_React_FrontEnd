@@ -57,12 +57,12 @@ const GettingStarted = ({logoutUser, history, auth}) => {
     const [active, setActiveItem] = useState("HOME")
     const [modalOpen, setModalOpen] = useState(false)
     
-    // useEffect(() => {
-    //   if(!auth) {
-    //     history.push('/')
-    //   }
-    //   // eslint-disable-next-line
-    // }, [])
+    useEffect(() => {
+      // if(!auth) {
+      //   history.push('/')
+      // }
+      // eslint-disable-next-line
+    }, [])
   
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
