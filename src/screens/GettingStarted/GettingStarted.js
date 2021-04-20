@@ -58,9 +58,9 @@ const GettingStarted = ({logoutUser, history, auth}) => {
     const [modalOpen, setModalOpen] = useState(false)
     
     useEffect(() => {
-      // if(!auth) {
-      //   history.push('/')
-      // }
+      if(!auth) {
+        history.push('/')
+      }
       // eslint-disable-next-line
     }, [])
   

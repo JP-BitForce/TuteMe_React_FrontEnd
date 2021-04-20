@@ -10,64 +10,67 @@ import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import Divider from '@material-ui/core/Divider'
 
 import Done from '@material-ui/icons/Done';
+import Delete from '@material-ui/icons/Delete'
 
 import 'react-datepicker/dist/react-datepicker.css';
 import './Calendar.css'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props}/>;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const NewEventModal = ({
+const EventModal = ({
     open, 
     handleClose, 
-    handleAddNewEvent, 
-    values, 
+    handleUpdateEvent, 
     handleInputOnChange, 
-    colors, 
-    handleColorSelection,
-    selected,
+    selectedEvent,
+    handleSwitchChange,
     handleDateOnchange,
-    handleSwitchChange
+    colors,
+    handleColorSelection,
+    values
 }) => {
-    
+
     const renderForm = () => {
         return (
             <div>
                 <TextField
-                    error = {values["titleError"]}
+                    error = {false}
                     label = "Title"
-                    helperText = {values["titleError"] && "Incorrect entry."}
+                    helperText = {false && "Incorrect entry."}
                     variant = "outlined"
                     fullWidth
                     size = "small"
-                    id = "title"
-                    value = {values["title"]}
+                    id = "EditTitle"
+                    value = {values["EditTitle"]}
                     onChange = {handleInputOnChange}
+                    defaultValue = {selectedEvent.title}
                 />
                 <div className = "vertical_seperator"/>
                 <TextField
-                    error = {values["descriptionError"]}
-                    id = "description"
+                    error = {false}
+                    id = "EditDescription"
                     label = "Description"
-                    helperText = {values["descriptionError"] && "Incorrect entry."}
+                    helperText = {false && "Incorrect entry."}
                     variant = "outlined"
                     fullWidth
                     size = "small"
-                    value = {values["description"]}
+                    value = {values["EditDescription"]}
                     onChange = {handleInputOnChange}
+                    defaultValue = {selectedEvent.extendedProps.description}
                 />
                 <div className = "vertical_seperator"/>
                 <FormControlLabel
                     control = {
                     <Switch
-                        checked = {values["checkedAll"]}
+                        checked = {selectedEvent.allDay}
                         onChange = {handleSwitchChange}
                         name = "checkedAll"
                         color = "primary"
+                        defaultChecked = {selectedEvent.allDay}
                     />
                     }
                     label = "All Day"
@@ -76,18 +79,20 @@ const NewEventModal = ({
                 <div className = "date_picker">
                     <DatePicker
                         className = "date_picker__input"
-                        selected={values["start"]}
-                        onChange={(date) => handleDateOnchange("start", date)}
+                        selected={values["EditStart"]}
+                        onChange={(date) => handleDateOnchange("EditStart", date)}
                         selectsStart
                         placeholderText='Start date'
                         isClearable
+                        defaultValue = {selectedEvent.start}
                     />
                     <DatePicker
                         className = "date_picker__input"
-                        selected={values["end"]}
-                        onChange={(date) => handleDateOnchange("end", date)}
+                        selected={values["EditEnd"]}
+                        onChange={(date) => handleDateOnchange("EditEnd", date)}
                         placeholderText='End date'
                         isClearable
+                        defaultValue = {selectedEvent.end}
                     />
                 </div>
                 <div className = "vertical_seperator"/>
@@ -97,14 +102,18 @@ const NewEventModal = ({
                             const {id, backgroundColor} = item
                             return (
                                 <div 
-                                    className =  {["color_selector_icon", id === selected && "color_selector_icon__selected"].join(" ")}
+                                    className =  {[
+                                        "color_selector_icon", 
+                                        backgroundColor === selectedEvent.backgroundColor && "color_selector_icon__selected"].join(" ")
+                                    }
                                     style = {{backgroundColor: backgroundColor}} 
                                     key = {id}
                                     onClick = {() => handleColorSelection(id)}
                                 >
                                     <div className = "color_selector_icon_label">
                                         {
-                                            id === selected && <Done style = {{width: "18px", color: "white"}}/>
+                                            backgroundColor === selectedEvent.backgroundColor && 
+                                            <Done style = {{width: "18px", color: "white"}}/>
                                         }
                                     </div>
                                 </div>
@@ -116,7 +125,7 @@ const NewEventModal = ({
             </div>
         )
     }
-    
+
     return (
         <Dialog
             open={open}
@@ -128,21 +137,21 @@ const NewEventModal = ({
             fullWidth
             maxWidth = "xs"
         >
-            <DialogTitle id="alert-dialog-slide-title" onClose = {handleClose}>Add Event</DialogTitle>
+            <DialogTitle id="alert-dialog-slide-title">Edit/Update Event</DialogTitle>
             <DialogContent> { renderForm() } </DialogContent>
-            <Divider/>
             <DialogActions>
+                <div className = "icon_button"><Delete/></div>
                 <Button onClick={handleClose} color="primary" variant="outlined"> Cancel </Button>
                 <Button 
-                    onClick={handleAddNewEvent} 
+                    onClick={() => handleUpdateEvent(selectedEvent.id)} 
                     variant="outlined" 
                     style = {{backgroundColor: "rgb(0, 171, 85)", color: "white"}}
                 > 
-                Add 
+                Update 
                 </Button>
             </DialogActions>
         </Dialog>
     )
 }
 
-export default NewEventModal
+export default EventModal

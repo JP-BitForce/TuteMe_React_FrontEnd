@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import moment from 'moment';
+import {connect} from 'react-redux'
 
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import Loading from '../../components/Loading/Loading'
 import NewEventModal from './NewEventModal'
+import EventModal from './EventModal'
+import { addNewEvent, getEvents } from '../../api/event'
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -16,11 +18,8 @@ class Calendar extends Component {
     state = {
         loading: false,
         childNav: ["Calendar", "Events"],
-        events: [
-            { title: 'event 1', start: '2021-04-02', end: '2021-04-03', backgroundColor: '#378006' },
-            { title: 'event 1', start: '2021-04-06', end: '2021-04-06' },
-            {title: "Software", start: "2021-04-08", end: "2021-04-09", backgroundColor: "rgb(0, 171, 85)"}
-        ],
+        events: [],
+        fetchError: null,
         openNewEventModal: false,
         selectedNewDate: null,
         title: "",
@@ -28,7 +27,15 @@ class Calendar extends Component {
         start: new Date(),
         end: new Date(),
         selectedColorId: "1",
-        checkedAll: true
+        checkedAll: true,
+        titleError: null,
+        descriptionError: null,
+        selectedEvent: null,
+        openSelectedEventModal: false,
+        EditTitle: "",
+        EditDescription: "",
+        EditStart: new Date(),
+        EditEnd: new Date(),
     }
 
     colors = [
@@ -41,26 +48,72 @@ class Calendar extends Component {
     ]
 
     componentDidMount() {
-        console.clear()
+        this.getEventsApi()
+    }
+
+    getEventsApi = () => {
+        const auth  = this.props.auth
+        const request = {
+            userId: auth.userId,
+            month: 1
+        }
+        this.setState({ loading: true })
+        getEvents(auth.accessToken, request).then(response => {
+            this.setState({
+                event: response.events,
+                loading: false
+            })
+        }).catch(err => {
+            this.setState({
+                event: [],
+                loading: false,
+                 fetchError: err.message
+            })
+        })
     }
 
     handleAddNewEvent = () => {
         const {title, description, start, end, selectedColorId} = this.state
-        const event = {
-            title,
-            description,
-            start: moment(start).format("YYYY-MM-DD"),
-            end: moment(end).format("YYYY-MM-DD"),
-            backgroundColor: this.colors[selectedColorId-1].backgroundColor
+        if (!title.trim()) {
+            this.setState({ titleError: true})
+        } 
+        if (!description.trim()) {
+            this.setState({ descriptionError: true})
+        } else {
+            const auth  = this.props.auth
+            const request = {
+                userId: auth.userId,
+                title: title,
+                description: description,
+                start: start,
+                end: end,
+                backgroundColor: this.colors[selectedColorId-1].backgroundColor
+            }
+            this.setState({ loading: true })
+            addNewEvent(auth.accessToken, request).then(response => {
+                this.setState({
+                    event: response.events,
+                    loading: false,
+                    openNewEventModal: false,
+                    title: "",
+                    description: "",
+                    start: new Date(),
+                    end: new Date(),
+                    checkedAll: false
+                })
+            }).catch(err => {
+                this.setState({
+                    loading: false,
+                    openNewEventModal: false,
+                })
+            })
         }
-        let arr =  [
-            ...this.state.events,
-            event
-        ]
-        this.setState({
-            events: arr,
-            openNewEventModal: false
-        })
+    }
+
+    handleUpdateEvent = (id) => {
+        // const {EditTitle, EditDescription, EditStart, EditEnd} = this.state
+        let event = this.state.events.filter(item => item.id === id)[0]
+        console.log(event)
     }
 
     handleSwitchChange = (event) => {
@@ -83,7 +136,9 @@ class Calendar extends Component {
 
     handleInputOnChange = (event) => {
         this.setState({
-            [event.target.id] : event.target.value
+            [event.target.id] : event.target.value,
+            titleError: null,
+            descriptionError: null
         })
     }
 
@@ -94,7 +149,9 @@ class Calendar extends Component {
             title: "",
             description: "",
             start: new Date(),
-            end: new Date()
+            end: new Date(),
+            titleError: null,
+            descriptionError: null
         })
     }
 
@@ -107,8 +164,22 @@ class Calendar extends Component {
         })
     }
 
-    handleEventClick = (eve) => {
-        console.log(eve.event.title, eve.event.id)
+    handleEventClick = (event) => {
+        this.setState({
+            selectedEvent: event.event,
+            openSelectedEventModal: true,
+            EditTitle: event.event.title,
+            EditDescription: event.event.extendedProps.description,
+            EditStart: event.event.start,
+            EditEnd: event.event.end,
+        })
+    }
+
+    handleEventModalClose = () => {
+        this.setState({
+            selectedEvent: null,
+            openSelectedEventModal: false
+        })
     }
 
     renderEventContent = (eventInfo) => {
@@ -134,19 +205,20 @@ class Calendar extends Component {
                     eventContent={this.renderEventContent}
                     select={this.handleDateSelect}
                     eventClick={this.handleEventClick}
-                    events = {this.state.events}
+                    events = {this.state.event}
                     headerToolbar={{
                         left: 'prev,next today',
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay'
                     }}
+                    eventBorderColor = "white"
                 />
             </div>
         )
     }
 
     render() {
-        const {childNav, loading, openNewEventModal, selectedColorId} = this.state
+        const {childNav, loading, openNewEventModal, selectedColorId, selectedEvent, openSelectedEventModal} = this.state
         return (
             <div className = "calender_sc_root">
                 <HeaderTopper
@@ -173,11 +245,33 @@ class Calendar extends Component {
                     handleDateOnchange = {this.handleDateOnchange}
                     handleSwitchChange = {this.handleSwitchChange}
                 />
+
+                {
+                    selectedEvent && 
+                    <EventModal
+                        open = {openSelectedEventModal}
+                        handleClose = {this.handleEventModalClose}
+                        handleUpdateEvent = {this.handleUpdateEvent}
+                        handleInputOnChange = {this.handleInputOnChange}
+                        colors = {this.colors}
+                        handleColorSelection = {this.handleColorSelection}
+                        selected = {selectedColorId}
+                        handleDateOnchange = {this.handleDateOnchange}
+                        handleSwitchChange = {this.handleSwitchChange}
+                        selectedEvent = {selectedEvent}
+                        values = {this.state}
+                    />
+                }
                 
             </div>
         )
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
 
-export default Calendar
+export default connect(mapStateToProps)(Calendar)
