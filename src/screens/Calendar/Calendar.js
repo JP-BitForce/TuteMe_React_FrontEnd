@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
+import moment from 'moment';
 
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import Loading from '../../components/Loading/Loading'
 import NewEventModal from './NewEventModal'
 import EventModal from './EventModal'
-import { addNewEvent, getEvents } from '../../api/event'
+import { addNewEvent, getEvents, updateEvent } from '../../api/event'
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -36,6 +37,8 @@ class Calendar extends Component {
         EditDescription: "",
         EditStart: new Date(),
         EditEnd: new Date(),
+        EditBackground: "",
+        EditChecked: false
     }
 
     colors = [
@@ -60,14 +63,14 @@ class Calendar extends Component {
         this.setState({ loading: true })
         getEvents(auth.accessToken, request).then(response => {
             this.setState({
-                event: response.events,
+                events: response.events,
                 loading: false
             })
         }).catch(err => {
             this.setState({
-                event: [],
+                events: [],
                 loading: false,
-                 fetchError: err.message
+                fetchError: err.message
             })
         })
     }
@@ -85,41 +88,73 @@ class Calendar extends Component {
                 userId: auth.userId,
                 title: title,
                 description: description,
-                start: start,
-                end: end,
+                start: moment(start).format('YYYY-MM-DDT00:00:00'),
+                end: moment(end).format('YYYY-MM-DDT23:59:59'),
                 backgroundColor: this.colors[selectedColorId-1].backgroundColor
             }
             this.setState({ loading: true })
             addNewEvent(auth.accessToken, request).then(response => {
-                this.setState({
-                    event: response.events,
-                    loading: false,
-                    openNewEventModal: false,
-                    title: "",
-                    description: "",
-                    start: new Date(),
-                    end: new Date(),
-                    checkedAll: false
-                })
+                this.setState({ events: response.events })
+                this.setInitialStateForAdd()
             }).catch(err => {
-                this.setState({
-                    loading: false,
-                    openNewEventModal: false,
-                })
+                this.setInitialStateForAdd()
             })
         }
     }
 
     handleUpdateEvent = (id) => {
-        // const {EditTitle, EditDescription, EditStart, EditEnd} = this.state
-        let event = this.state.events.filter(item => item.id === id)[0]
-        console.log(event)
+        const {EditTitle, EditDescription, EditStart, EditEnd, EditBackground} = this.state
+        const auth  = this.props.auth
+        const request = {
+            userId: auth.userId,
+            eventId: id,
+            title: EditTitle,
+            description: EditDescription,
+            start: moment(EditStart).format('YYYY-MM-DDT00:00:00'),
+            end: moment(EditEnd).format('YYYY-MM-DDT23:59:59'),
+            backgroundColor: this.colors[EditBackground-1].backgroundColor
+        }
+        this.setState({ loading: true })
+        updateEvent(auth.accessToken, request).then(response => {
+            this.setState({ events: response.events })
+            this.setInitialStateForUpdate()
+        }).catch(err => {
+            this.setInitialStateForUpdate()
+        })
     }
 
-    handleSwitchChange = (event) => {
+    setInitialStateForUpdate = () => {
         this.setState({
-            checkedAll: event.target.checked
+            loading: false,
+            selectedEvent: null,
+            openSelectedEventModal: false,
+            EditTitle: "",
+            EditDescription: "",
+            EditStart: "",
+            EditEnd: "",
         })
+    }
+
+    setInitialStateForAdd = () => {
+        this.setState({
+            loading: false,
+            openNewEventModal: false,
+            title: "",
+            description: "",
+            start: new Date(),
+            end: new Date(),
+            checkedAll: false
+        })
+    }
+
+    handleSwitchChange = (type, event) => {
+        const checked = event.target.checked
+        if (type === "new") {
+            this.setState({ checkedAll: checked })
+        }
+        if (type === "update") {
+            this.setState({ EditChecked: checked })
+        }
     }
 
     handleDateOnchange = (name, date) => {
@@ -128,10 +163,13 @@ class Calendar extends Component {
         })
     }
 
-    handleColorSelection = (id) => {
-        this.setState({
-            selectedColorId: id
-        })
+    handleColorSelection = (type, id) => {
+        if (type === "new") {
+            this.setState({ selectedColorId: id })
+        }
+        if (type === "update") {
+            this.setState({ EditBackground: id })
+        }
     }
 
     handleInputOnChange = (event) => {
@@ -172,6 +210,7 @@ class Calendar extends Component {
             EditDescription: event.event.extendedProps.description,
             EditStart: event.event.start,
             EditEnd: event.event.end,
+            EditChecked: event.event.allDay
         })
     }
 
@@ -205,7 +244,7 @@ class Calendar extends Component {
                     eventContent={this.renderEventContent}
                     select={this.handleDateSelect}
                     eventClick={this.handleEventClick}
-                    events = {this.state.event}
+                    events = {this.state.events}
                     headerToolbar={{
                         left: 'prev,next today',
                         center: 'title',

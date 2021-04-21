@@ -13,3 +13,8 @@ export const getEvents = (token, body) => {
     const endpoint = getEndpointWithPrefix(`getEvents`)
     return POST(endpoint, body, token)
 }
+
+export const updateEvent = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`updateEvent`)
+    return POST(endpoint, body, token)
+}

@@ -65,7 +65,7 @@ const NewEventModal = ({
                     control = {
                     <Switch
                         checked = {values["checkedAll"]}
-                        onChange = {handleSwitchChange}
+                        onChange = {(eve) => handleSwitchChange("new", eve)}
                         name = "checkedAll"
                         color = "primary"
                     />
@@ -100,7 +100,7 @@ const NewEventModal = ({
                                     className =  {["color_selector_icon", id === selected && "color_selector_icon__selected"].join(" ")}
                                     style = {{backgroundColor: backgroundColor}} 
                                     key = {id}
-                                    onClick = {() => handleColorSelection(id)}
+                                    onClick = {() => handleColorSelection("new", id)}
                                 >
                                     <div className = "color_selector_icon_label">
                                         {

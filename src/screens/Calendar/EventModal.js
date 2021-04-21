@@ -66,9 +66,9 @@ const EventModal = ({
                 <FormControlLabel
                     control = {
                     <Switch
-                        checked = {selectedEvent.allDay}
-                        onChange = {handleSwitchChange}
-                        name = "checkedAll"
+                        checked = {values["EditChecked"]}
+                        onChange = {(eve) => handleSwitchChange("update", eve)}
+                        name = "editChecked"
                         color = "primary"
                         defaultChecked = {selectedEvent.allDay}
                     />
@@ -108,7 +108,7 @@ const EventModal = ({
                                     }
                                     style = {{backgroundColor: backgroundColor}} 
                                     key = {id}
-                                    onClick = {() => handleColorSelection(id)}
+                                    onClick = {() => handleColorSelection("update", id)}
                                 >
                                     <div className = "color_selector_icon_label">
                                         {
