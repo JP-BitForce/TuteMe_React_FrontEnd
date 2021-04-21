@@ -141,11 +141,12 @@ class Payments extends Component {
     }
 
     render() {
+        const {loading} = this.state
         return (
             <div className = "payments_root_div">
                 {
-                    this.state.loading ?
-                    <Loading/>
+                    loading ?
+                    <Loading open = {loading}/>
                     :
                     this.renderRootContainer()
                 }
