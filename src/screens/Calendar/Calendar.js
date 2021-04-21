@@ -6,7 +6,8 @@ import HeaderTopper from '../../components/Header/HeaderTopper'
 import Loading from '../../components/Loading/Loading'
 import NewEventModal from './NewEventModal'
 import EventModal from './EventModal'
-import { addNewEvent, getEvents, updateEvent } from '../../api/event'
+import Modal from '../../components/Modal/SignOutModal'
+import { addNewEvent, getEvents, updateEvent, deleteEvent } from '../../api/event'
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -38,7 +39,11 @@ class Calendar extends Component {
         EditStart: new Date(),
         EditEnd: new Date(),
         EditBackground: "",
-        EditChecked: false
+        EditChecked: false,
+        openAlertPopUp: false,
+        deleteLoading: false,
+        updateLoading: false,
+        addLoading: false
     }
 
     colors = [
@@ -92,7 +97,7 @@ class Calendar extends Component {
                 end: moment(end).format('YYYY-MM-DDT23:59:59'),
                 backgroundColor: this.colors[selectedColorId-1].backgroundColor
             }
-            this.setState({ loading: true })
+            this.setState({ addLoading: true })
             addNewEvent(auth.accessToken, request).then(response => {
                 this.setState({ events: response.events })
                 this.setInitialStateForAdd()
@@ -114,7 +119,7 @@ class Calendar extends Component {
             end: moment(EditEnd).format('YYYY-MM-DDT23:59:59'),
             backgroundColor: this.colors[EditBackground-1].backgroundColor
         }
-        this.setState({ loading: true })
+        this.setState({ updateLoading: true })
         updateEvent(auth.accessToken, request).then(response => {
             this.setState({ events: response.events })
             this.setInitialStateForUpdate()
@@ -123,9 +128,29 @@ class Calendar extends Component {
         })
     }
 
+    handleDeleteEvent = () => {
+        const selectedEvent = this.state.selectedEvent
+        const auth  = this.props.auth
+        const request = {
+            userId: auth.userId,
+            eventId: selectedEvent.id
+        }
+        this.setState({ deleteLoading: true })
+        deleteEvent(auth.accessToken, request).then(response => {
+            this.setState({ events: response.events })
+            this.setInitialStateForDelete()
+        }).catch(err => {
+            this.setInitialStateForDelete()
+        })
+    }
+
+    handleDeleteEventPopUp = () => {
+        this.setState({ openAlertPopUp: !this.state.openAlertPopUp })
+    }
+
     setInitialStateForUpdate = () => {
         this.setState({
-            loading: false,
+            updateLoading: false,
             selectedEvent: null,
             openSelectedEventModal: false,
             EditTitle: "",
@@ -137,13 +162,27 @@ class Calendar extends Component {
 
     setInitialStateForAdd = () => {
         this.setState({
-            loading: false,
+            addLoading: false,
             openNewEventModal: false,
             title: "",
             description: "",
             start: new Date(),
             end: new Date(),
             checkedAll: false
+        })
+    }
+
+    setInitialStateForDelete = () => {
+        this.setState({
+            loading: false,
+            openAlertPopUp: false,
+            selectedEvent: null,
+            openSelectedEventModal: false,
+            EditTitle: "",
+            EditDescription: "",
+            EditStart: "",
+            EditEnd: "",
+            deleteLoading: false
         })
     }
 
@@ -257,7 +296,15 @@ class Calendar extends Component {
     }
 
     render() {
-        const {childNav, loading, openNewEventModal, selectedColorId, selectedEvent, openSelectedEventModal} = this.state
+        const {
+            childNav, 
+            loading, 
+            openNewEventModal, 
+            selectedColorId, 
+            selectedEvent, 
+            openSelectedEventModal,
+            openAlertPopUp
+        } = this.state
         return (
             <div className = "calender_sc_root">
                 <HeaderTopper
@@ -299,8 +346,18 @@ class Calendar extends Component {
                         handleSwitchChange = {this.handleSwitchChange}
                         selectedEvent = {selectedEvent}
                         values = {this.state}
+                        handleDeleteEvent = {this.handleDeleteEventPopUp}
                     />
                 }
+
+                <Modal
+                    open = {openAlertPopUp}
+                    handleClose = {this.handleDeleteEventPopUp}
+                    title = "Warning!"
+                    content = "You will be lost your event data permanently. do you like to continue ? "
+                    handleCancel = {this.handleDeleteEventPopUp}
+                    handleOk = {this.handleDeleteEvent}
+                />
                 
             </div>
         )

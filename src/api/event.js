@@ -18,3 +18,8 @@ export const updateEvent = (token, body) => {
     const endpoint = getEndpointWithPrefix(`updateEvent`)
     return POST(endpoint, body, token)
 }
+
+export const deleteEvent = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`deleteEvent`)
+    return POST(endpoint, body, token)
+}
