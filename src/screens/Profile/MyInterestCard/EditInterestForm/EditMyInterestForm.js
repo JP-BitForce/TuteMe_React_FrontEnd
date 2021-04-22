@@ -15,7 +15,7 @@ function generate(element) {
 }
 export default function EditMyInterest(){
     return(
-        <Paper style={{maxWidth:800, margin:"auto"}}>
+        <Paper style={{maxWidth:800, margin:"auto", }}>
              <Grid item container direction="column">
                 <Grid item container direction="row">
                     <Grid item xs={12} sm={12} align= "left">

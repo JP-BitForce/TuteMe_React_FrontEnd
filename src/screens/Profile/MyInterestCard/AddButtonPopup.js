@@ -5,6 +5,7 @@ import  AddMyInterest from './EditInterestForm/AddMyInterestForm'
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
+import Grid from '@material-ui/core/Grid';
 
 
 function rand() {
@@ -47,6 +48,7 @@ export default function AddIconPopup() {
     setOpen(false);
   };
   const body = (
+    <Grid item container direction='column' alignItems='center'>
     <div style={modalStyle} className={classes.paper}>
       <div align='right'>
         <IconButton >
@@ -55,6 +57,7 @@ export default function AddIconPopup() {
       </div>
       <AddMyInterest />
     </div>
+    </Grid>
   );
   return (
     <div>

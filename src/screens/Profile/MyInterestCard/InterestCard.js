@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, Divider,Grid} from "@material-ui/core/";
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from './AddIconPopup'
-import EditIcon from './EditIconPopup'
+import AddButton from './AddButtonPopup'
+import EditButton from './EditButtonPopup'
 const data =[
     {
         name :"SUBJECTS",
@@ -41,10 +41,10 @@ export default function Interest() {
         </Grid>
         <Grid item  xs={12} sm={2} align="right"> 
           <IconButton aria-label="delete">
-            <AddIcon />
+            <AddButton />
           </IconButton>
           <IconButton aria-label="delete"  >
-            <EditIcon />
+            <EditButton />
           </IconButton>
         </Grid>
       </Grid>
