@@ -6,6 +6,9 @@ import HeaderTopper from '../../components/Header/HeaderTopper'
 import HeaderCard from '../../components/Header/HeaderCard'
 import Questions from './Questions'
 import Tag from './Tag'
+import NewQuestion from './NewQuestion'
+
+import { getTags } from '../../api/oneStep'
 
 import ContactSupport from '@material-ui/icons/ContactSupport'
 import Label from '@material-ui/icons/Label'
@@ -18,9 +21,18 @@ class OneStep extends Component {
     state = {
         loading: false,
         childNav: ["One-Step", "Questions"],
-        tabValue: 1,
+        tabValue: 2,
         searchValueError: null,
-        searchValue: "" 
+        searchValue: "",
+        title: "",
+        content: "",
+        tags: [],
+        addNewLoading: false,
+        tagList: [],
+        questionTotal: 1,
+        questionCurrent: 1,
+        tagTotal: 1,
+        tagCurrent:1 
     }
 
     tab_links = [ "Questions", "Tags", "New"]
@@ -31,12 +43,50 @@ class OneStep extends Component {
         New: <FiberNew/>
     }
 
+    componentDidMount() {
+        this.getOneStepData()
+    }
+
+    getOneStepData = async() => {
+        try {
+            this.setState({ loading: true })
+            const auth = this.props.auth
+            const tags = await getTags(auth.accessToken)
+            this.setState({ 
+                loading: false, 
+                tagList: tags 
+            })
+        } catch(err) {
+            this.setState({ loading: false })
+        }
+    }
+
     handleFilter = (item) => {
         
     }
 
     handleTagSearch = () => {
 
+    }
+
+    handlePost = () => {
+        
+    }
+
+    handleCancel = () => {
+
+    }
+
+    handleTagsChange = (event) => {
+        this.setState({
+            tags: event.target.value
+        })
+    }
+
+    handleContentOnChange = (value) => {
+        this.setState({
+            content: value
+        })
     }
 
     handleInputOnChange = (event) => {
@@ -55,11 +105,15 @@ class OneStep extends Component {
     }
 
     handleAskOnClick = () => {
-        this.handleTabChange(3)
+        this.handleTabChange(2)
     }
 
     handlePaginationOnChange = (page) => {
 
+    }
+
+    handleTagsPagination = (page) => {
+        
     }
 
     renderQuestionTab = () => {
@@ -67,8 +121,8 @@ class OneStep extends Component {
             handleAskOnClick = {this.handleAskOnClick}
             handleFilterOnClick = {this.handleFilter}
             handlePaginationOnChange = {this.handlePaginationOnChange}
-            total = {1} 
-            current = {1}
+            total = {this.state.questionTotal} 
+            current = {this.state.questionCurrent}
         />
     }
 
@@ -77,7 +131,18 @@ class OneStep extends Component {
             values = {this.state}
             handleTagSearch = {this.handleTagSearch}
             handleInputOnChange = {this.handleInputOnChange}
-            auth = {this.props.auth}
+            handleTagsPagination = {this.handleTagsPagination}
+        />
+    }
+
+    renderNewTab = () => {
+        return <NewQuestion
+            values = {this.state}
+            handleOnChange = {this.handleInputOnChange}
+            handleContentOnChange = {this.handleContentOnChange}
+            handleTagsChange = {this.handleTagsChange}
+            handleCancel = {this.handleCancel}
+            handlePost = {this.handlePost}
         />
     }
 
@@ -85,6 +150,7 @@ class OneStep extends Component {
         switch(this.state.tabValue) {
             case 0: return this.renderQuestionTab()
             case 1: return this.renderTagTab()
+            case 2: return this.renderNewTab()
             default: return
         }
     }

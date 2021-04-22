@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 
 import Pagination from '../../components/Pagination/Paginator'
-import { getTags } from '../../api/oneStep'
 
 //React-Boostarp
 import Card from 'react-bootstrap/Card'
@@ -11,28 +10,10 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './OneStep.css'
 
-const Tag = ({values, handleTagSearch, handleInputOnChange, auth}) => {
-    const [loading, setLoading] = useState(false)
-    const [data, setData] = useState([])
-
-    useEffect(() => {
-        getAllTags()
-        // eslint-disable-next-line
-    }, [])
-
-    const getAllTags = () => {
-        setLoading(true)
-        getTags(auth.accessToken).then(response => {
-            setData(response)
-            setLoading(false)
-        }).catch(err => {
-            setLoading(false)
-        })
-    }
+const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination}) => {
 
     const renderHeader = () => {
         return (
@@ -70,7 +51,7 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, auth}) => {
             <div className = "onestep_tag_main">
                 <Grid container spacing={4}>
                 {
-                    data.map((item)=> {
+                    values["tagList"].map((item)=> {
                         return (
                             <Grid item xs={6} sm={6} md={3} key = {item.id}>
                                 { renderCard(item) }
@@ -81,11 +62,11 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, auth}) => {
                 </Grid>
                 <div className = "pagination_div">
                     {
-                        data.length > 0 &&
+                        values["tagList"].length > 0 &&
                         <Pagination 
                             total = {1}
                             current = {1}
-                            handleOnChange = {() => {}}
+                            handleOnChange = {handleTagsPagination}
                         />
                     }
                 </div>
@@ -110,13 +91,8 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, auth}) => {
 
     return (
         <div>
-            { 
-                loading ? <CircularProgress/> :
-                <>
-                    { renderHeader() }
-                    {  renderMainContainer() }
-                </>
-            }
+            { renderHeader() }
+            {  renderMainContainer() }
         </div>
     )
 }
