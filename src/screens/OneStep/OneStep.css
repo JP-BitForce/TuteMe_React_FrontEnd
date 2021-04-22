@@ -116,3 +116,49 @@
     text-align: left;
     margin-left: 4px;
 }
+
+.onestep_tag_head {
+    display: flex;
+    text-align: left;
+    flex-direction: column;
+}
+
+.onestep_tag_head p {
+    font-size: 0.9rem;
+    color: rgb(71, 70, 70);
+}
+
+.onestep_tag_head__search_area {
+    margin-top: 2%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter_by_alp {
+    font-size: 0.9rem;
+    color: #808080;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.filter_by_alp::before {
+    content: '';
+    position: absolute;
+    background-color: #e91e63;
+    height: 2px;
+    box-sizing: border-box;
+    width: 50px;
+}
+
+.filter_by_alp:hover {
+    color: black;
+}
+
+.onestep_tag_main {
+    margin-top: 2%;
+}
+
+.onestep_tag_main__card {
+    text-align: left;
+}

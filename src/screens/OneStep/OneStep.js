@@ -5,10 +5,10 @@ import Loading from '../../components/Loading/Loading'
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import HeaderCard from '../../components/Header/HeaderCard'
 import Questions from './Questions'
+import Tag from './Tag'
 
 import ContactSupport from '@material-ui/icons/ContactSupport'
 import Label from '@material-ui/icons/Label'
-import TagFaces from '@material-ui/icons/TagFaces'
 import FiberNew from '@material-ui/icons/FiberNew'
 
 import headerImg from '../../assets/images/OneStep/headerImg.jpg'
@@ -18,15 +18,16 @@ class OneStep extends Component {
     state = {
         loading: false,
         childNav: ["One-Step", "Questions"],
-        tabValue: 0
+        tabValue: 1,
+        searchValueError: null,
+        searchValue: "" 
     }
 
-    tab_links = [ "Questions", "Tags", "Users", "New"]
+    tab_links = [ "Questions", "Tags", "New"]
 
     icons = {
         Questions: <ContactSupport/>,
         Tags: <Label/>,
-        Users: <TagFaces/>,
         New: <FiberNew/>
     }
 
@@ -34,10 +35,22 @@ class OneStep extends Component {
         
     }
 
+    handleTagSearch = () => {
+
+    }
+
+    handleInputOnChange = (event) => {
+        const {value, name} = event.target
+        this.setState({
+            [name]: value,
+            searchValueError: false
+        })
+    }
+
     handleTabChange = (newValue) => {
         this.setState({ 
             tabValue: newValue,
-            childNav: ["One-Step", this.tab_links[newValue]] 
+            childNav: ["One-Step", this.tab_links[newValue]],
         })
     }
 
@@ -49,15 +62,29 @@ class OneStep extends Component {
 
     }
 
+    renderQuestionTab = () => {
+        return <Questions 
+            handleAskOnClick = {this.handleAskOnClick}
+            handleFilterOnClick = {this.handleFilter}
+            handlePaginationOnChange = {this.handlePaginationOnChange}
+            total = {1} 
+            current = {1}
+        />
+    }
+
+    renderTagTab = () => {
+        return <Tag
+            values = {this.state}
+            handleTagSearch = {this.handleTagSearch}
+            handleInputOnChange = {this.handleInputOnChange}
+            auth = {this.props.auth}
+        />
+    }
+
     renderMain = () => {
         switch(this.state.tabValue) {
-            case 0: return <Questions 
-                                handleAskOnClick = {this.handleAskOnClick}
-                                handleFilterOnClick = {this.handleFilter}
-                                handlePaginationOnChange = {this.handlePaginationOnChange}
-                                total = {1} 
-                                current = {1}
-                            />
+            case 0: return this.renderQuestionTab()
+            case 1: return this.renderTagTab()
             default: return
         }
     }
