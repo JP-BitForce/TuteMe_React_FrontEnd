@@ -77,6 +77,10 @@
     flex-direction: column;
 }
 
+.question_card__countables span {
+    font-size: 1.2rem;
+}
+
 .question_card__main {
     display: flex;
     flex-direction: column;

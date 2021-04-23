@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment';
 
 //Material-UI
 import Divider from '@material-ui/core/Divider';
@@ -8,27 +9,26 @@ import Avatar from '@material-ui/core/Avatar';
 
 import './OneStep.css'
 
-const QuestionCard = () => {
+const QuestionCard = ({item}) => {
+    const {title, content, userName, userImg, answers, votes, tags, createdAt} = item
+
+    const getImageSource = (blob) => {
+        return `data:image/jpeg;base64,${blob}`
+    }
 
     const renderCountables = () => {
         return (
-            <Grid container spacing={2}>
-                <Grid item xs={4} sm={4} md={12}>
+            <Grid container spacing={4}>
+                <Grid item xs={6} sm={6} md={12}>
                    <div className = "question_card__countables">
-                        <span>0</span>
+                        <span>{votes}</span>
                         <span>votes</span>
                    </div>
                 </Grid>
-                <Grid item xs={4} sm={4} md={12}>
+                <Grid item xs={6} sm={6} md={12}>
                     <div className = "question_card__countables">
-                        <span>0</span>
+                        <span>{answers}</span>
                         <span>answers</span>
-                    </div>
-                </Grid>
-                <Grid item xs={4} sm={4} md={12}>
-                    <div className = "question_card__countables">
-                        <span>0</span>
-                        <span>views</span>
                     </div>
                 </Grid>
             </Grid>
@@ -39,26 +39,21 @@ const QuestionCard = () => {
         return (
             <div className = "question_card__main">
                 <div className = "question_card__main_info">
-                    <span className = "question_card__main_info_title">
-                    Bootstrap dropdown not working with shadow root
-                    </span>
-                    <p>
-                    I was trying to create a navbar component in a .js file so I can use it on multiple pages
-                    (not allowed to use react or other libraries for this project). I copied the navbar from bootstrap and pasted ...
-                    </p>
+                    <span className = "question_card__main_info_title">{title}</span>
+                    <div dangerouslySetInnerHTML={{__html: content}}/>
                 </div>
                 <div className = "question_card__main_tags">
                     {
-                        ["React", "Boostrap", "Navbar"].map(item => {
-                            return <Chip label = {item} key = {item} style = {{marginRight: "4px"}}/>
+                        tags.map(item => {
+                            return <Chip label = {item.title} key = {item.id} style = {{marginRight: "4px"}}/>
                         })
                     }
                 </div>
                 <div className = "question_card__main_user">
-                    <Avatar>A</Avatar>
+                    <Avatar src = {getImageSource(userImg)}/>
                     <div>
-                        <span>Allan</span>
-                        <span>2 days ago</span>
+                        <span>{userName}</span>
+                        <span>{moment(createdAt).format("DD-MM-YYYY, hh:mm:ss")}</span>
                     </div>
                 </div>
             </div>

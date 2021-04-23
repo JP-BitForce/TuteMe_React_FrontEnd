@@ -7,8 +7,9 @@ import HeaderCard from '../../components/Header/HeaderCard'
 import Questions from './Questions'
 import Tag from './Tag'
 import NewQuestion from './NewQuestion'
+import SnackBar from '../../components/SnackBar/SnackBar'
 
-import { getTags } from '../../api/oneStep'
+import { getTags, postQuestion, getQuestions } from '../../api/oneStep'
 
 import ContactSupport from '@material-ui/icons/ContactSupport'
 import Label from '@material-ui/icons/Label'
@@ -21,7 +22,7 @@ class OneStep extends Component {
     state = {
         loading: false,
         childNav: ["One-Step", "Questions"],
-        tabValue: 2,
+        tabValue: 0,
         searchValueError: null,
         searchValue: "",
         title: "",
@@ -32,7 +33,11 @@ class OneStep extends Component {
         questionTotal: 1,
         questionCurrent: 1,
         tagTotal: 1,
-        tagCurrent:1 
+        tagCurrent:1,
+        snackBarOn: false,
+        severity: "success",
+        snackBarMessage: "",
+        questionData:[]
     }
 
     tab_links = [ "Questions", "Tags", "New"]
@@ -51,6 +56,7 @@ class OneStep extends Component {
         try {
             this.setState({ loading: true })
             const auth = this.props.auth
+            this.getQuestionsApi(0)
             const tags = await getTags(auth.accessToken)
             this.setState({ 
                 loading: false, 
@@ -59,6 +65,23 @@ class OneStep extends Component {
         } catch(err) {
             this.setState({ loading: false })
         }
+    }
+
+    getQuestionsApi = (page) => {
+        const auth = this.props.auth
+        getQuestions(auth.accessToken, page).then(response => {
+            this.setState({
+                questionData: response.questionList,
+                questionTotal: response.total,
+                questionCurrent: response.current,
+            })
+        }).catch(err => {
+            this.setState({
+                questionData: [],
+                questionTotal: 1,
+                questionCurrent: 1,
+            })
+        })
     }
 
     handleFilter = (item) => {
@@ -70,11 +93,43 @@ class OneStep extends Component {
     }
 
     handlePost = () => {
-        
+        const {title, content, tags} = this.state
+        const auth = this.props.auth
+        const body = {
+            userId: auth.userId,
+            title,
+            content,
+            tags
+        }
+        this.setState({ addNewLoading: true })
+        postQuestion(auth.accessToken, body).then(response => {
+            if(response.success) {
+                this.setState({
+                    snackBarOn: true,
+                    severity: "success",
+                    snackBarMessage: response.message,
+                    title: "",
+                    content: "",
+                    tags:[],
+                    addNewLoading: false
+                })
+            }
+        }).catch(err => {
+            this.setState({
+                snackBarOn: true,
+                severity: "error",
+                snackBarMessage: "Unable to post question, please try again",
+                addNewLoading: false
+            })
+        })
     }
 
     handleCancel = () => {
-
+        this.setState({
+            title: "",
+            content: "",
+            tags: []
+        })
     }
 
     handleTagsChange = (event) => {
@@ -116,13 +171,22 @@ class OneStep extends Component {
         
     }
 
+    handleSnackBarClose = () => {
+        this.setState({
+            snackBarOn: false,
+            snackBarMessage: "",
+            severity: ""
+        })
+    }
+
     renderQuestionTab = () => {
         return <Questions 
             handleAskOnClick = {this.handleAskOnClick}
             handleFilterOnClick = {this.handleFilter}
             handlePaginationOnChange = {this.handlePaginationOnChange}
             total = {this.state.questionTotal} 
-            current = {this.state.questionCurrent}
+            current = {this.state.questionCurrent+1}
+            data = {this.state.questionData}
         />
     }
 
@@ -156,7 +220,7 @@ class OneStep extends Component {
     }
 
     render() {
-        const { tabValue, loading } = this.state
+        const { tabValue, loading, snackBarOn, snackBarMessage, severity} = this.state
         return (
             <div className = "one_step_root">
                 <HeaderTopper
@@ -180,6 +244,14 @@ class OneStep extends Component {
                         { this.renderMain() }
                     </div> 
                 }
+                <SnackBar
+                    open = {snackBarOn}
+                    autoHideDuration = {3000}
+                    message = {snackBarMessage}
+                    severity = {severity}
+                    handleClose = {this.handleSnackBarClose}
+                    align = {{ vertical: 'top', horizontal: 'right' }}
+                />
             </div>
         )
     }
