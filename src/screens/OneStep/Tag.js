@@ -10,10 +10,11 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './OneStep.css'
 
-const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination}) => {
+const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination, handleTagOnClick, handleFilterTagsByAlphabet}) => {
 
     const renderHeader = () => {
         return (
@@ -36,10 +37,20 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination
                             name = "searchValue"
                             size = "small"
                         />
-                        <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">Search</Button>
+                        <Button 
+                            variant="contained" 
+                            style = {{marginLeft: "5px"}} 
+                            type = "submit"
+                        >
+                        { values["searchTag"] ? "Cancel": "Search" }
+                        </Button>
                     </form>
-                    <div className = "filter_by_alp">
-                        <span>Filter by alphabet</span>
+                    <div className = "filter_by_alp" onClick = {handleFilterTagsByAlphabet}>
+                        <span>
+                            {
+                                values["filtered"] ? "Re-align" : "Filter by alphabet"
+                            }                            
+                        </span>
                     </div>
                 </div>
             </div>
@@ -51,7 +62,7 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination
             <div className = "onestep_tag_main">
                 <Grid container spacing={4}>
                 {
-                    values["tagList"].map((item)=> {
+                    values["tagFilterList"].map((item)=> {
                         return (
                             <Grid item xs={6} sm={6} md={3} key = {item.id}>
                                 { renderCard(item) }
@@ -77,7 +88,7 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination
     const renderCard = (item) => {
         const {title, description, noOfQuestions} = item
         return (
-            <Card className = "onestep_tag_main__card">
+            <Card className = "onestep_tag_main__card" onClick = {handleTagOnClick}>
                 <Card.Body>
                     <Card.Title><Chip label = {title} style = {{fontWeight: "bold"}}/></Card.Title>
                     <Card.Text>{description}</Card.Text>
@@ -92,7 +103,16 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination
     return (
         <div>
             { renderHeader() }
-            {  renderMainContainer() }
+            {  
+                values["searchLoading"] ? 
+                <div className = "onestep_tag_loading">
+                    <div className = "loading_div">
+                        <CircularProgress/>
+                    </div>
+                </div>
+                :
+                renderMainContainer() 
+            }
         </div>
     )
 }

@@ -18,3 +18,18 @@ export const getQuestions = (token, page) => {
     const endpoint = getEndpointWithPrefix(`getQuestions/${page}`)
     return GET(endpoint, token)
 }
+
+export const searchTagByTitle = (token, title) => {
+    const endpoint = getEndpointWithPrefix(`searchTagByTitle/${title}`)
+    return GET(endpoint, token)
+}
+
+export const filterTagsByAlphabet = (token) => {
+    const endpoint = getEndpointWithPrefix(`filterTagsByAlphabet`)
+    return GET(endpoint, token)
+}
+
+export const filterQuestions = (token, type) => {
+    const endpoint = getEndpointWithPrefix(`filterQuestionsByType/${type}`)
+    return GET(endpoint, token)
+}

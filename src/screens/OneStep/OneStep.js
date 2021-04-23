@@ -9,7 +9,14 @@ import Tag from './Tag'
 import NewQuestion from './NewQuestion'
 import SnackBar from '../../components/SnackBar/SnackBar'
 
-import { getTags, postQuestion, getQuestions } from '../../api/oneStep'
+import { 
+    getTags, 
+    postQuestion, 
+    getQuestions, 
+    searchTagByTitle, 
+    filterTagsByAlphabet,
+    filterQuestions 
+} from '../../api/oneStep'
 
 import ContactSupport from '@material-ui/icons/ContactSupport'
 import Label from '@material-ui/icons/Label'
@@ -37,7 +44,11 @@ class OneStep extends Component {
         snackBarOn: false,
         severity: "success",
         snackBarMessage: "",
-        questionData:[]
+        questionData:[],
+        tagFilterList: [],
+        searchTag: false,
+        searchLoading: false,
+        filtered: false
     }
 
     tab_links = [ "Questions", "Tags", "New"]
@@ -60,7 +71,8 @@ class OneStep extends Component {
             const tags = await getTags(auth.accessToken)
             this.setState({ 
                 loading: false, 
-                tagList: tags 
+                tagList: tags,
+                tagFilterList: tags 
             })
         } catch(err) {
             this.setState({ loading: false })
@@ -84,12 +96,33 @@ class OneStep extends Component {
         })
     }
 
-    handleFilter = (item) => {
-        
-    }
-
-    handleTagSearch = () => {
-
+    handleTagSearch = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if(!this.state.searchTag) {
+            const searchValue = this.state.searchValue
+            const auth = this.props.auth
+            this.setState({ searchLoading: true, searchTag: true})
+            searchTagByTitle(auth.accessToken, searchValue).then(response => {
+                this.setState({
+                    searchLoading: false,
+                    tagFilterList: response,
+                })
+            }).catch(err => {
+                this.setState({
+                    searchLoading: false,
+                    tagFilterList: [],
+                })
+            })
+        } else {
+            this.setState({ 
+                searchLoading: false, 
+                searchTag: false,
+                tagFilterList: this.state.tagList,
+                searchValue: "",
+                searchValueError: null
+            })
+        }
     }
 
     handlePost = () => {
@@ -122,6 +155,38 @@ class OneStep extends Component {
                 addNewLoading: false
             })
         })
+    }
+
+    handleFilterTagsByAlphabet = () => {
+        if(!this.state.filtered) {
+            const auth = this.props.auth
+            this.setState({ searchLoading: true, filtered: true })
+            filterTagsByAlphabet(auth.accessToken).then(response => {
+                this.setState({
+                    searchLoading: false,
+                    tagFilterList: response,
+                })
+            }).catch(err => {
+                this.setState({
+                    searchLoading: false,
+                    tagFilterList: [],
+                })
+            })
+        } else {
+            this.setState({
+                searchLoading: false,
+                tagFilterList: this.state.tagList,
+                filtered: false
+            })
+        }
+    }
+
+    handleFilter = (type) => {
+
+    }
+
+    handleTagOnClick = () => {
+
     }
 
     handleCancel = () => {
@@ -163,11 +228,11 @@ class OneStep extends Component {
         this.handleTabChange(2)
     }
 
-    handlePaginationOnChange = (page) => {
-
+    handlePaginationOnChange = (event, page) => {
+        
     }
 
-    handleTagsPagination = (page) => {
+    handleTagsPagination = (event, page) => {
         
     }
 
@@ -196,6 +261,8 @@ class OneStep extends Component {
             handleTagSearch = {this.handleTagSearch}
             handleInputOnChange = {this.handleInputOnChange}
             handleTagsPagination = {this.handleTagsPagination}
+            handleTagOnClick = {this.handleTagOnClick}
+            handleFilterTagsByAlphabet = {this.handleFilterTagsByAlphabet}
         />
     }
 
