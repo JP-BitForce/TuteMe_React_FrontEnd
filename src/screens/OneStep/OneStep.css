@@ -179,3 +179,11 @@
 .onestep_tag_loading {
     margin-top: 5%;
 }
+
+.no_data_available {
+    margin-top: 5%;
+}
+
+.no_data_available span {
+    font-size: 1.2rem;
+}

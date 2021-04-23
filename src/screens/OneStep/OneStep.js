@@ -48,7 +48,8 @@ class OneStep extends Component {
         tagFilterList: [],
         searchTag: false,
         searchLoading: false,
-        filtered: false
+        filtered: false,
+        questionFilterData: []
     }
 
     tab_links = [ "Questions", "Tags", "New"]
@@ -182,7 +183,24 @@ class OneStep extends Component {
     }
 
     handleFilter = (type) => {
-
+        if(type === "All") {
+            this.getQuestionsApi(0)
+        } else {
+            const auth = this.props.auth
+            filterQuestions(auth.accessToken, type, 0).then(response => {
+                this.setState({
+                    questionData: response.questionList,
+                    questionTotal: response.total,
+                    questionCurrent: response.current,
+                })
+            }).catch(err => {
+                this.setState({
+                    questionData: [],
+                    questionTotal: 1,
+                    questionCurrent: 1,
+                })
+            })
+        }
     }
 
     handleTagOnClick = () => {
@@ -222,6 +240,9 @@ class OneStep extends Component {
             tabValue: newValue,
             childNav: ["One-Step", this.tab_links[newValue]],
         })
+        if(newValue === 0) {
+            this.getQuestionsApi(0)
+        }
     }
 
     handleAskOnClick = () => {

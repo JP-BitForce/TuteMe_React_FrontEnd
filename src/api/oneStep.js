@@ -29,7 +29,7 @@ export const filterTagsByAlphabet = (token) => {
     return GET(endpoint, token)
 }
 
-export const filterQuestions = (token, type) => {
-    const endpoint = getEndpointWithPrefix(`filterQuestionsByType/${type}`)
+export const filterQuestions = (token, type, page) => {
+    const endpoint = getEndpointWithPrefix(`filterQuestionsByType?type=${type}&page=${page}`)
     return GET(endpoint, token)
 }

@@ -12,7 +12,7 @@ import './OneStep.css'
 
 const Questions = ({handleAskOnClick, handleFilterOnClick, handlePaginationOnChange, total, current, data}) => {
 
-    const filters = ["Newest", "Active", "Unanswered", "frequent", "Votes"]
+    const filters = ["All", "Newest", "Active", "Unanswered", "frequent", "Votes"]
 
     const renderHead = () => {
         return (
@@ -28,7 +28,7 @@ const Questions = ({handleAskOnClick, handleFilterOnClick, handlePaginationOnCha
                     </Button>
                 </div>
                 <div className = "question_tab_head_sub">
-                    <span>Total questions : ( 251,545 )</span>
+                    <span>Total questions : ( {data.length} )</span>
                 </div>
                 <Divider/>
             </div>
@@ -78,14 +78,23 @@ const Questions = ({handleAskOnClick, handleFilterOnClick, handlePaginationOnCha
                         { renderFilterContainer() }
                     </Grid>
                     <Grid item xs={12} sm={12} md={9}>
-                        { renderMainContainer() }
-                        <div className = "pagination_div">
-                            <Pagination 
-                                total = {total}
-                                current = {current}
-                                handleOnChange = {handlePaginationOnChange}
-                            />
-                        </div>
+                        {
+                            data.length > 0 ?
+                            <>
+                            { renderMainContainer() }
+                            <div className = "pagination_div">
+                                <Pagination 
+                                    total = {total}
+                                    current = {current}
+                                    handleOnChange = {handlePaginationOnChange}
+                                />
+                            </div>
+                            </>
+                            :
+                            <div className = "no_data_available">
+                                <span>No Questions available</span>
+                            </div>
+                        }
                     </Grid>
                 </Grid>
             </div>
