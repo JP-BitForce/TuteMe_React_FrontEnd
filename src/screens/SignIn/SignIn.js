@@ -33,7 +33,8 @@ class SignIn extends Component {
         signInSuccess: false,
         severity: "success",
         snackBarOn: false,
-        snackBarMessage: ""
+        snackBarMessage: "",
+        passwordType: "password"
     }
 
     componentDidMount() {
@@ -109,6 +110,15 @@ class SignIn extends Component {
         }
     }
 
+    handlePasswordTypeChange = () => {
+        const passwordType = this.state.passwordType
+        let type = "password"
+        if(passwordType === "password") {
+            type = "text"
+        }
+        this.setState({ passwordType: type })
+    }
+
     handleLoginSuceesRoute = () => {
         setTimeout(() => {
             this.props.history.push('/')
@@ -174,6 +184,7 @@ class SignIn extends Component {
                     validated = {this.state.validated}
                     values = {this.state}
                     handleInputChange = {this.handleInputOnChange}
+                    onClick = {this.handlePasswordTypeChange}
                 />
             </Card.Body>
         )

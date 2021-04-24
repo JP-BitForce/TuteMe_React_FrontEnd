@@ -9,7 +9,7 @@ import Avatar from '@material-ui/core/Avatar';
 
 import './OneStep.css'
 
-const QuestionCard = ({item}) => {
+const QuestionCard = ({item, handleQuestionCardOnClick}) => {
     const {title, content, userName, userImg, answers, votes, tags, createdAt} = item
 
     const getImageSource = (blob) => {
@@ -53,7 +53,9 @@ const QuestionCard = ({item}) => {
                     <Avatar src = {getImageSource(userImg)}/>
                     <div>
                         <span>{userName}</span>
-                        <span>{moment(createdAt).format("DD-MM-YYYY, hh:mm:ss")}</span>
+                        <span className = "question_card__main_user_created">
+                            created: {moment(createdAt).format("DD-MM-YYYY, hh:mm:ss a")}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -61,7 +63,7 @@ const QuestionCard = ({item}) => {
     }
 
     return (
-        <div className = "question_card_root">
+        <div className = "question_card_root" onClick = {() => handleQuestionCardOnClick(item)}>
             <Grid container spacing={4}>
                 <Grid item xs={12} sm={12} md={2}>
                     { renderCountables() }

@@ -8,6 +8,7 @@ import Questions from './Questions'
 import Tag from './Tag'
 import NewQuestion from './NewQuestion'
 import SnackBar from '../../components/SnackBar/SnackBar'
+import QuestionPreview from './QuestionPreview'
 
 import { 
     getTags, 
@@ -15,7 +16,8 @@ import {
     getQuestions, 
     searchTagByTitle, 
     filterTagsByAlphabet,
-    filterQuestions 
+    filterQuestions,
+    addQuestionVote 
 } from '../../api/oneStep'
 
 import ContactSupport from '@material-ui/icons/ContactSupport'
@@ -49,10 +51,12 @@ class OneStep extends Component {
         searchTag: false,
         searchLoading: false,
         filtered: false,
-        questionFilterData: []
+        questionFilterData: [],
+        openQuestionPreview: false,
+        selectedQuestion: null
     }
 
-    tab_links = [ "Questions", "Tags", "New"]
+    tab_links = [ "Questions", "Tags", "New" ]
 
     icons = {
         Questions: <ContactSupport/>,
@@ -67,18 +71,31 @@ class OneStep extends Component {
     getOneStepData = async() => {
         try {
             this.setState({ loading: true })
-            const auth = this.props.auth
             this.getQuestionsApi(0)
-            const tags = await getTags(auth.accessToken)
-            this.setState({ 
-                loading: false, 
-                tagList: tags,
-                tagFilterList: tags 
-            })
+            this.getTagsApi(0)
         } catch(err) {
             this.setState({ loading: false })
         }
     }
+
+    getTagsApi = (page) => {
+        const auth = this.props.auth
+        getTags(auth.accessToken, page).then(response => {
+            this.setState({ 
+                loading: false, 
+                tagList: response.tags,
+                tagFilterList: response.tags,
+                tagTotal: response.total,
+                tagCurrent: response.current+1 
+            })
+        }).catch(err => {
+            this.setState({ 
+                loading: false, 
+                tagList: [],
+                tagFilterList: [] 
+            })
+        })
+    } 
 
     getQuestionsApi = (page) => {
         const auth = this.props.auth
@@ -203,6 +220,41 @@ class OneStep extends Component {
         }
     }
 
+    handleVote = (qId) => {
+        const auth = this.props.auth
+        const body = {
+            userId: auth.userId,
+            questionId: qId
+        }
+        addQuestionVote(auth.accessToken, body).then(response => {
+            this.setState({
+                severity: "success",
+                snackBarOn: response.success,
+                snackBarMessage: response.message
+            })
+        }).catch(err => {
+            this.setState({
+                severity: "error",
+                snackBarOn: true,
+                snackBarMessage: "sorry, unable to add vote, please try again later"
+            })
+        })
+    }
+
+    handleQuestionCardOnClick = (item) => {
+        this.setState({
+            selectedQuestion: item,
+            openQuestionPreview: true
+        })
+    }
+
+    handleQuestionPreviewClose = () => {
+        this.setState({
+            selectedQuestion: null,
+            openQuestionPreview: false
+        })
+    }
+
     handleTagOnClick = () => {
 
     }
@@ -250,11 +302,13 @@ class OneStep extends Component {
     }
 
     handlePaginationOnChange = (event, page) => {
-        
+        this.setState({ questionCurrent: page })
+        this.getQuestionsApi(page-1)
     }
 
     handleTagsPagination = (event, page) => {
-        
+        this.setState({ tagCurrent: page})
+        this.getTagsApi(page-1)
     }
 
     handleSnackBarClose = () => {
@@ -273,6 +327,7 @@ class OneStep extends Component {
             total = {this.state.questionTotal} 
             current = {this.state.questionCurrent+1}
             data = {this.state.questionData}
+            handleQuestionCardOnClick = {this.handleQuestionCardOnClick}
         />
     }
 
@@ -308,7 +363,7 @@ class OneStep extends Component {
     }
 
     render() {
-        const { tabValue, loading, snackBarOn, snackBarMessage, severity} = this.state
+        const { tabValue, loading, snackBarOn, snackBarMessage, severity, selectedQuestion, openQuestionPreview} = this.state
         return (
             <div className = "one_step_root">
                 <HeaderTopper
@@ -331,6 +386,16 @@ class OneStep extends Component {
                     <div className = "one_step_main_root">
                         { this.renderMain() }
                     </div> 
+                }
+                {
+                    openQuestionPreview && selectedQuestion && 
+                    <QuestionPreview 
+                        open = {openQuestionPreview}
+                        handleClose = {this.handleQuestionPreviewClose}
+                        questionItem = {selectedQuestion}
+                        auth = {this.props.auth}
+                        handleVote = {this.handleVote}
+                    />
                 }
                 <SnackBar
                     open = {snackBarOn}

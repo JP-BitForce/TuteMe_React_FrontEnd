@@ -187,3 +187,44 @@
 .no_data_available span {
     font-size: 1.2rem;
 }
+
+.question_card__main_user_created {
+    font-size: 0.8rem;
+    color: rgb(122, 121, 121);
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+.question_card_provide_vote {
+    display: flex;
+    flex-direction: column;
+}
+
+.question_card_provide_vote_child1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.question_card_provide_vote_child1 span{
+    font-size: 1.8rem;
+}
+
+.question_card_provide_vote_child2_span {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+
+.question_card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.question_card_no_ans {
+    align-items: center;
+    margin-top: 2%;
+}
+
+.question_card_no_ans span {
+    font-size: 1.2rem;
+}

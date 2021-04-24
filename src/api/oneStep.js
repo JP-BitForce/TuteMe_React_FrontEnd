@@ -4,8 +4,8 @@ export const getEndpointWithPrefix = (endpoint) => {
     return `oneStep/${endpoint}`
 }
 
-export const getTags = (token) => {
-    const endpoint = getEndpointWithPrefix(`getTags`)
+export const getTags = (token, page) => {
+    const endpoint = getEndpointWithPrefix(`getTags/${page}`)
     return GET(endpoint, token)
 }
 
@@ -32,4 +32,14 @@ export const filterTagsByAlphabet = (token) => {
 export const filterQuestions = (token, type, page) => {
     const endpoint = getEndpointWithPrefix(`filterQuestionsByType?type=${type}&page=${page}`)
     return GET(endpoint, token)
+}
+
+export const getQuestionAnswers = (token, id) => {
+    const endpoint = getEndpointWithPrefix(`get_question_answers/${id}`)
+    return GET(endpoint, token)
+}
+
+export const addQuestionVote = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`add_question_vote`)
+    return POST(endpoint, body, token)
 }

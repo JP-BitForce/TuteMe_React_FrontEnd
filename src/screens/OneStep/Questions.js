@@ -10,7 +10,15 @@ import Grid from '@material-ui/core/Grid';
 
 import './OneStep.css'
 
-const Questions = ({handleAskOnClick, handleFilterOnClick, handlePaginationOnChange, total, current, data}) => {
+const Questions = ({
+    handleAskOnClick, 
+    handleFilterOnClick, 
+    handlePaginationOnChange, 
+    total, 
+    current, 
+    data,
+    handleQuestionCardOnClick
+}) => {
 
     const filters = ["All", "Newest", "Active", "Unanswered", "frequent", "Votes"]
 
@@ -60,7 +68,7 @@ const Questions = ({handleAskOnClick, handleFilterOnClick, handlePaginationOnCha
                     data.map(item => {
                         return (
                             <div className = "question_main_cards">
-                                <QuestionCard item = {item}/>
+                                <QuestionCard item = {item} handleQuestionCardOnClick = {handleQuestionCardOnClick}/>
                             </div>
                         )
                     })

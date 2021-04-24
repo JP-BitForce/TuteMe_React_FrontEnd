@@ -75,8 +75,8 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination
                     {
                         values["tagList"].length > 0 &&
                         <Pagination 
-                            total = {1}
-                            current = {1}
+                            total = {values["tagTotal"]}
+                            current = {values["tagCurrent"]}
                             handleOnChange = {handleTagsPagination}
                         />
                     }
