@@ -19,7 +19,8 @@ import {
     filterQuestions,
     addQuestionVote,
     postAnswer,
-    filterQuestionBytag 
+    filterQuestionBytag,
+    searchQuestion 
 } from '../../api/oneStep'
 
 import ContactSupport from '@material-ui/icons/ContactSupport'
@@ -59,7 +60,10 @@ class OneStep extends Component {
         answerContent: "",
         postAnsLoading: false,
         filterByTags: false,
-        filter: "All"
+        filter: "All",
+        searchQuestionValue: "",
+        searchQuestionError: null,
+        questionSearchFilterLoading: false
     }
 
     tab_links = [ "Questions", "Tags", "New" ]
@@ -201,30 +205,25 @@ class OneStep extends Component {
         }
     }
 
-    handleFilter = (type) => {
-        if(type === "All") {
-            this.getQuestionsApi(0)
+    handleFilterApi = (type, page) => {
+        const auth = this.props.auth
+        this.setState({ questionSearchFilterLoading: true })
+        filterQuestions(auth.accessToken, type, page).then(response => {
             this.setState({
-                filterByTags: false,
-                filter: "All"
+                questionData: response.questionList,
+                questionTotal: response.total,
+                questionCurrent: response.current,
+                filter: type,
+                questionSearchFilterLoading: false
             })
-        } else {
-            const auth = this.props.auth
-            filterQuestions(auth.accessToken, type, 0).then(response => {
-                this.setState({
-                    questionData: response.questionList,
-                    questionTotal: response.total,
-                    questionCurrent: response.current,
-                    filter: type
-                })
-            }).catch(err => {
-                this.setState({
-                    questionData: [],
-                    questionTotal: 1,
-                    questionCurrent: 1,
-                })
+        }).catch(err => {
+            this.setState({
+                questionData: [],
+                questionTotal: 1,
+                questionCurrent: 1,
+                questionSearchFilterLoading: false
             })
-        }
+        })
     }
 
     handleVote = (qId) => {
@@ -277,8 +276,49 @@ class OneStep extends Component {
         })
     }
 
+    handleQuestionSearchApi = (page) => {
+        const searchValue = this.state.searchQuestionValue
+        const auth = this.props.auth
+        this.setState({ questionSearchFilterLoading: true })
+        searchQuestion(auth.accessToken, searchValue, page).then(response => {
+            this.setState({
+                questionData: response.questionList,
+                questionTotal: response.total,
+                questionCurrent: response.current,
+                searchQuestion: true,
+                questionSearchFilterLoading: false
+            })
+        }).catch(err => {
+            this.setState({
+                questionData: [],
+                questionTotal: 1,
+                questionCurrent: 1,
+                questionSearchFilterLoading: false
+            })
+        })
+    }
+
+    handleQuestionSearch = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.handleQuestionSearchApi(0)
+    }
+
     handleTagOnClick = (title) => {
         this.handleFilterByTag(title, 0)
+    }
+
+    handleFilter = (type) => {
+        if(type === "All") {
+            this.getQuestionsApi(0)
+            this.setState({
+                filterByTags: false,
+                filter: "All",
+                searchQuestionValue: ""
+            })
+        } else {
+            this.handleFilterApi(type, 0)
+        }
     }
 
     setSuceessSnack = (msg) => {
@@ -355,7 +395,8 @@ class OneStep extends Component {
         const {value, name} = event.target
         this.setState({
             [name]: value,
-            searchValueError: false
+            searchValueError: false,
+            searchQuestionError: null
         })
     }
 
@@ -400,6 +441,9 @@ class OneStep extends Component {
             current = {this.state.questionCurrent+1}
             data = {this.state.questionData}
             handleQuestionCardOnClick = {this.handleQuestionCardOnClick}
+            values = {this.state}
+            handleQuestionSearch = {this.handleQuestionSearch}
+            handleInputOnChange = {this.handleInputOnChange}
         />
     }
 

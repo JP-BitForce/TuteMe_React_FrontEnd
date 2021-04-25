@@ -53,3 +53,8 @@ export const filterQuestionBytag = (token, tag, page) => {
     const endpoint = getEndpointWithPrefix(`filter_question_by_tag?tag=${tag}&page=${page}`)
     return GET(endpoint, token)
 }
+
+export const searchQuestion = (token, value, page) => {
+    const endpoint = getEndpointWithPrefix(`search_question?value=${value}&page=${page}`)
+    return GET(endpoint, token)
+}
