@@ -7,6 +7,10 @@ import Pagination from '../../components/Pagination/Paginator'
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Search from '@material-ui/icons/Search'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './OneStep.css'
 
@@ -17,10 +21,41 @@ const Questions = ({
     total, 
     current, 
     data,
-    handleQuestionCardOnClick
+    handleQuestionCardOnClick,
+    values,
+    handleQuestionSearch,
+    handleInputOnChange
 }) => {
 
-    const filters = ["All", "Newest", "Active", "Unanswered", "frequent", "Votes"]
+    const filters = ["All", "Newest", "Unanswered", "frequent", "Votes"]
+
+    const renderSearchBlock = () => {
+        return (
+            <div className = "question_search_block">
+                <form noValidate autoComplete="off" onSubmit = {handleQuestionSearch}>
+                    <TextField
+                            id="standard-basic" 
+                            label="search your question" 
+                            onChange = {handleInputOnChange} 
+                            variant = "outlined"
+                            error = {values["searchQuestionError"]}
+                            value = {values["searchQuestionValue"]}
+                            helperText = {values["searchQuestionError"] && "Incorrect entry"}
+                            name = "searchQuestionValue"
+                            size = "small"
+                            fullWidth
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Search />
+                                    </InputAdornment>
+                                ),
+                            }}
+                    />
+                </form>
+             </div>
+        )
+    }
 
     const renderHead = () => {
         return (
@@ -65,6 +100,11 @@ const Questions = ({
         return (
             <div className = "question_main_container">
                 {
+                    values["questionSearchFilterLoading"] ?
+                    <div className = "loading_div">
+                        <CircularProgress/>
+                    </div>
+                    :
                     data.map(item => {
                         return (
                             <div className = "question_main_cards">
@@ -86,6 +126,7 @@ const Questions = ({
                         { renderFilterContainer() }
                     </Grid>
                     <Grid item xs={12} sm={12} md={9}>
+                        { renderSearchBlock() }
                         {
                             data.length > 0 ?
                             <>
@@ -100,7 +141,7 @@ const Questions = ({
                             </>
                             :
                             <div className = "no_data_available">
-                                <span>No Questions available</span>
+                                <span>No questions found</span>
                             </div>
                         }
                     </Grid>

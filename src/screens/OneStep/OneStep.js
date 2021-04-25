@@ -17,7 +17,10 @@ import {
     searchTagByTitle, 
     filterTagsByAlphabet,
     filterQuestions,
-    addQuestionVote 
+    addQuestionVote,
+    postAnswer,
+    filterQuestionBytag,
+    searchQuestion 
 } from '../../api/oneStep'
 
 import ContactSupport from '@material-ui/icons/ContactSupport'
@@ -53,7 +56,14 @@ class OneStep extends Component {
         filtered: false,
         questionFilterData: [],
         openQuestionPreview: false,
-        selectedQuestion: null
+        selectedQuestion: null,
+        answerContent: "",
+        postAnsLoading: false,
+        filterByTags: false,
+        filter: "All",
+        searchQuestionValue: "",
+        searchQuestionError: null,
+        questionSearchFilterLoading: false
     }
 
     tab_links = [ "Questions", "Tags", "New" ]
@@ -156,22 +166,18 @@ class OneStep extends Component {
         postQuestion(auth.accessToken, body).then(response => {
             if(response.success) {
                 this.setState({
-                    snackBarOn: true,
-                    severity: "success",
-                    snackBarMessage: response.message,
                     title: "",
                     content: "",
                     tags:[],
                     addNewLoading: false
                 })
+                this.setSuceessSnack(response.message)
             }
         }).catch(err => {
             this.setState({
-                snackBarOn: true,
-                severity: "error",
-                snackBarMessage: "Unable to post question, please try again",
                 addNewLoading: false
             })
+            this.setErrorSnack( "Unable to post question, please try again")
         })
     }
 
@@ -199,25 +205,25 @@ class OneStep extends Component {
         }
     }
 
-    handleFilter = (type) => {
-        if(type === "All") {
-            this.getQuestionsApi(0)
-        } else {
-            const auth = this.props.auth
-            filterQuestions(auth.accessToken, type, 0).then(response => {
-                this.setState({
-                    questionData: response.questionList,
-                    questionTotal: response.total,
-                    questionCurrent: response.current,
-                })
-            }).catch(err => {
-                this.setState({
-                    questionData: [],
-                    questionTotal: 1,
-                    questionCurrent: 1,
-                })
+    handleFilterApi = (type, page) => {
+        const auth = this.props.auth
+        this.setState({ questionSearchFilterLoading: true })
+        filterQuestions(auth.accessToken, type, page).then(response => {
+            this.setState({
+                questionData: response.questionList,
+                questionTotal: response.total,
+                questionCurrent: response.current,
+                filter: type,
+                questionSearchFilterLoading: false
             })
-        }
+        }).catch(err => {
+            this.setState({
+                questionData: [],
+                questionTotal: 1,
+                questionCurrent: 1,
+                questionSearchFilterLoading: false
+            })
+        })
     }
 
     handleVote = (qId) => {
@@ -227,17 +233,121 @@ class OneStep extends Component {
             questionId: qId
         }
         addQuestionVote(auth.accessToken, body).then(response => {
+            this.setSuceessSnack(response.message)
+        }).catch(err => {
+            this.setErrorSnack("sorry, unable to add vote, please try again later")
+        })
+    }
+
+    handleAnswerPost = (qId) => {
+        const auth = this.props.auth
+        const body = {
+            userId: auth.userId,
+            questionId: qId,
+            answer: this.state.answerContent
+        }
+        this.setState({ postAnsLoading: true })
+        postAnswer(auth.accessToken, body).then(response => {
+            this.setSuceessSnack(response.message)
+            this.setState({ postAnsLoading: false, answerContent: "" })
+        }).catch(err => {
+            this.setErrorSnack(err.message)
+            this.setState({ postAnsLoading: false })
+        })
+    }
+
+    handleFilterByTag = (tag, page) => {
+        const auth = this.props.auth
+        filterQuestionBytag(auth.accessToken, tag, page).then(response => {
             this.setState({
-                severity: "success",
-                snackBarOn: response.success,
-                snackBarMessage: response.message
+                questionData: response.questionList,
+                questionTotal: response.total,
+                questionCurrent: response.current,
+                tabValue: 0,
+                childNav: ["One-Step", this.tab_links[0]],
+                filterByTags: true
             })
         }).catch(err => {
             this.setState({
-                severity: "error",
-                snackBarOn: true,
-                snackBarMessage: "sorry, unable to add vote, please try again later"
+                questionData: [],
+                questionTotal: 1,
+                questionCurrent: 1,
             })
+        })
+    }
+
+    handleQuestionSearchApi = (page) => {
+        const searchValue = this.state.searchQuestionValue
+        const auth = this.props.auth
+        this.setState({ questionSearchFilterLoading: true })
+        searchQuestion(auth.accessToken, searchValue, page).then(response => {
+            this.setState({
+                questionData: response.questionList,
+                questionTotal: response.total,
+                questionCurrent: response.current,
+                searchQuestion: true,
+                questionSearchFilterLoading: false
+            })
+        }).catch(err => {
+            this.setState({
+                questionData: [],
+                questionTotal: 1,
+                questionCurrent: 1,
+                questionSearchFilterLoading: false
+            })
+        })
+    }
+
+    handleQuestionSearch = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.handleQuestionSearchApi(0)
+    }
+
+    handleTagOnClick = (title) => {
+        this.handleFilterByTag(title, 0)
+    }
+
+    handleFilter = (type) => {
+        if(type === "All") {
+            this.getQuestionsApi(0)
+            this.setState({
+                filterByTags: false,
+                filter: "All",
+                searchQuestionValue: ""
+            })
+        } else {
+            this.handleFilterApi(type, 0)
+        }
+    }
+
+    setSuceessSnack = (msg) => {
+        this.setState({
+            severity: "success",
+            snackBarOn: true,
+            snackBarMessage: msg
+        })
+    }
+
+    setErrorSnack = (msg) => {
+        this.setState({
+            severity: "error",
+            snackBarOn: true,
+            snackBarMessage: msg
+        })
+    }
+
+    setWarningSnack = (msg) => {
+        this.setState({
+            severity: "warning",
+            snackBarOn: true,
+            snackBarMessage: msg
+        })
+    }
+
+    handleQuestionAnsCancel = () => {
+        this.setState({
+            answerContent: ""
         })
     }
 
@@ -255,8 +365,10 @@ class OneStep extends Component {
         })
     }
 
-    handleTagOnClick = () => {
-
+    handleAnsContentOnChange = (value) => {
+        this.setState({
+            answerContent: value
+        })
     }
 
     handleCancel = () => {
@@ -283,7 +395,8 @@ class OneStep extends Component {
         const {value, name} = event.target
         this.setState({
             [name]: value,
-            searchValueError: false
+            searchValueError: false,
+            searchQuestionError: null
         })
     }
 
@@ -328,6 +441,9 @@ class OneStep extends Component {
             current = {this.state.questionCurrent+1}
             data = {this.state.questionData}
             handleQuestionCardOnClick = {this.handleQuestionCardOnClick}
+            values = {this.state}
+            handleQuestionSearch = {this.handleQuestionSearch}
+            handleInputOnChange = {this.handleInputOnChange}
         />
     }
 
@@ -395,6 +511,11 @@ class OneStep extends Component {
                         questionItem = {selectedQuestion}
                         auth = {this.props.auth}
                         handleVote = {this.handleVote}
+                        values = {this.state}
+                        handleAnsContentOnChange = {this.handleAnsContentOnChange}
+                        handleAnswerPost = {this.handleAnswerPost}
+                        handleQuestionAnsCancel = {this.handleQuestionAnsCancel}
+                        setWarningSnack = {this.setWarningSnack}
                     />
                 }
                 <SnackBar

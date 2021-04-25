@@ -34,12 +34,27 @@ export const filterQuestions = (token, type, page) => {
     return GET(endpoint, token)
 }
 
-export const getQuestionAnswers = (token, id) => {
-    const endpoint = getEndpointWithPrefix(`get_question_answers/${id}`)
+export const getQuestionAnswers = (token, id, uId) => {
+    const endpoint = getEndpointWithPrefix(`get_question_answers?uId=${uId}&qId=${id}`)
     return GET(endpoint, token)
 }
 
 export const addQuestionVote = (token, body) => {
     const endpoint = getEndpointWithPrefix(`add_question_vote`)
     return POST(endpoint, body, token)
+}
+
+export const postAnswer = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`post_answer`)
+    return POST(endpoint, body, token)
+}
+
+export const filterQuestionBytag = (token, tag, page) => {
+    const endpoint = getEndpointWithPrefix(`filter_question_by_tag?tag=${tag}&page=${page}`)
+    return GET(endpoint, token)
+}
+
+export const searchQuestion = (token, value, page) => {
+    const endpoint = getEndpointWithPrefix(`search_question?value=${value}&page=${page}`)
+    return GET(endpoint, token)
 }
