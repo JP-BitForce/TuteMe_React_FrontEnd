@@ -14,6 +14,8 @@ import MyCourses from '../Courses/MyCourses'
 import OnlineCourses from '../Courses/OnlineCourses'
 import Blog from '../Blog/Blog'
 import Payments from '../Payments/Payments'
+import Calendar from '../Calendar/Calendar'
+import OneStep from '../OneStep/OneStep'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -150,7 +152,7 @@ const GettingStarted = ({logoutUser, history, auth}) => {
                 :
                 active === "ONLINE_COURSES" ? <OnlineCourses/>
                 :
-                active === "ONE_STEP" ? null
+                active === "ONE_STEP" ? <OneStep/>
                 :
                 active === "TRUSTED_TUTORS" ? <TrustedTutors/>
                 :
@@ -160,7 +162,9 @@ const GettingStarted = ({logoutUser, history, auth}) => {
                 :
                 active === "BLOG" ? <Blog/>
                 :
-                active === "PAYMENTS"  && <Payments/>
+                active === "PAYMENTS"  ? <Payments/>
+                :
+                active === "CALENDAR" && <Calendar/>
               }
           </main>
           <Modal
