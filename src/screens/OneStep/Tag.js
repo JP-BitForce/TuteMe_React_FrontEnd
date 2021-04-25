@@ -11,10 +11,18 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import './OneStep.css'
 
-const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination, handleTagOnClick, handleFilterTagsByAlphabet}) => {
+const Tag = ({
+    values, 
+    handleTagSearch, 
+    handleInputOnChange, 
+    handleTagsPagination, 
+    handleTagOnClick, 
+    handleFilterTagsByAlphabet
+}) => {
 
     const renderHeader = () => {
         return (
@@ -24,6 +32,9 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination
                     A tag is a keyword or label that categorizes your question with other, similar questions. <br></br>
                     Using the right tags makes it easier for others to find and answer your question.
                 </p>
+                <strong>
+                    by clicking a tag you can filter questions that related to that tag
+                </strong>
                 <div className = "onestep_tag_head__search_area">
                     <form noValidate autoComplete="off" onSubmit = {handleTagSearch}>
                         <TextField
@@ -65,7 +76,9 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination
                     values["tagFilterList"].map((item)=> {
                         return (
                             <Grid item xs={6} sm={6} md={3} key = {item.id}>
-                                { renderCard(item) }
+                                <Tooltip title={item.description}>
+                                    { renderCard(item) }
+                                </Tooltip>
                             </Grid>
                         )
                     })
@@ -88,10 +101,10 @@ const Tag = ({values, handleTagSearch, handleInputOnChange, handleTagsPagination
     const renderCard = (item) => {
         const {title, description, noOfQuestions} = item
         return (
-            <Card className = "onestep_tag_main__card" onClick = {handleTagOnClick}>
+            <Card className = "onestep_tag_main__card" onClick = {() => handleTagOnClick(title)}>
                 <Card.Body>
                     <Card.Title><Chip label = {title} style = {{fontWeight: "bold"}}/></Card.Title>
-                    <Card.Text>{description}</Card.Text>
+                    <Card.Text>{description.slice(0, 100)}...</Card.Text>
                     <footer className="blockquote-footer">
                         No of related questions <cite title="Source Title">{noOfQuestions}</cite>
                     </footer>

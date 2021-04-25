@@ -111,7 +111,7 @@ const NewQuestion = ({values, handleOnChange, handleContentOnChange, handleTagsC
                     <Button  type = "submit" onClick = {handlePost}>Post</Button>
                     </>
                 }
-            </div>
+                </div>
             </div>
         </div>
     )

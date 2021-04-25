@@ -100,7 +100,7 @@ const Questions = ({
                             </>
                             :
                             <div className = "no_data_available">
-                                <span>No Questions available</span>
+                                <span>No questions found</span>
                             </div>
                         }
                     </Grid>
