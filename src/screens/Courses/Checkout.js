@@ -1,8 +1,9 @@
-import React, {useState} from 'react'
+import React from 'react'
 
 import Stepper from '../../components/Stepper/StepperComponent'
 import CourseDetails from './CourseDetails'
 import PaymentMethods from './PaymentMethods'
+import PaymentSummary from '../../components/PaymentSummary/PaymentSummary'
 
 //Material-UI
 import Button from '@material-ui/core/Button';
@@ -23,25 +24,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const Checkout = ({open, handleClose, course, values, handleInputOnChange}) => {
+const Checkout = ({
+    open, 
+    course, 
+    values, 
+    handleInputOnChange, 
+    handleFileOnChange, 
+    handleDateOnchange, 
+    handleNext,
+    handlePrev
+}) => {
     const styles = useStyles()
     const steps = ["Course Details", "Payment Details", "Review & Pay"]
-    const [step, setStep] = useState(2)
-
-    const handleNext = () => {
-        if (step !== 3) {
-            setStep(step+1)
-        }
-    }
-
-    const handlePrev = () => {
-        if (step !== 1) {
-            setStep(step-1)
-        }
-        if (step === 1) {
-            handleClose()
-        }
-    }
 
     return (
         <Dialog
@@ -53,22 +47,28 @@ const Checkout = ({open, handleClose, course, values, handleInputOnChange}) => {
             fullWidth
             maxWidth="sm"
         >
-        <Stepper steps = {steps} activeStep = {step}/>
+        <Stepper steps = {steps} activeStep = {values["step"]}/>
         <DialogContent>
             {
-                step === 1 ? <CourseDetails course = {course}/> :
-                step === 2 ? 
+                values["step"] === 1 ? <CourseDetails course = {course}/> :
+                values["step"] === 2 ? 
                 <PaymentMethods 
                     values = {values}
                     handleSubmit = {handleNext}
                     handleInputOnChange = {handleInputOnChange}
+                    handleFileOnChange = {handleFileOnChange}
+                    handleDateOnchange = {handleDateOnchange}
                 /> 
-                : null
+                :
+                <PaymentSummary
+                    values = {values}
+                />
             }
         </DialogContent>
         <DialogActions>
-            <Button onClick = {handlePrev} color="primary"> {step === 1 ? "Close" : "Previous"} </Button>
-            <Button onClick = {handleNext} className = {styles.btn}>Next</Button>
+            { values["emptyError"] && <span className = "error">{values["emptyError"]}</span>}
+            <Button onClick = {handlePrev} color="primary"> {values["step"] === 1 ? "Close" : "Previous"} </Button>
+            <Button onClick = {handleNext} className = {styles.btn} disabled = {values["step"] === 3}>Next</Button>
         </DialogActions>
         </Dialog>
     )

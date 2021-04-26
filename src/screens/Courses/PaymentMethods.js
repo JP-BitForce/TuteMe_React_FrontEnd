@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Paypal from '../../components/PaymentMethods/Paypal'
+import Bank from '../../components/PaymentMethods/Bank'
 
 //React-Boostarp
 import Form from 'react-bootstrap/Form'
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const PaymentMethods = ({handleSubmit, values, handleInputOnChange}) => {
+const PaymentMethods = ({handleSubmit, values, handleInputOnChange, handleFileOnChange, handleDateOnchange}) => {
     const styles = useStyles()
     const renderPaymentMethods = () => {
         return (
@@ -54,10 +55,16 @@ const PaymentMethods = ({handleSubmit, values, handleInputOnChange}) => {
                                 values["paymentMethod"] === "paypal" ?
                                 <Paypal 
                                     values = {values}
-                                    handleInputOnChange = {handleInputOnChange}    
+                                    handleInputOnChange = {handleInputOnChange}
+                                    handleDateOnchange = {handleDateOnchange}    
                                 />
                                 :
-                                null
+                                <Bank
+                                    values = {values}
+                                    handleInputOnChange = {handleInputOnChange}
+                                    handleFileOnChange = {handleFileOnChange}
+                                    handleDateOnchange = {handleDateOnchange}     
+                                />
                             }
                         </div>
                     </Form>

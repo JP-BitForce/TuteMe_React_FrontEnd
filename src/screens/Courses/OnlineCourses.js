@@ -53,8 +53,12 @@ class OnlineCourses extends Component {
         mobile: "",
         email: "",
         cvv: "",
-        exp: "",
+        exp: null,
         cardNo: "",
+        depositedAt: new Date(),
+        scanCopy: null,
+        emptyError: null,
+        step: 3
     }
 
     componentDidMount() {
@@ -145,6 +149,102 @@ class OnlineCourses extends Component {
         
     }
 
+    handleFileOnChange = (file) => {
+        let reader = new FileReader()
+        reader.onloadend = () => {
+            this.setState({ scanCopy: reader.result });
+        }
+        reader.readAsDataURL(file)
+
+        const formData = new FormData()
+        formData.append("file", file);
+    }
+
+    handleDateOnchange = (type, val) => {
+        this.setState({ [type]: val })
+    }
+
+    handleCheckFieldEmpty = () => {
+        const {
+            firstName,
+            lastName,
+            address,
+            city,
+            zip,
+            mobile,
+            email,
+            cvv,
+            exp,
+            cardNo,
+            depositedAt,
+            scanCopy,
+            paymentMethod
+        } = this.state
+
+        if(paymentMethod === "paypal") {
+            if(firstName && lastName && address && city && zip && mobile && email && cvv && exp && cardNo) {
+                this.setState({ emptyError: null })
+                return true
+            } else {
+                this.setState({ emptyError: "Fields cannot be empty" })
+                return false
+            }
+        } else {
+            if(firstName && lastName && email && depositedAt && scanCopy) {
+                this.setState({ emptyError: null })
+                return true
+            } else {
+                this.setState({ emptyError: "Fields cannot be empty" })
+                return false
+            }
+        }
+    }
+
+    handleNext = () => {
+        let step = this.state.step
+        if (step === 1) {
+            this.setState({step : step + 1 })
+        }
+        else if (step === 2) {
+            if(this.handleCheckFieldEmpty()) {
+                this.setState({step : step + 1 })
+            }
+        }
+        else if (step === 3) {
+            this.setState({step : step + 1 })
+        }
+    }
+
+    handlePrev = () => {
+        this.setState({ emptyError: null })
+        let step = this.state.step
+        if (step !== 1) {
+            this.setState({step : step - 1 })
+        }
+        if (step === 1) {
+            this.handleEnrollNowCancel()
+        }
+    }
+
+    setInitialStateForm = () => {
+        this.setState({
+            firstName: "",
+            lastName: "",
+            address: "",
+            city: "",
+            zip: "",
+            mobile: "",
+            email: "",
+            cvv: "",
+            exp: null,
+            cardNo: "",
+            depositedAt: new Date(),
+            scanCopy: null,
+            emptyError: null,
+            step: 1
+        })
+    }
+
     handleEnrollNowCancel = () => {
         this.setState({ 
             openCheckoutModal: false,
@@ -164,8 +264,10 @@ class OnlineCourses extends Component {
         const {value, name} = event.target
         this.setState({
             [name]: value,
-            searchValueError: false
+            searchValueError: false,
+            emptyError: null
         })
+        this.setInitialStateForm()
     }
 
     handleToggle = (type, index) => {
@@ -347,10 +449,13 @@ class OnlineCourses extends Component {
                     selectedCourse && 
                     <Checkout
                         open = {openCheckoutModal}
-                        handleClose = {this.handleEnrollNowCancel}
                         course = {selectedCourse}
                         values = {this.state}
                         handleInputOnChange = {this.handleInputOnChange}
+                        handleFileOnChange = {this.handleFileOnChange}
+                        handleDateOnchange = {this.handleDateOnchange}
+                        handleNext = {this.handleNext}
+                        handlePrev = {this.handlePrev}
                     />
                 }
             </div>
