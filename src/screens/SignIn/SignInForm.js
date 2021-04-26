@@ -42,6 +42,7 @@ const SignInForm = ({handleSubmit, validated, values, handleInputChange, onClick
             onSubmit={handleSubmit}
             noValidate
             validated={validated}
+            style = {{textAlign: "left"}}
         >
             <Row>
                 <Col sm>
@@ -49,19 +50,17 @@ const SignInForm = ({handleSubmit, validated, values, handleInputChange, onClick
                 </Col>
             </Row>
 
-            <Row>
-                <Col sm>
-                    <PasswordInput
-                        type = {values["passwordType"]}
-                        name = "password"
-                        value = {values["password"]}
-                        onChange = {handleInputChange}
-                        max = {30}
-                        placeholder = "password"
-                        onClick = {onClick}
-                    />
-                </Col>
-            </Row>
+            <PasswordInput
+                type = {values["passwordType"]}
+                name = "password"
+                value = {values["password"]}
+                onChange = {handleInputChange}
+                max = {30}
+                placeholder = "password"
+                onClick = {onClick}
+            />
+
+            <div className = "vertical_seperator"/>
 
             {
                 values['apiCalling'] ? 

@@ -2,6 +2,7 @@ import React from 'react'
 
 import CustomButton from '../../components/Button/CustomButton'
 import PasswordStrength from '../../components/PasswordStrength/PasswordStrength'
+import PasswordInput from '../../components/PasswordInput/PasswordInput'
 
 //Material-UI
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -18,7 +19,8 @@ const SignUpForm = ({
     validated,
     values,
     handleInputChange,
-    handlePasswordScoreOnChange
+    handlePasswordScoreOnChange,
+    onEyeClick
 }) => {
 
     const renderInputField = (type, name, placeholder, max) => {
@@ -37,19 +39,7 @@ const SignUpForm = ({
                     {placeholder} can't be empty
                 </Form.Control.Feedback>
                 {
-                    name === "password" && values[name] && 
-                        <PasswordStrength 
-                            value = { values[name] } 
-                            min = { 5 }
-                            onChangeScore = {handlePasswordScoreOnChange}   
-                        /> 
-                }
-                {
                     name === "email" && values["emailError"] && <span className = "error">{values["emailError"]}</span>
-                }
-                {
-                    name === "password" && values["passwordError"] && 
-                    <span className = "error">{values["passwordError"]}</span>
                 }
                 {
                     name === "confirmPassword" && values["passwordMatchError"] &&
@@ -80,15 +70,30 @@ const SignUpForm = ({
                 </Col>
             </Row>
 
-            <Row>
-                <Col sm>
-                    { renderInputField("password", "password", "Password", 30) }
-                </Col>
-            </Row>
+            <PasswordInput
+                type = {values["passwordType"]}
+                name = "password"
+                value = {values["password"]}
+                onChange = {handleInputChange}
+                max = {30}
+                placeholder = "password"
+                onClick = {onEyeClick}
+            />
+            {
+                values["password"] && 
+                    <PasswordStrength 
+                        value = { values["password"] } 
+                        min = { 5 }
+                        onChangeScore = {handlePasswordScoreOnChange}   
+                    /> 
+            }
+            {
+                values["passwordError"] && <span className = "error">{values["passwordError"]}</span>
+            }
 
             <Row>
                 <Col sm> 
-                    { renderInputField("password", "confirmPassword", "Confirm Password", 30) } 
+                    { renderInputField("password", "confirmPassword", "Confirm password", 30) } 
                 </Col>
             </Row>
 

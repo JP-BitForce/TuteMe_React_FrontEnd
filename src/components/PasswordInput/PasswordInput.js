@@ -6,8 +6,8 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import visibility_off from '../../assets/images/visibility_off.png'
-import visibility from '../../assets/images/visibility.png'
+import visibility_off from '../../assets/images/shared/visibility_off.png'
+import visibility from '../../assets/images/shared/visibility.png'
 
 const PasswordInput = ({type, name, value, onChange, max, placeholder, onClick}) => {
     return (
