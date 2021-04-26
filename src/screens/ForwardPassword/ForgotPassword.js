@@ -79,9 +79,7 @@ class ForgotPassword extends Component {
 
         const email = this.state.email
         if (!email.trim()) {
-            this.setState({
-                emailFormValidated: !form.checkValidity(),
-            });
+            this.setState({ emailFormValidated: !form.checkValidity() })
         }
         else if (this.validateEmail()) {
             this.setState({
@@ -105,9 +103,7 @@ class ForgotPassword extends Component {
             })
         } 
         else {
-            this.setState({
-                emailError : "Enter valid email address"
-            })
+            this.setState({ emailError : "Enter valid email address" })
         }
 
     }
@@ -117,9 +113,7 @@ class ForgotPassword extends Component {
         event.preventDefault();
         event.stopPropagation();
         if(!this.state.resetCode.trim()) {
-            this.setState({
-                codeFormValidated: !form.checkValidity(),
-            });
+            this.setState({ codeFormValidated: !form.checkValidity() })
         }
         else {
             this.setState({ confirmCodeLoading: true })
@@ -134,9 +128,7 @@ class ForgotPassword extends Component {
                 if(response.success) {
                     this.handleTabChange("",2)
                 } else {
-                    this.setState({
-                        confirmCodeError: "Confirmation code is not matched"
-                    })
+                    this.setState({ confirmCodeError: "Confirmation code is not matched" })
                 }
             }).catch(err => {
                 this.setState({ 
@@ -158,9 +150,7 @@ class ForgotPassword extends Component {
             });
         }
         else if(password !== confirmPassword) {
-            this.setState({
-                confirmPasswordError:"Passwords are not matched"
-            })
+            this.setState({ confirmPasswordError:"Passwords are not matched" })
         } 
         else if (passwordScore < 2) {
             this.setState({ passwordError : "Password not strong enough"})
@@ -191,9 +181,7 @@ class ForgotPassword extends Component {
     }
 
     onPasswordScoreChange = (score) => {
-        this.setState({
-            passwordScore: score
-        })
+        this.setState({ passwordScore: score })
     }
 
     handleSnackBarClose = () => {
@@ -257,6 +245,7 @@ class ForgotPassword extends Component {
                     onSubmit={this.handleSendResetCode}
                     noValidate
                     validated={emailFormValidated}
+                    style = {{textAlign: "left"}}
                 >
                     <InputField 
                         type = "email"
@@ -298,6 +287,7 @@ class ForgotPassword extends Component {
                     onSubmit={this.handleConfirmCode}
                     noValidate
                     validated={codeFormValidated}
+                    style = {{textAlign: "left"}}
                 >
                     <InputField 
                         type = "text"
@@ -332,6 +322,7 @@ class ForgotPassword extends Component {
                     onSubmit={this.handleReset}
                     noValidate
                     validated={resetFormValidated}
+                    style = {{textAlign: "left"}}
                 >
                     <InputField 
                         type = "password"
