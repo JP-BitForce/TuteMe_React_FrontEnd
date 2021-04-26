@@ -6,6 +6,7 @@ import CourseCard from '../../components/Card/CourseCard'
 import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import Pagination from '../../components/Pagination/Paginator'
+import Checkout from './Checkout'
 import { getCourses, getFilterCategories } from '../../api/course'
 
 //Material-UI
@@ -39,7 +40,21 @@ class OnlineCourses extends Component {
         total: 1,
         current: 1,
         fetchError: null,
-        coursesData: []
+        coursesData: [],
+        selectedCourse: null,
+        openCheckoutModal: false,
+        paymentMethod: "paypal",
+        paymentValidated: false,
+        firstName: "",
+        lastName: "",
+        address: "",
+        city: "",
+        zip: "",
+        mobile: "",
+        email: "",
+        cvv: "",
+        exp: "",
+        cardNo: "",
     }
 
     componentDidMount() {
@@ -130,6 +145,21 @@ class OnlineCourses extends Component {
         
     }
 
+    handleEnrollNowCancel = () => {
+        this.setState({ 
+            openCheckoutModal: false,
+            selectedCourse: null
+        })
+    }
+
+    handleViewEnrollOnClick = (id) => {
+        const course = this.state.coursesData.filter(item => item.id === id)[0]
+        this.setState({
+            openCheckoutModal: true,
+            selectedCourse: course
+        })
+    }
+
     handleInputOnChange = (event) => {
         const {value, name} = event.target
         this.setState({
@@ -150,7 +180,7 @@ class OnlineCourses extends Component {
                                 break;
             default: return
         }
-    };
+    }
 
     handleCheck = (type, index) => {
         const checked = this.state[type]
@@ -207,16 +237,12 @@ class OnlineCourses extends Component {
     }
 
     renderCourseCard = (item) => {
-        const {name, rating} = item
         return (
             <Grid item xs={6} sm={6} md={4}>
                 <CourseCard
                     src = {unity}
-                    title = {name}
-                    by = "John Apraham"
-                    rating = {rating}
-                    price = "150"
-                    description = "Donec molestie tincidunt tellus sit amet aliquet"
+                    item = {item}
+                    onClick = {this.handleViewEnrollOnClick}
                 />
             </Grid>
         )
@@ -288,11 +314,7 @@ class OnlineCourses extends Component {
                             { this.renderListHead() }
                         </div>
                         <Grid container spacing={2}>
-                            {
-                                coursesData.map(item => {
-                                    return this.renderCourseCard(item)
-                                })
-                            }
+                            { coursesData.map(item => this.renderCourseCard(item)) }
                         </Grid>
                         <div className = "pagination_div">
                             {
@@ -311,7 +333,7 @@ class OnlineCourses extends Component {
     }
 
     render() {
-        const {loading} = this.state
+        const {loading, selectedCourse, openCheckoutModal} = this.state
         return (
             <div className = "online_courses_root">
                 <Header 
@@ -319,10 +341,17 @@ class OnlineCourses extends Component {
                     src = {headerImg}
                 />
                 {
-                    loading ? 
-                    <Loading open = {loading} />
-                    :
-                    this.renderCourseList()
+                    loading ? <Loading open = {loading} /> : this.renderCourseList()
+                }
+                {
+                    selectedCourse && 
+                    <Checkout
+                        open = {openCheckoutModal}
+                        handleClose = {this.handleEnrollNowCancel}
+                        course = {selectedCourse}
+                        values = {this.state}
+                        handleInputOnChange = {this.handleInputOnChange}
+                    />
                 }
             </div>
         )

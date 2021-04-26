@@ -114,3 +114,7 @@
     color: rgb(117, 117, 117);
     font-size: 0.8rem;
 }
+
+.courses_checkout_payment_methods_method {
+    margin-top: 2%;
+}

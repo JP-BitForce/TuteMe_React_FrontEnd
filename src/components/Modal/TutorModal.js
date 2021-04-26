@@ -121,8 +121,8 @@ const TutorModal = ({open, handleClose, selectedTutor}) => {
                     <DialogContent>
                         { renderDetail("ID", `T0${id}`) }
                         { renderDetail("Name", `${firstName} ${lastName}`) }
-                        { renderDetail("Email", `${email}`) }
-                        { renderDetail("About", `${description}`) }
+                        { renderDetail("Email", email) }
+                        { renderDetail("About", description) }
                         { rendersubjects(['A/L Mathematics', 'A/L Physics']) }
                         { renderDetail("Location", getLocation()) }
                         { renderDetail("Rate", <ReadOnlyRating rate = {rating}/>) }
