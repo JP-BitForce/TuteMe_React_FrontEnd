@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
+import moment from 'moment';
 
 import Loading from '../../components/Loading/Loading'
 import CourseCard from '../../components/Card/CourseCard'
@@ -7,11 +8,13 @@ import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import Pagination from '../../components/Pagination/Paginator'
 import Checkout from './Checkout'
+import SnackBar from '../../components/SnackBar/SnackBar'
 import { 
     getCourses, 
     getFilterCategories, 
     searchCourseByValue,
-    filterCourses 
+    filterCourses,
+    confirmAndPay 
 } from '../../api/course'
 
 //Material-UI
@@ -68,7 +71,12 @@ class OnlineCourses extends Component {
         subscription: "Premium",
         searchCourse: false,
         searchFilterLoading: false,
-        filterCourse: false
+        filterCourse: false,
+        file: null,
+        snackBarOn: false,
+        severity: "success",
+        snackBarMessage: "",
+        payLoading: false
     }
 
     componentDidMount() {
@@ -162,9 +170,76 @@ class OnlineCourses extends Component {
                 })
             })
         } else {
-            this.setState({ filterCourse: false })
+            this.setState({ 
+                filterCourse: false,
+                categoryChecked: [0],
+                tutorChecked: [0],
+                typeChecked: [0],
+                priceChecked: [0], 
+            })
             this.getCoursesApi(0)
         }
+    }
+
+    handleConfirmAndPay = () => {
+        const auth = this.props.auth
+        const {
+            firstName, lastName, address, city, zip, mobile, email,
+            cvv, cardNo, paymentMethod, selectedCourse, subscription, file
+        } = this.state
+
+        const body = {
+            firstName, lastName, address, city, zip, mobile, email,
+            cvv, cardNo, paymentMethod,
+            userId: auth.userId,
+            courseId: selectedCourse.id,
+            paymentType: subscription,
+            depositedAt:  moment(this.state.depositedAt).format('YYYY-MM-DDT00:00:00'),
+            exp: moment(this.state.exp).format('YYYY-MM-DDT00:00:00')
+        }
+        const formData = new FormData()
+        const json = JSON.stringify(body)
+        const blob = new Blob([json], {
+            type: 'application/json'
+        });
+        formData.append("request", blob)
+        formData.append("file", file)
+        this.setState({ payLoading: true })
+        confirmAndPay(auth.accessToken, formData).then(response => {
+            this.setState({
+                snackBarOn: true,
+                severity: "success",
+                snackBarMessage: response.message,
+                payLoading: false,
+                firstName: "",
+                lastName: "",
+                address: "",
+                city: "",
+                zip: "",
+                mobile: "",
+                email: "",
+                cvv: "",
+                exp: null,
+                cardNo: "",
+                depositedAt: new Date(),
+                scanCopy: null,
+                emptyError: null,
+                step: 1,
+                subscription: "Premium",
+                openCheckoutModal: false,
+                selectedCourse: null,
+                paymentMethod: "paypal",
+                paymentValidated: false,
+                file: null,
+            })
+        }).catch(err => {
+            this.setState({
+                snackBarOn: true,
+                severity: "error",
+                snackBarMessage: err.message,
+                payLoading: false
+            })
+        })
     }
 
     handleFilter = () => {
@@ -232,12 +307,12 @@ class OnlineCourses extends Component {
     handleFileOnChange = (file) => {
         let reader = new FileReader()
         reader.onloadend = () => {
-            this.setState({ scanCopy: reader.result });
+            this.setState({ 
+                scanCopy: reader.result,
+                file 
+            });
         }
         reader.readAsDataURL(file)
-
-        const formData = new FormData()
-        formData.append("file", file);
     }
 
     handleDateOnchange = (type, val) => {
@@ -283,15 +358,12 @@ class OnlineCourses extends Component {
     handleNext = () => {
         let step = this.state.step
         if (step === 1) {
-            this.setState({step : step + 1 })
+            this.setState({ step : step + 1 })
         }
-        else if (step === 2) {
+        if (step === 2) {
             if(this.handleCheckFieldEmpty()) {
-                this.setState({step : step + 1 })
+                this.setState({ step : step + 1 })
             }
-        }
-        else if (step === 3) {
-            this.setState({step : step + 1 })
         }
     }
 
@@ -306,22 +378,11 @@ class OnlineCourses extends Component {
         }
     }
 
-    setInitialStateForm = () => {
+    handleSnackBarClose = () => {
         this.setState({
-            firstName: "",
-            lastName: "",
-            address: "",
-            city: "",
-            zip: "",
-            mobile: "",
-            email: "",
-            cvv: "",
-            exp: null,
-            cardNo: "",
-            depositedAt: new Date(),
-            scanCopy: null,
-            emptyError: null,
-            step: 1
+            snackBarOn: false,
+            severity: "",
+            snackBarMessage: "",
         })
     }
 
@@ -347,7 +408,6 @@ class OnlineCourses extends Component {
             searchValueError: false,
             emptyError: null
         })
-        this.setInitialStateForm()
     }
 
     handleToggle = (type, index) => {
@@ -496,11 +556,18 @@ class OnlineCourses extends Component {
                             { this.renderListHead() }
                         </div>
                         <Grid container spacing={2}>
-                            { coursesData.map(item => this.renderCourseCard(item)) }
+                            { 
+                                coursesData.length === 0 ? 
+                                <Grid item xs={12} sm={12} md={12}>
+                                    <span className = "not_available">No courses available</span>
+                                </Grid>
+                                :
+                                coursesData.map(item => this.renderCourseCard(item)) 
+                            }
                         </Grid>
                         <div className = "pagination_div">
                             {
-                                !loading &&
+                                !loading && coursesData.length > 0 &&
                                 <Pagination 
                                     total = {total}
                                     current = {current}
@@ -515,7 +582,7 @@ class OnlineCourses extends Component {
     }
 
     render() {
-        const {loading, selectedCourse, openCheckoutModal, searchFilterLoading} = this.state
+        const {loading, selectedCourse, openCheckoutModal, searchFilterLoading, snackBarOn, snackBarMessage, severity} = this.state
         return (
             <div className = "online_courses_root">
                 <Header 
@@ -544,8 +611,17 @@ class OnlineCourses extends Component {
                         handleNext = {this.handleNext}
                         handlePrev = {this.handlePrev}
                         handlePaymentTypeOnSelect = {this.handlePaymentTypeOnSelect}
+                        handleConfirmAndPay = {this.handleConfirmAndPay}
                     />
                 }
+                <SnackBar
+                    open = {snackBarOn}
+                    autoHideDuration = {3000}
+                    message = {snackBarMessage}
+                    severity = {severity}
+                    handleClose = {this.handleSnackBarClose}
+                    align = {{ vertical: 'top', horizontal: 'right' }}
+                />
             </div>
         )
     }

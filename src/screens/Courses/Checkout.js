@@ -33,12 +33,13 @@ const Checkout = ({
     handleDateOnchange, 
     handleNext,
     handlePrev,
-    handlePaymentTypeOnSelect
+    handlePaymentTypeOnSelect,
+    handleConfirmAndPay
 }) => {
     const styles = useStyles()
     const steps = ["Course Details", "Payment Details", "Review & Pay"]
 
-    const {step, emptyError, firstName, lastName, email, paymentMethod} = values
+    const {step, emptyError, firstName, lastName, email, paymentMethod, subscription, payLoading} = values
     return (
         <Dialog
             open = {open}
@@ -69,13 +70,15 @@ const Checkout = ({
                 /> 
                 :
                 <PaymentSummary
-                    subscription = "Premium"
+                    subscription = {subscription}
                     fullName = {`${firstName} ${lastName}`}
                     email = {email}
                     courseId = {`C${course.id}`}
                     tutorId = "T1"
                     paymentMethod = {paymentMethod}
                     total = {course.price}
+                    handleConfirmAndPay = {handleConfirmAndPay}
+                    loading = {payLoading}
                 />
             }
         </DialogContent>

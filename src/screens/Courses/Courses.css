@@ -118,3 +118,8 @@
 .courses_checkout_payment_methods_method {
     margin-top: 2%;
 }
+
+.not_available {
+    align-self: center;
+    font-size: 1.3rem;
+}

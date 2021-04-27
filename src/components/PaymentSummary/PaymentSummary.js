@@ -2,10 +2,21 @@ import React from 'react'
 
 import ChipButton from '../Button/ChipButton'
 
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 import Security from '@material-ui/icons/Security';
 
-const PaymentSummary = ({subscription, fullName, email, courseId, tutorId, paymentMethod, total }) => {
+const PaymentSummary = ({
+    subscription, 
+    fullName, 
+    email, 
+    courseId, 
+    tutorId, 
+    paymentMethod, 
+    total, 
+    handleConfirmAndPay,
+    loading
+}) => {
     const renderSummarySection2 = (title, value) => {
         return (
             <div className = "payment_summary_section__2_nested">
@@ -41,7 +52,14 @@ const PaymentSummary = ({subscription, fullName, email, courseId, tutorId, payme
                         <p>LKR {total}*</p>
                     </div>
                     <div className = "payment_summary_section__5">
-                        <ChipButton label = "Confirm & Pay"/>
+                        {
+                            loading ? 
+                            <div className = "main_loading">
+                                <CircularProgress/>
+                            </div>
+                            :
+                            <ChipButton label = "Confirm & Pay" handleClick = {handleConfirmAndPay}/>
+                        }
                         <span className = "payment_summary_section__5_span">
                             <Security style = {{width: "15px"}}/> Secure encrypted payments
                         </span>

@@ -3,9 +3,9 @@ import React from 'react'
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import SettingsIcon from '@material-ui/icons/Settings';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import VideoLabelIcon from '@material-ui/icons/VideoLabel';
+import FileCopy from '@material-ui/icons/FileCopy';
+import Payment from '@material-ui/icons/Payment';
+import RateReview from '@material-ui/icons/RateReview';
 import StepConnector from '@material-ui/core/StepConnector';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
@@ -58,9 +58,9 @@ const ColorlibConnector = withStyles({
 const ColorlibStepIcon = (current, activeStep) => {
     const classes = useColorlibStepIconStyles()
     const icons = {
-        "1": <SettingsIcon />,
-        "2": <GroupAddIcon />,
-        "3": <VideoLabelIcon />,
+        "1": <FileCopy />,
+        "2": <Payment />,
+        "3": <RateReview />,
     }
   
     return (
