@@ -32,11 +32,13 @@ const Checkout = ({
     handleFileOnChange, 
     handleDateOnchange, 
     handleNext,
-    handlePrev
+    handlePrev,
+    handlePaymentTypeOnSelect
 }) => {
     const styles = useStyles()
     const steps = ["Course Details", "Payment Details", "Review & Pay"]
 
+    const {step, emptyError, firstName, lastName, email, paymentMethod} = values
     return (
         <Dialog
             open = {open}
@@ -45,12 +47,18 @@ const Checkout = ({
             aria-labelledby = "alert-dialog-slide-title"
             aria-describedby = "alert-dialog-slide-description"
             fullWidth
-            maxWidth="sm"
+            maxWidth = "sm"
         >
         <Stepper steps = {steps} activeStep = {values["step"]}/>
         <DialogContent>
             {
-                values["step"] === 1 ? <CourseDetails course = {course}/> :
+                values["step"] === 1 ? 
+                <CourseDetails 
+                    course = {course}
+                    handlePaymentTypeOnSelect = {handlePaymentTypeOnSelect}
+                    subscription = {values["subscription"]}
+                /> 
+                :
                 values["step"] === 2 ? 
                 <PaymentMethods 
                     values = {values}
@@ -61,14 +69,20 @@ const Checkout = ({
                 /> 
                 :
                 <PaymentSummary
-                    values = {values}
+                    subscription = "Premium"
+                    fullName = {`${firstName} ${lastName}`}
+                    email = {email}
+                    courseId = {`C${course.id}`}
+                    tutorId = "T1"
+                    paymentMethod = {paymentMethod}
+                    total = {course.price}
                 />
             }
         </DialogContent>
         <DialogActions>
-            { values["emptyError"] && <span className = "error">{values["emptyError"]}</span>}
+            { emptyError && <span className = "error">{emptyError}</span>}
             <Button onClick = {handlePrev} color="primary"> {values["step"] === 1 ? "Close" : "Previous"} </Button>
-            <Button onClick = {handleNext} className = {styles.btn} disabled = {values["step"] === 3}>Next</Button>
+            <Button onClick = {handleNext} className = {styles.btn} disabled = {step === 3}>Next</Button>
         </DialogActions>
         </Dialog>
     )

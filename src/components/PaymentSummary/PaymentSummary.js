@@ -5,7 +5,7 @@ import ChipButton from '../Button/ChipButton'
 import Divider from '@material-ui/core/Divider';
 import Security from '@material-ui/icons/Security';
 
-const PaymentSummary = ({values}) => {
+const PaymentSummary = ({subscription, fullName, email, courseId, tutorId, paymentMethod, total }) => {
     const renderSummarySection2 = (title, value) => {
         return (
             <div className = "payment_summary_section__2_nested">
@@ -17,29 +17,28 @@ const PaymentSummary = ({values}) => {
 
     return (
         <div className = "payment_summary">
-                <h6 className = "payment_form_header">Summary</h6>
                 <div className = "payment_summary_wrapper">
                     <div className = "payment_summary_section__1">
                         <p className = "payment_summary_section">Subscription</p>
-                        <span className = "payment_summary_section__1_special">Premium</span>
+                        <span className = "payment_summary_section__1_special">{subscription}</span>
                     </div>
                     <div className = "payment_summary_section__2">
                         <p className = "payment_summary_section">Details</p>
-                        { renderSummarySection2("Name", values["fullName"]) }
-                        { renderSummarySection2("Email", values["email"]) }
-                        { renderSummarySection2("Course ID", values["courseId"]) }
-                        { renderSummarySection2("Tutor ID", values["tutorId"]) }
-                        { renderSummarySection2("Payment Method", values["payment_method"]) }
+                        { renderSummarySection2("Name", fullName) }
+                        { renderSummarySection2("Email", email) }
+                        { renderSummarySection2("Course ID", courseId) }
+                        { renderSummarySection2("Tutor ID", tutorId) }
+                        { renderSummarySection2("Payment Method", paymentMethod) }
                     </div>
                     <div className = "payment_summary_section__3">
-                        <p>$</p>
-                        <h2>{values["total_payment"]}</h2>
+                        <p>LKR</p>
+                        <h2>{total}</h2>
                         <span>only</span>
                     </div>
                     <Divider />
                     <div className = "payment_summary_section__4">
                         <p>Total Payment</p>
-                        <p>${values["total_payment"]}*</p>
+                        <p>LKR {total}*</p>
                     </div>
                     <div className = "payment_summary_section__5">
                         <ChipButton label = "Confirm & Pay"/>

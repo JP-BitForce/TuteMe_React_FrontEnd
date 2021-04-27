@@ -21,10 +21,6 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "column"
     },
-    btn: {
-        backgroundColor: "rgb(0, 171, 85)", 
-        color: "white"
-    },
     payments_methods: {
         display: "flex",
         flexDirection: "column"
@@ -32,7 +28,16 @@ const useStyles = makeStyles((theme) => ({
     chip: {
         marginTop: "5px",
         marginRight: "5px",
-        height: "25px"
+        height: "25px",
+        cursor: "pointer"
+    },
+    chipSelectd: {
+        marginTop: "5px",
+        marginRight: "5px",
+        height: "25px",
+        cursor: "pointer",
+        backgroundImage: 'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+        color: "white"
     },
     content: {
         paddingLeft: "10px"
@@ -40,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const CourseDetails = ({course}) => {
+const CourseDetails = ({course, handlePaymentTypeOnSelect, subscription}) => {
     const styles = useStyles()
     const { name, rating, price, description, tutorName, duration, id, imgUrl } = course
     const dummySchedule = [
@@ -84,7 +89,7 @@ const CourseDetails = ({course}) => {
     const renderPaymentMethods = () => {
         return (
             <div className = {styles.payments_methods}>
-                <span>Payment Types Available </span>
+                <span>Payment Types Available, please select one </span>
                 <div>
                     {
                         ["Premium", "Monthly"].map(item => {
@@ -93,7 +98,8 @@ const CourseDetails = ({course}) => {
                                     label = {item}
                                     color = "secondary"
                                     variant = "outlined"
-                                    className = {styles.chip}
+                                    className = {subscription === item ? styles.chipSelectd : styles.chip}
+                                    onClick = {() => handlePaymentTypeOnSelect(item)}
                                 />
                             )
                         })

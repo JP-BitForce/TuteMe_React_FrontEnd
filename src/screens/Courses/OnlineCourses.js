@@ -7,12 +7,18 @@ import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import Pagination from '../../components/Pagination/Paginator'
 import Checkout from './Checkout'
-import { getCourses, getFilterCategories } from '../../api/course'
+import { 
+    getCourses, 
+    getFilterCategories, 
+    searchCourseByValue,
+    filterCourses 
+} from '../../api/course'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import headerImg from '../../assets/images/Course/online_headerImg.jpg'
 import unity from '../../assets/images/Course/unity.jpg'
@@ -58,15 +64,19 @@ class OnlineCourses extends Component {
         depositedAt: new Date(),
         scanCopy: null,
         emptyError: null,
-        step: 3
+        step: 1,
+        subscription: "Premium",
+        searchCourse: false,
+        searchFilterLoading: false,
+        filterCourse: false
     }
 
     componentDidMount() {
-        this.getCategories()
+        this.getCategoriesApi()
         this.getCoursesApi(0)
     }
 
-    getCategories = () => {
+    getCategoriesApi = () => {
         const auth = this.props.auth
         getFilterCategories(auth.accessToken).then(response => {
             if (response) {
@@ -90,14 +100,14 @@ class OnlineCourses extends Component {
 
     getCoursesApi = (page) => {
         const auth = this.props.auth
-        this.setState({ loading: true })
+        this.setState({ loading: true, searchCourse: false })
         getCourses(auth.accessToken, page).then(response => {
             this.setState({ 
                 loading: false,
                 coursesData: response.data,
                 total: response.total,
                 current: response.current+1,
-                fetchError: null
+                fetchError: null,
             })
         }).catch(err => {
             this.setState({ 
@@ -107,17 +117,61 @@ class OnlineCourses extends Component {
         })
     }
 
-    handleCourseSearch = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (!this.state.searchValue) {
-            this.setState({ searchValueError: true })
+    searchCourseByValueApi = (page) => {
+        const auth = this.props.auth
+        this.setState({ searchCourse: true, searchFilterLoading: true })
+        searchCourseByValue(auth.accessToken, this.state.searchValue, page).then(response => {
+            this.setState({ 
+                searchFilterLoading: false,
+                coursesData: response.data,
+                total: response.total,
+                current: response.current+1,
+                fetchError: null,
+            })
+        }).catch(err => {
+            this.setState({ 
+                searchFilterLoading: false,
+                fetchError: err.message 
+            })
+        })
+    }
+
+    handleFilterApi = (page, list) => {
+        if(!this.state.filterCourse) {
+            const auth = this.props.auth
+            const body = {
+                categoryList: list.categoryList,
+                tutorList: list.tutorList,
+                typeList: list.typeList,
+                priceList: list.priceList,
+                page: page
+            }
+            this.setState({ filterCourse: true,  searchFilterLoading: true })
+            filterCourses(auth.accessToken, body).then(response => {
+                this.setState({ 
+                    searchFilterLoading: false,
+                    coursesData: response.data,
+                    total: response.total,
+                    current: response.current+1,
+                    fetchError: null,
+                })
+            }).catch(err => {
+                this.setState({ 
+                    searchFilterLoading: false,
+                    fetchError: err.message 
+                })
+            })
         } else {
-            this.setState({ searchValueError: false })
+            this.setState({ filterCourse: false })
+            this.getCoursesApi(0)
         }
     }
 
     handleFilter = () => {
+        this.handleFilterApi(0, this.getFiltersList())
+    }
+
+    getFiltersList = () => {
         const {
             categoryChecked, typeChecked, tutorChecked, priceChecked,
             allCoursecategories, allCourseType, allCourseInstructors, allCoursePrice
@@ -146,7 +200,33 @@ class OnlineCourses extends Component {
             priceList.push(allCoursePrice[idx])
             return 0
         })
-        
+
+        const list = { categoryList, tutorList, typeList, priceList}
+        return list
+    }
+
+    handleCourseSearch = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const {searchValue, searchCourse} = this.state
+        if(!searchCourse) {
+            if (!searchValue) {
+                this.setState({ searchValueError: true })
+            } else {
+                this.searchCourseByValueApi(0)
+                this.setState({ searchValueError: false })
+            }
+        } else {
+            this.setState({ 
+                searchValue: "",
+                searchCourse: false
+            })
+            this.getCoursesApi(0)
+        }
+    }
+
+    handlePaymentTypeOnSelect = (type) => {
+        this.setState({ subscription: type })
     }
 
     handleFileOnChange = (file) => {
@@ -351,10 +431,10 @@ class OnlineCourses extends Component {
     }
 
     renderListHead = () => {
-        const {searchValue, searchValueError} = this.state
+        const {searchValue, searchValueError, searchCourse, filterCourse} = this.state
         return (
             <div className = "courses_list_head">
-                <Button variant="contained" onClick = {this.handleFilter}>Filter courses</Button>
+                <Button variant="contained" onClick = {this.handleFilter}>{ filterCourse ? "cancel": "Filter courses" }</Button>
                 <form noValidate autoComplete="off" onSubmit = {this.handleCourseSearch}>
                     <TextField 
                         id = "standard-basic" 
@@ -367,7 +447,7 @@ class OnlineCourses extends Component {
                         name = "searchValue"
                         size = "small"
                     />
-                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">Search</Button>
+                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">{searchCourse ? "Cancel": "Search"}</Button>
                 </form>
             </div>
         )
@@ -435,7 +515,7 @@ class OnlineCourses extends Component {
     }
 
     render() {
-        const {loading, selectedCourse, openCheckoutModal} = this.state
+        const {loading, selectedCourse, openCheckoutModal, searchFilterLoading} = this.state
         return (
             <div className = "online_courses_root">
                 <Header 
@@ -443,7 +523,14 @@ class OnlineCourses extends Component {
                     src = {headerImg}
                 />
                 {
-                    loading ? <Loading open = {loading} /> : this.renderCourseList()
+                    loading ? <Loading open = {loading} /> 
+                    :
+                    searchFilterLoading ? 
+                    <div className = "main_loading">
+                        <CircularProgress/>
+                    </div>
+                    :
+                    this.renderCourseList()
                 }
                 {
                     selectedCourse && 
@@ -456,6 +543,7 @@ class OnlineCourses extends Component {
                         handleDateOnchange = {this.handleDateOnchange}
                         handleNext = {this.handleNext}
                         handlePrev = {this.handlePrev}
+                        handlePaymentTypeOnSelect = {this.handlePaymentTypeOnSelect}
                     />
                 }
             </div>
