@@ -1,17 +1,27 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
+import moment from 'moment';
 
 import Loading from '../../components/Loading/Loading'
 import CourseCard from '../../components/Card/CourseCard'
 import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import Pagination from '../../components/Pagination/Paginator'
-import { getCourses, getFilterCategories } from '../../api/course'
+import Checkout from './Checkout'
+import SnackBar from '../../components/SnackBar/SnackBar'
+import { 
+    getCourses, 
+    getFilterCategories, 
+    searchCourseByValue,
+    filterCourses,
+    confirmAndPay 
+} from '../../api/course'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import headerImg from '../../assets/images/Course/online_headerImg.jpg'
 import unity from '../../assets/images/Course/unity.jpg'
@@ -39,15 +49,42 @@ class OnlineCourses extends Component {
         total: 1,
         current: 1,
         fetchError: null,
-        coursesData: []
+        coursesData: [],
+        selectedCourse: null,
+        openCheckoutModal: false,
+        paymentMethod: "paypal",
+        paymentValidated: false,
+        firstName: "",
+        lastName: "",
+        address: "",
+        city: "",
+        zip: "",
+        mobile: "",
+        email: "",
+        cvv: "",
+        exp: null,
+        cardNo: "",
+        depositedAt: new Date(),
+        scanCopy: null,
+        emptyError: null,
+        step: 1,
+        subscription: "Premium",
+        searchCourse: false,
+        searchFilterLoading: false,
+        filterCourse: false,
+        file: null,
+        snackBarOn: false,
+        severity: "success",
+        snackBarMessage: "",
+        payLoading: false
     }
 
     componentDidMount() {
-        this.getCategories()
+        this.getCategoriesApi()
         this.getCoursesApi(0)
     }
 
-    getCategories = () => {
+    getCategoriesApi = () => {
         const auth = this.props.auth
         getFilterCategories(auth.accessToken).then(response => {
             if (response) {
@@ -71,14 +108,14 @@ class OnlineCourses extends Component {
 
     getCoursesApi = (page) => {
         const auth = this.props.auth
-        this.setState({ loading: true })
+        this.setState({ loading: true, searchCourse: false })
         getCourses(auth.accessToken, page).then(response => {
             this.setState({ 
                 loading: false,
                 coursesData: response.data,
                 total: response.total,
                 current: response.current+1,
-                fetchError: null
+                fetchError: null,
             })
         }).catch(err => {
             this.setState({ 
@@ -88,17 +125,128 @@ class OnlineCourses extends Component {
         })
     }
 
-    handleCourseSearch = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (!this.state.searchValue) {
-            this.setState({ searchValueError: true })
+    searchCourseByValueApi = (page) => {
+        const auth = this.props.auth
+        this.setState({ searchCourse: true, searchFilterLoading: true })
+        searchCourseByValue(auth.accessToken, this.state.searchValue, page).then(response => {
+            this.setState({ 
+                searchFilterLoading: false,
+                coursesData: response.data,
+                total: response.total,
+                current: response.current+1,
+                fetchError: null,
+            })
+        }).catch(err => {
+            this.setState({ 
+                searchFilterLoading: false,
+                fetchError: err.message 
+            })
+        })
+    }
+
+    handleFilterApi = (page, list) => {
+        if(!this.state.filterCourse) {
+            const auth = this.props.auth
+            const body = {
+                categoryList: list.categoryList,
+                tutorList: list.tutorList,
+                typeList: list.typeList,
+                priceList: list.priceList,
+                page: page
+            }
+            this.setState({ filterCourse: true,  searchFilterLoading: true })
+            filterCourses(auth.accessToken, body).then(response => {
+                this.setState({ 
+                    searchFilterLoading: false,
+                    coursesData: response.data,
+                    total: response.total,
+                    current: response.current+1,
+                    fetchError: null,
+                })
+            }).catch(err => {
+                this.setState({ 
+                    searchFilterLoading: false,
+                    fetchError: err.message 
+                })
+            })
         } else {
-            this.setState({ searchValueError: false })
+            this.setState({ 
+                filterCourse: false,
+                categoryChecked: [0],
+                tutorChecked: [0],
+                typeChecked: [0],
+                priceChecked: [0], 
+            })
+            this.getCoursesApi(0)
         }
     }
 
+    handleConfirmAndPay = () => {
+        const auth = this.props.auth
+        const {
+            firstName, lastName, address, city, zip, mobile, email,
+            cvv, cardNo, paymentMethod, selectedCourse, subscription, file
+        } = this.state
+
+        const body = {
+            firstName, lastName, address, city, zip, mobile, email,
+            cvv, cardNo, paymentMethod,
+            userId: auth.userId,
+            courseId: selectedCourse.id,
+            paymentType: subscription,
+            depositedAt:  moment(this.state.depositedAt).format('YYYY-MM-DDT00:00:00'),
+            exp: moment(this.state.exp).format('YYYY-MM-DDT00:00:00')
+        }
+        const formData = new FormData()
+        const json = JSON.stringify(body)
+        const blob = new Blob([json], {
+            type: 'application/json'
+        });
+        formData.append("request", blob)
+        formData.append("file", file)
+        this.setState({ payLoading: true })
+        confirmAndPay(auth.accessToken, formData).then(response => {
+            this.setState({
+                snackBarOn: true,
+                severity: "success",
+                snackBarMessage: response.message,
+                payLoading: false,
+                firstName: "",
+                lastName: "",
+                address: "",
+                city: "",
+                zip: "",
+                mobile: "",
+                email: "",
+                cvv: "",
+                exp: null,
+                cardNo: "",
+                depositedAt: new Date(),
+                scanCopy: null,
+                emptyError: null,
+                step: 1,
+                subscription: "Premium",
+                openCheckoutModal: false,
+                selectedCourse: null,
+                paymentMethod: "paypal",
+                paymentValidated: false,
+                file: null,
+            })
+        }).catch(err => {
+            this.setState({
+                snackBarOn: true,
+                severity: "error",
+                snackBarMessage: err.message,
+                payLoading: false
+            })
+        })
+    }
+
     handleFilter = () => {
+        this.handleFilterApi(0, this.getFiltersList())
+    }
+
+    getFiltersList = () => {
         const {
             categoryChecked, typeChecked, tutorChecked, priceChecked,
             allCoursecategories, allCourseType, allCourseInstructors, allCoursePrice
@@ -127,14 +275,138 @@ class OnlineCourses extends Component {
             priceList.push(allCoursePrice[idx])
             return 0
         })
-        
+
+        const list = { categoryList, tutorList, typeList, priceList}
+        return list
+    }
+
+    handleCourseSearch = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const {searchValue, searchCourse} = this.state
+        if(!searchCourse) {
+            if (!searchValue) {
+                this.setState({ searchValueError: true })
+            } else {
+                this.searchCourseByValueApi(0)
+                this.setState({ searchValueError: false })
+            }
+        } else {
+            this.setState({ 
+                searchValue: "",
+                searchCourse: false
+            })
+            this.getCoursesApi(0)
+        }
+    }
+
+    handlePaymentTypeOnSelect = (type) => {
+        this.setState({ subscription: type })
+    }
+
+    handleFileOnChange = (file) => {
+        let reader = new FileReader()
+        reader.onloadend = () => {
+            this.setState({ 
+                scanCopy: reader.result,
+                file 
+            });
+        }
+        reader.readAsDataURL(file)
+    }
+
+    handleDateOnchange = (type, val) => {
+        this.setState({ [type]: val })
+    }
+
+    handleCheckFieldEmpty = () => {
+        const {
+            firstName,
+            lastName,
+            address,
+            city,
+            zip,
+            mobile,
+            email,
+            cvv,
+            exp,
+            cardNo,
+            depositedAt,
+            scanCopy,
+            paymentMethod
+        } = this.state
+
+        if(paymentMethod === "paypal") {
+            if(firstName && lastName && address && city && zip && mobile && email && cvv && exp && cardNo) {
+                this.setState({ emptyError: null })
+                return true
+            } else {
+                this.setState({ emptyError: "Fields cannot be empty" })
+                return false
+            }
+        } else {
+            if(firstName && lastName && email && depositedAt && scanCopy) {
+                this.setState({ emptyError: null })
+                return true
+            } else {
+                this.setState({ emptyError: "Fields cannot be empty" })
+                return false
+            }
+        }
+    }
+
+    handleNext = () => {
+        let step = this.state.step
+        if (step === 1) {
+            this.setState({ step : step + 1 })
+        }
+        if (step === 2) {
+            if(this.handleCheckFieldEmpty()) {
+                this.setState({ step : step + 1 })
+            }
+        }
+    }
+
+    handlePrev = () => {
+        this.setState({ emptyError: null })
+        let step = this.state.step
+        if (step !== 1) {
+            this.setState({step : step - 1 })
+        }
+        if (step === 1) {
+            this.handleEnrollNowCancel()
+        }
+    }
+
+    handleSnackBarClose = () => {
+        this.setState({
+            snackBarOn: false,
+            severity: "",
+            snackBarMessage: "",
+        })
+    }
+
+    handleEnrollNowCancel = () => {
+        this.setState({ 
+            openCheckoutModal: false,
+            selectedCourse: null
+        })
+    }
+
+    handleViewEnrollOnClick = (id) => {
+        const course = this.state.coursesData.filter(item => item.id === id)[0]
+        this.setState({
+            openCheckoutModal: true,
+            selectedCourse: course
+        })
     }
 
     handleInputOnChange = (event) => {
         const {value, name} = event.target
         this.setState({
             [name]: value,
-            searchValueError: false
+            searchValueError: false,
+            emptyError: null
         })
     }
 
@@ -150,7 +422,7 @@ class OnlineCourses extends Component {
                                 break;
             default: return
         }
-    };
+    }
 
     handleCheck = (type, index) => {
         const checked = this.state[type]
@@ -207,26 +479,22 @@ class OnlineCourses extends Component {
     }
 
     renderCourseCard = (item) => {
-        const {name, rating} = item
         return (
             <Grid item xs={6} sm={6} md={4}>
                 <CourseCard
                     src = {unity}
-                    title = {name}
-                    by = "John Apraham"
-                    rating = {rating}
-                    price = "150"
-                    description = "Donec molestie tincidunt tellus sit amet aliquet"
+                    item = {item}
+                    onClick = {this.handleViewEnrollOnClick}
                 />
             </Grid>
         )
     }
 
     renderListHead = () => {
-        const {searchValue, searchValueError} = this.state
+        const {searchValue, searchValueError, searchCourse, filterCourse} = this.state
         return (
             <div className = "courses_list_head">
-                <Button variant="contained" onClick = {this.handleFilter}>Filter courses</Button>
+                <Button variant="contained" onClick = {this.handleFilter}>{ filterCourse ? "cancel": "Filter courses" }</Button>
                 <form noValidate autoComplete="off" onSubmit = {this.handleCourseSearch}>
                     <TextField 
                         id = "standard-basic" 
@@ -239,7 +507,7 @@ class OnlineCourses extends Component {
                         name = "searchValue"
                         size = "small"
                     />
-                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">Search</Button>
+                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">{searchCourse ? "Cancel": "Search"}</Button>
                 </form>
             </div>
         )
@@ -288,15 +556,18 @@ class OnlineCourses extends Component {
                             { this.renderListHead() }
                         </div>
                         <Grid container spacing={2}>
-                            {
-                                coursesData.map(item => {
-                                    return this.renderCourseCard(item)
-                                })
+                            { 
+                                coursesData.length === 0 ? 
+                                <Grid item xs={12} sm={12} md={12}>
+                                    <span className = "not_available">No courses available</span>
+                                </Grid>
+                                :
+                                coursesData.map(item => this.renderCourseCard(item)) 
                             }
                         </Grid>
                         <div className = "pagination_div">
                             {
-                                !loading &&
+                                !loading && coursesData.length > 0 &&
                                 <Pagination 
                                     total = {total}
                                     current = {current}
@@ -311,7 +582,7 @@ class OnlineCourses extends Component {
     }
 
     render() {
-        const {loading} = this.state
+        const {loading, selectedCourse, openCheckoutModal, searchFilterLoading, snackBarOn, snackBarMessage, severity} = this.state
         return (
             <div className = "online_courses_root">
                 <Header 
@@ -319,11 +590,38 @@ class OnlineCourses extends Component {
                     src = {headerImg}
                 />
                 {
-                    loading ? 
-                    <Loading open = {loading} />
+                    loading ? <Loading open = {loading} /> 
+                    :
+                    searchFilterLoading ? 
+                    <div className = "main_loading">
+                        <CircularProgress/>
+                    </div>
                     :
                     this.renderCourseList()
                 }
+                {
+                    selectedCourse && 
+                    <Checkout
+                        open = {openCheckoutModal}
+                        course = {selectedCourse}
+                        values = {this.state}
+                        handleInputOnChange = {this.handleInputOnChange}
+                        handleFileOnChange = {this.handleFileOnChange}
+                        handleDateOnchange = {this.handleDateOnchange}
+                        handleNext = {this.handleNext}
+                        handlePrev = {this.handlePrev}
+                        handlePaymentTypeOnSelect = {this.handlePaymentTypeOnSelect}
+                        handleConfirmAndPay = {this.handleConfirmAndPay}
+                    />
+                }
+                <SnackBar
+                    open = {snackBarOn}
+                    autoHideDuration = {3000}
+                    message = {snackBarMessage}
+                    severity = {severity}
+                    handleClose = {this.handleSnackBarClose}
+                    align = {{ vertical: 'top', horizontal: 'right' }}
+                />
             </div>
         )
     }

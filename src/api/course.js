@@ -1,4 +1,4 @@
-import { GET } from './core';
+import { GET, POST, MULTIPART } from './core';
 
 export const getEndpointWithPrefix = (endpoint) => {
     return `courses/${endpoint}`
@@ -22,4 +22,19 @@ export const getFilterCategories = (token) => {
 export const getCourseCategories = (token, page) => {
     const endpoint = getEndpointWithPrefix(`category/getAll/${page}`)
     return GET(endpoint, token)
+}
+
+export const searchCourseByValue = (token, value, page) => {
+    const endpoint = getEndpointWithPrefix(`searchCourseByValue?page=${page}&value=${value}`)
+    return GET(endpoint, token)
+}
+
+export const filterCourses = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`filterCourses`)
+    return POST(endpoint, body, token)
+}
+
+export const confirmAndPay = (token, formData) => {
+    const endpoint = getEndpointWithPrefix(`course_enrollemnt`)
+    return MULTIPART(endpoint, formData, token)
 }
