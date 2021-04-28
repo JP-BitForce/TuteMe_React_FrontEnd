@@ -11,7 +11,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
 
-import src from '../../assets/images/Course/unity.jpg'
+import src from '../../assets/images/Course/alt.jpg'
 
 const useStyles = makeStyles((theme) => ({
     media: {
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CourseDetails = ({course, handlePaymentTypeOnSelect, subscription}) => {
     const styles = useStyles()
-    const { name, rating, price, description, tutorName, duration, id, imgUrl } = course
+    const { name, rating, price, description, tutorName, duration, id, imageUrl } = course
     const dummySchedule = [
         {id: 1, day: "Monday", startTime: "3:00 pm", endTime: "5:00 pm"},
         {id: 2, day: "Thursday", startTime: "5:30 pm", endTime: "7:30 pm"},
@@ -115,7 +115,7 @@ const CourseDetails = ({course, handlePaymentTypeOnSelect, subscription}) => {
                 <Card>
                     <CardMedia
                         className={styles.media}
-                        image = { imgUrl ?  getImageSource(imgUrl) : src}
+                        image = { imageUrl ?  getImageSource(imageUrl) : src}
                         title = "Paella dish"
                     />
                     <CardContent>

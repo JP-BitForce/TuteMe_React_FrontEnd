@@ -4,13 +4,13 @@ export const getEndpointWithPrefix = (endpoint) => {
     return `courses/${endpoint}`
 }
 
-export const getCourses = (token, page) => {
-    const endpoint = getEndpointWithPrefix(`getAll/${page}`)
+export const getCourses = (token, page, userId) => {
+    const endpoint = getEndpointWithPrefix(`getAll?page=${page}&userId=${userId}`)
     return GET(endpoint, token)
 }
 
-export const getEnrolledCourses = (token, stId, page) => {
-    const endpoint = getEndpointWithPrefix(`enrollment/${stId}/${page}`)
+export const getEnrolledCourses = (token, uId) => {
+    const endpoint = getEndpointWithPrefix(`enrollment/get_enrolled_courses?uId=${uId}`)
     return GET(endpoint, token)
 }
 
@@ -24,9 +24,9 @@ export const getCourseCategories = (token, page) => {
     return GET(endpoint, token)
 }
 
-export const searchCourseByValue = (token, value, page) => {
-    const endpoint = getEndpointWithPrefix(`searchCourseByValue?page=${page}&value=${value}`)
-    return GET(endpoint, token)
+export const searchCourseByValue = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`searchCourseByValue`)
+    return POST(endpoint, body, token)
 }
 
 export const filterCourses = (token, body) => {
@@ -34,7 +34,12 @@ export const filterCourses = (token, body) => {
     return POST(endpoint, body, token)
 }
 
-export const confirmAndPay = (token, formData) => {
-    const endpoint = getEndpointWithPrefix(`course_enrollemnt`)
+export const enrollmentByBankPay = (token, formData) => {
+    const endpoint = getEndpointWithPrefix(`enrollment/byBank`)
     return MULTIPART(endpoint, formData, token)
+}
+
+export const enrollmentByPaypalPay = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`enrollment/byPaypal`)
+    return POST(endpoint, body, token)
 }
