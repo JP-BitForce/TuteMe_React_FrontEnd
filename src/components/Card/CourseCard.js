@@ -10,13 +10,18 @@ import Divider from '@material-ui/core/Divider';
 import './InfoCard.css'
 
 const CourseCard = ({src, item, onClick}) => {
-  const {name, rating, price, description, tutorName, duration, id} = item
+  const {name, rating, price, description, tutorName, duration, id, imageUrl, enrolledByCurrentUser} = item
+
+  const getImageSource = (blob) => {
+    return `data:image/jpeg;base64,${blob}`
+  }
+
     return (
         <div className = "course_enrolled_item">
             <Grid conatiner>
                 <Grid item xs={12} sm={12} md={12}>
                     <div className = "course_thumnail">
-                      <img src = {src} alt = {name} className = "course_thumnail_img"/>
+                      <img src = {imageUrl? getImageSource(imageUrl) : src} alt = {name} className = "course_thumnail_img"/>
                       <div className = "course_price">Rs.{price}</div>
                     </div>
                 </Grid>
@@ -34,7 +39,12 @@ const CourseCard = ({src, item, onClick}) => {
                         <ReadOnlyRating rate = {rating}/>
                       </Grid>
                       <Grid item xs={12} sm={12} md={6}>
-                        <Button size="small" onClick = {() => onClick(id)} variant="contained">View & Enroll</Button>
+                        {
+                          enrolledByCurrentUser ? 
+                          <Button size="small" variant="contained" disabled = {enrolledByCurrentUser}>Enrolled</Button>
+                          :
+                          <Button size="small" onClick = {() => onClick(id)} variant="contained">View & Enroll</Button>
+                        }
                       </Grid>
                     </Grid>
                   </div>

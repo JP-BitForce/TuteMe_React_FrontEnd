@@ -6,7 +6,7 @@ import Header from '../../components/Header/Header'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import CourseEnrolled from '../../components/Card/CourseEnrolled'
 import Pagination from '../../components/Pagination/Paginator'
-import { getEnrolledCourses } from '../../api/course'
+import { getEnrolledCourses, getFilterCategories } from '../../api/course'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
@@ -14,7 +14,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 import headerImg from '../../assets/images/Course/course.jpg'
-import reactJs from '../../assets/images/Course/react.jpg'
+import altImage from '../../assets/images/Course/alt.jpg'
 import './Courses.css'
 
 class MyCourses extends Component {
@@ -37,54 +37,39 @@ class MyCourses extends Component {
         fetchError: null
     }
 
-    courseCategories = [
-        "All",
-        "UI/UX Design",
-        "Art & Design",
-        "Computer Science",
-        "History & Archelogic",
-        "App Development",
-        "Health & Fitness",
-        "Graphic Design",
-        "Marketing",
-        "Music",
-        "Buisness",
-        "Management"
-    ]
-
-    courseInstuctors = ["All"," Ronald Jackson","John Dee","Nathan Messy"," Tony Griffin"]
-
-    courseType = ["All", "Primary", "Ordinary", "Advanced"]
-
-    dummyCourses = [
-        {des:"lorem ipsum", name:"Design for the web", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
-        {des:"lorem ipsum", name:"adobe photoshop", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"web with adobe photoshop", by:"Django Caprio", rating:5},
-    ]
-
     componentDidMount() {
-        this.setState({
-            slicedCourseCategories: this.courseCategories.slice(0,5),
-            slicedCourseInstructors: this.courseInstuctors.slice(0,5),
-            slicedCourseType: this.courseType.slice(0,5),
-            allCoursecategories: this.courseCategories,
-            allCourseInstructors: this.courseInstuctors,
-            allCourseType: this.courseType,
+        console.clear()
+        this.getCategoriesApi()
+        this.getCoursesApi()
+    }
+
+    getCategoriesApi = () => {
+        const auth = this.props.auth
+        getFilterCategories(auth.accessToken).then(response => {
+            this.setState({
+                slicedCourseCategories: response.courseCategoryList.slice(0,5),
+                slicedCourseInstructors: response.tutorList.slice(0,5),
+                slicedCourseType: response.courseLevelList.slice(0,5),
+                allCoursecategories: response.courseCategoryList,
+                allCourseInstructors: response.tutorList,
+                allCourseType: response.courseLevelList,
+            })
+        }).catch(err => {
+            this.setState({
+                fetchError: err.message
+            })
         })
     }
 
-    getCoursesApi = (page) => {
+    getCoursesApi = () => {
         const auth = this.props.auth
         this.setState({ loading: true })
-        getEnrolledCourses(auth.accessToken, auth.profileId, page).then(response => {
+        getEnrolledCourses(auth.accessToken, auth.userId).then(response => {
             this.setState({ 
                 loading: false,
-                total: response.total,
-                current: response.current+1,
-                coursesData: response.data,
+                total: 1,
+                current: 1,
+                coursesData: response.enrolledCourses,
                 fetchError: null
             })
         }).catch(err => {
@@ -260,18 +245,17 @@ class MyCourses extends Component {
     }
 
     renderCourseCards = (item, index) => {
-        const {name, by, rating} = item
         return (
             <Grid item xs={6} sm={6} md={4} key = {index}>
                 <div className = "course_enrolled_card">
-                    <CourseEnrolled src = {reactJs} title = {name} by = {by} rating = {rating}/>
+                    <CourseEnrolled src = {altImage} item = {item}/>
                 </div>
             </Grid>
         )
     }
 
     renderCoursesConatiner = () => {
-        const {loading, total, current} = this.state
+        const {loading, total, current, coursesData} = this.state
         return (
             <div className = "my_courses__container">
                 <Grid container spacing={4}>
@@ -286,11 +270,7 @@ class MyCourses extends Component {
                             { this.renderListHead() }
                         </div>
                             <Grid container spacing={4}>
-                                {
-                                    this.dummyCourses.map((item, index) => {
-                                        return this.renderCourseCards(item, index)
-                                    })
-                                }
+                                { coursesData.map((item, index) => this.renderCourseCards(item, index)) }
                             </Grid>
                         </div>
                         <div className = "pagination_div">
@@ -318,7 +298,7 @@ class MyCourses extends Component {
     }
 
     render() {
-        const {loading} = this.state
+        const {loading, coursesData} = this.state
         return (
             <div className = "my_courses_root">
                 <Header 
@@ -326,8 +306,9 @@ class MyCourses extends Component {
                     src = {headerImg}
                 />
                 {
-                    loading ? 
-                    <Loading open = {loading} />
+                    loading ? <Loading open = {loading} />
+                    :
+                    coursesData.length === 0 ? this.renderNoCoursesAvailable()
                     :
                     this.renderCoursesConatiner()
                 }

@@ -14,7 +14,8 @@ import {
     getFilterCategories, 
     searchCourseByValue,
     filterCourses,
-    confirmAndPay 
+    enrollmentByBankPay,
+    enrollmentByPaypalPay 
 } from '../../api/course'
 
 //Material-UI
@@ -24,7 +25,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import headerImg from '../../assets/images/Course/online_headerImg.jpg'
-import unity from '../../assets/images/Course/unity.jpg'
+import altImage from '../../assets/images/Course/alt.jpg'
 import './Courses.css'
 
 class OnlineCourses extends Component {
@@ -109,7 +110,7 @@ class OnlineCourses extends Component {
     getCoursesApi = (page) => {
         const auth = this.props.auth
         this.setState({ loading: true, searchCourse: false })
-        getCourses(auth.accessToken, page).then(response => {
+        getCourses(auth.accessToken, page, auth.userId).then(response => {
             this.setState({ 
                 loading: false,
                 coursesData: response.data,
@@ -127,8 +128,13 @@ class OnlineCourses extends Component {
 
     searchCourseByValueApi = (page) => {
         const auth = this.props.auth
+        const request = {
+            page,
+            value: this.state.searchValue,
+            userId: auth.userId
+        }
         this.setState({ searchCourse: true, searchFilterLoading: true })
-        searchCourseByValue(auth.accessToken, this.state.searchValue, page).then(response => {
+        searchCourseByValue(auth.accessToken, request).then(response => {
             this.setState({ 
                 searchFilterLoading: false,
                 coursesData: response.data,
@@ -152,7 +158,8 @@ class OnlineCourses extends Component {
                 tutorList: list.tutorList,
                 typeList: list.typeList,
                 priceList: list.priceList,
-                page: page
+                page: page,
+                userId: auth.userId
             }
             this.setState({ filterCourse: true,  searchFilterLoading: true })
             filterCourses(auth.accessToken, body).then(response => {
@@ -188,57 +195,85 @@ class OnlineCourses extends Component {
             cvv, cardNo, paymentMethod, selectedCourse, subscription, file
         } = this.state
 
-        const body = {
-            firstName, lastName, address, city, zip, mobile, email,
-            cvv, cardNo, paymentMethod,
-            userId: auth.userId,
-            courseId: selectedCourse.id,
-            paymentType: subscription,
-            depositedAt:  moment(this.state.depositedAt).format('YYYY-MM-DDT00:00:00'),
-            exp: moment(this.state.exp).format('YYYY-MM-DDT00:00:00')
+        if (paymentMethod === "paypal") {
+            const body = {
+                firstName, lastName, address, city, zip, mobile, email,
+                cvv, cardNo,
+                userId: auth.userId,
+                courseId: selectedCourse.id,
+                paymentType: subscription,
+                exp: moment(this.state.exp).format('YYYY-MM-DDT00:00:00')
+            }
+            this.setState({ payLoading: true })
+            enrollmentByPaypalPay(auth.accessToken, body).then(response => {
+                this.setFormStateAfterSucessEnroll(response)
+            }).catch(err => {
+                this.setState({
+                    snackBarOn: true,
+                    severity: "error",
+                    snackBarMessage: err.message,
+                    payLoading: false
+                })
+            })
         }
-        const formData = new FormData()
-        const json = JSON.stringify(body)
-        const blob = new Blob([json], {
-            type: 'application/json'
-        });
-        formData.append("request", blob)
-        formData.append("file", file)
-        this.setState({ payLoading: true })
-        confirmAndPay(auth.accessToken, formData).then(response => {
-            this.setState({
-                snackBarOn: true,
-                severity: "success",
-                snackBarMessage: response.message,
-                payLoading: false,
-                firstName: "",
-                lastName: "",
-                address: "",
-                city: "",
-                zip: "",
-                mobile: "",
-                email: "",
-                cvv: "",
-                exp: null,
-                cardNo: "",
-                depositedAt: new Date(),
-                scanCopy: null,
-                emptyError: null,
-                step: 1,
-                subscription: "Premium",
-                openCheckoutModal: false,
-                selectedCourse: null,
-                paymentMethod: "paypal",
-                paymentValidated: false,
-                file: null,
+
+        if (paymentMethod === "bank") {
+            const body = {
+                firstName, 
+                lastName, 
+                email,
+                userId: auth.userId,
+                courseId: selectedCourse.id,
+                paymentType: subscription,
+                depositedAt:  moment(this.state.depositedAt).format('YYYY-MM-DDT00:00:00'),
+            }
+            const formData = new FormData()
+            const json = JSON.stringify(body)
+            const blob = new Blob([json], {
+                type: 'application/json'
             })
-        }).catch(err => {
-            this.setState({
-                snackBarOn: true,
-                severity: "error",
-                snackBarMessage: err.message,
-                payLoading: false
+            formData.append("request", blob)
+            formData.append("file", file)
+            this.setState({ payLoading: true })
+            enrollmentByBankPay(auth.accessToken, formData).then(response => {
+                this.setFormStateAfterSucessEnroll(response)
+            }).catch(err => {
+                this.setState({
+                    snackBarOn: true,
+                    severity: "error",
+                    snackBarMessage: err.message,
+                    payLoading: false
+                })
             })
+        }
+    }
+
+    setFormStateAfterSucessEnroll = (response) => {
+        this.setState({
+            snackBarOn: true,
+            severity: "success",
+            snackBarMessage: response.message,
+            payLoading: false,
+            firstName: "",
+            lastName: "",
+            address: "",
+            city: "",
+            zip: "",
+            mobile: "",
+            email: "",
+            cvv: "",
+            exp: null,
+            cardNo: "",
+            depositedAt: new Date(),
+            scanCopy: null,
+            emptyError: null,
+            step: 1,
+            subscription: "Premium",
+            openCheckoutModal: false,
+            selectedCourse: null,
+            paymentMethod: "paypal",
+            paymentValidated: false,
+            file: null,
         })
     }
 
@@ -482,7 +517,7 @@ class OnlineCourses extends Component {
         return (
             <Grid item xs={6} sm={6} md={4}>
                 <CourseCard
-                    src = {unity}
+                    src = {altImage}
                     item = {item}
                     onClick = {this.handleViewEnrollOnClick}
                 />
@@ -556,18 +591,11 @@ class OnlineCourses extends Component {
                             { this.renderListHead() }
                         </div>
                         <Grid container spacing={2}>
-                            { 
-                                coursesData.length === 0 ? 
-                                <Grid item xs={12} sm={12} md={12}>
-                                    <span className = "not_available">No courses available</span>
-                                </Grid>
-                                :
-                                coursesData.map(item => this.renderCourseCard(item)) 
-                            }
+                            { coursesData.map(item => this.renderCourseCard(item)) }
                         </Grid>
                         <div className = "pagination_div">
                             {
-                                !loading && coursesData.length > 0 &&
+                                !loading && 
                                 <Pagination 
                                     total = {total}
                                     current = {current}
@@ -581,8 +609,16 @@ class OnlineCourses extends Component {
         )
     }
 
+    renderNoCoursesAvailable = () => {
+        return (
+            <div className = "no_courses_available_container">
+                <span className = "no_courses_available">NO COURSES AVAILABLE</span>
+            </div>
+        )
+    }
+
     render() {
-        const {loading, selectedCourse, openCheckoutModal, searchFilterLoading, snackBarOn, snackBarMessage, severity} = this.state
+        const {loading, selectedCourse, openCheckoutModal, searchFilterLoading, snackBarOn, snackBarMessage, severity, coursesData} = this.state
         return (
             <div className = "online_courses_root">
                 <Header 
@@ -596,6 +632,8 @@ class OnlineCourses extends Component {
                     <div className = "main_loading">
                         <CircularProgress/>
                     </div>
+                    :
+                    coursesData.length === 0 ? this.renderNoCoursesAvailable()
                     :
                     this.renderCourseList()
                 }
