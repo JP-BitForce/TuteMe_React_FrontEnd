@@ -207,6 +207,7 @@ class OnlineCourses extends Component {
             this.setState({ payLoading: true })
             enrollmentByPaypalPay(auth.accessToken, body).then(response => {
                 this.setFormStateAfterSucessEnroll(response)
+                this.getCoursesApi(0)
             }).catch(err => {
                 this.setState({
                     snackBarOn: true,
@@ -237,6 +238,7 @@ class OnlineCourses extends Component {
             this.setState({ payLoading: true })
             enrollmentByBankPay(auth.accessToken, formData).then(response => {
                 this.setFormStateAfterSucessEnroll(response)
+                this.getCoursesApi(0)
             }).catch(err => {
                 this.setState({
                     snackBarOn: true,
