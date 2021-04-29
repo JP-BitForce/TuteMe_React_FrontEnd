@@ -4,7 +4,7 @@ import Modal from '@material-ui/core/Modal';
 import  AddMyInterest from './EditInterestForm/AddMyInterestForm'
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
+import {IconButton, Tooltip} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 
 
@@ -62,9 +62,11 @@ export default function AddIconPopup() {
   return (
     <div>
         <div>
+        <Tooltip title="Add">
             <IconButton>
                 <AddIcon fontSize="small" onClick={handleOpen}/>
             </IconButton>
+          </Tooltip>
         </div>
       <Modal
         open={open}

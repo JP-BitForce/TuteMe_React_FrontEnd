@@ -1,7 +1,7 @@
 import React from 'react';
 import {Paper,Typography,Button,Grid} from "@material-ui/core"
-import ComboBox from './ComboBox'
-import Chip from './Chip'
+import ComboBox from '../../../../components/Profile/ComboBox'
+import Chip from '../../../../components/Profile/Chip'
 
 export default function AddMyInterest(){
 

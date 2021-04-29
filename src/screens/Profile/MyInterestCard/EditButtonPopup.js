@@ -4,7 +4,7 @@ import Modal from '@material-ui/core/Modal';
 import  EditMyInterest from './EditInterestForm/EditMyInterestForm'
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
+import {IconButton, Tooltip} from '@material-ui/core';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -58,9 +58,11 @@ export default function EditIconPopup() {
   return (
     <div>
         <div>
+        <Tooltip title="Edit">
             <IconButton>
                 <EditIcon fontSize="small" onClick={handleOpen}/>
             </IconButton>
+          </Tooltip>
         </div>
       <Modal
         open={open}
