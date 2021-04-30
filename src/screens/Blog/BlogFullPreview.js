@@ -176,7 +176,7 @@ const BlogFullPreview = ({open, handleClose, blog, auth}) => {
           setComments(comments.slice(sliceStart, sliceEnd))
         }
         setCurrent(page+1)
-    };
+    }
 
     const getImageSource = (blob) => {
         return `data:image/jpeg;base64,${blob}`
