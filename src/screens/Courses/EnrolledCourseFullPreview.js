@@ -85,33 +85,20 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handleInputOnChange, values}) => {
-    const {title, courseImg, description, rating, duration, enrolledAt, tutorName, id} = course
+    const {title, courseImg, description, rating, duration, enrolledAt, tutorName, id, schedules, resources} = course
     const {joinIdValueError, joinId, joinLoading} = values
     const classes = useStyles({ img: `data:image/jpeg;base64,${courseImg}` })
-
-    const dummySchedule = [
-        {id: 1, day: "Monday", startTime: "3:00 pm", endTime: "5:00 pm"},
-        {id: 2, day: "Thursday", startTime: "5:30 pm", endTime: "7:30 pm"},
-    ]
-
-    const dummyResources = [
-        {id: 1, title: "Introduction", uploaded: " 29/04/2021, 20:47", type: "file"},
-        {id: 2, title: "Environment Setup", uploaded: " 29/04/2021, 21:00", type: "video"},
-        {id: 3, title: "https://material-ui.com/components/lists/", uploaded: " 29/04/2021, 21:00", type: "link"}
-    ]
-
-    const dummyEvents = []
 
     const filters = ["Home", "Resources", "Upcoming Events"]
 
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     const [nav, setNav] = useState(0)
-    const [daySelected, setDaySelected] = useState(dummySchedule[0])
+    const [daySelected, setDaySelected] = useState(schedules[0])
 
     const getActive = (day) => {
         let active = false
-        dummySchedule.filter(item => {
+        schedules.filter(item => {
             if(item.day === day) {
                 active = true
                 return 1
@@ -122,7 +109,7 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handl
     }
 
     const getScheduleItem = (day) => {
-        return dummySchedule.filter(item => {
+        return schedules.filter(item => {
             if(item.day === day) {
                 return item
             }
@@ -130,15 +117,19 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handl
         })[0]
     }
 
+    const format = (date) => {
+        return moment(date).format("YYYY-MM-DD hh:mm a")
+    }
+
     const getListItemSubDetail = (type, uploaded) => {
         if (type === "file") {
-            return `file document, uploaded at: ${uploaded}`
+            return `file document, uploaded at: ${format(uploaded)}`
         }
         if(type === "video") {
-            return `video source, uploaded at: ${uploaded}`
+            return `video source, uploaded at: ${format(uploaded)}`
         } 
         if(type === "link") {
-            return `reference link, uploaded at: ${uploaded}`
+            return `reference link, uploaded at: ${format(uploaded)}`
         }
     }
 
@@ -223,25 +214,33 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handl
         return (
             <div className = "en_course_prev_main_content">
                 <h4>Course Resources</h4>
-                <List>
-                    {
-                        dummyResources.map(item => {
-                            const {title, type, uploaded} = item
-                            return (
-                                <>
-                                <ListItem>
-                                    <Avatar 
-                                        className = {classes.resourceAvatar} 
-                                        src = { getListItemSrc(type) }
-                                    />
-                                    <ListItemText primary = {title} secondary = {getListItemSubDetail(type, uploaded)} />
-                                </ListItem>
-                                <Divider/>
-                                </>
-                            )
-                        })
-                    }
-                </List>
+                {
+                    resources.length === 0 ? 
+                    <div className = "no_up_events_root">
+                        <span>No resources right now</span>
+                        <p>will be coming soon...</p>
+                    </div>
+                    :
+                    <List>
+                        {
+                            resources.map(item => {
+                                const {title, type, uploaded} = item
+                                return (
+                                    <>
+                                    <ListItem>
+                                        <Avatar 
+                                            className = {classes.resourceAvatar} 
+                                            src = { getListItemSrc(type) }
+                                        />
+                                        <ListItemText primary = {title} secondary = {getListItemSubDetail(type, uploaded)} />
+                                    </ListItem>
+                                    <Divider/>
+                                    </>
+                                )
+                            })
+                        }
+                    </List>
+                }
             </div>
         )
     }
@@ -250,15 +249,10 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handl
         return (
             <div className = "en_course_prev_main_content">
                 <h4>Upcoming Events</h4>
-                {
-                    dummyEvents.length === 0 ? 
-                    <div className = "no_up_events_root">
-                        <span>No upcoming events right now</span>
-                        <p>will be coming soon...</p>
-                    </div>
-                    :
-                    <List></List>
-                }
+                <div className = "no_up_events_root">
+                    <span>No upcoming events right now</span>
+                    <p>will be coming soon...</p>
+                </div>
             </div>
         )
     }

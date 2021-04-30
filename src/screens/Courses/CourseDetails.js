@@ -47,11 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CourseDetails = ({course, handlePaymentTypeOnSelect, subscription}) => {
     const styles = useStyles()
-    const { name, rating, price, description, tutorName, duration, id, imageUrl } = course
-    const dummySchedule = [
-        {id: 1, day: "Monday", startTime: "3:00 pm", endTime: "5:00 pm"},
-        {id: 2, day: "Thursday", startTime: "5:30 pm", endTime: "7:30 pm"},
-    ]
+    const { name, rating, price, description, tutorName, duration, id, imageUrl, schedules } = course
 
     const getImageSource = (blob) => {
         return `data:image/jpeg;base64,${blob}`
@@ -119,7 +115,7 @@ const CourseDetails = ({course, handlePaymentTypeOnSelect, subscription}) => {
                         title = "Paella dish"
                     />
                     <CardContent>
-                        { renderSchedules(dummySchedule)}
+                        { renderSchedules(schedules)}
                         { renderPaymentMethods() }
                     </CardContent>
                 </Card>
