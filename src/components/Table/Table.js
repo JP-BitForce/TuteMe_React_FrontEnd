@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import moment from 'moment';
 
 //Boostrap
 import Table from 'react-bootstrap/Table'
@@ -54,14 +55,15 @@ const  Row = (props) => {
     const renderMoreDetails = () => {
         return (
             <div className = "more_detail_container">
-                <h6>React Js</h6>
+                <h6>{row.course}</h6>
                 <p className = "more_detail_content">
-                    <span>Conducted By : </span>
-                    Steven Nickman
+                    <span>Conducted By : </span> {row.tutorName}
                 </p>
                 <p className = "more_detail_content">
-                    <span>Payment Id : </span>
-                    PI00001
+                    <span>Payment Id : </span> {row.id}
+                </p>
+                <p className = "more_detail_content">
+                    <span>Course Id : </span> {row.courseId}
                 </p>
             </div>
         )
@@ -71,8 +73,9 @@ const  Row = (props) => {
       <React.Fragment>
         <tr hover className={`${classes.tableRow} ${open && classes.opened}`} onClick={() => setOpen(!open)}>
             <td>{row.id}</td>
-            <td>{row.type}</td>
-            <td>{row.date}</td>
+            <td>{row.paymentType}</td>
+            <td>{row.paymentMethod}</td>
+            <td>{moment(row.paymentAt).format("YYYY-MM-DD hh:mm a")}</td>
             <td>{row.amount}</td>
         </tr>
         <tr>
@@ -104,7 +107,14 @@ const TableComponent = ({type, tableHead, rows}) => {
                 { renderTableHead() }
             </thead>
             <tbody>
-                { rows.map(item => <Row row = {item} type = {type}/> ) }
+                {
+                    rows.length === 0 ? 
+                    <td>
+                        <div>No paymenst found</div>
+                    </td>
+                    :
+                    rows.map(item => <Row row = {item} type = {type}/> ) 
+                }
             </tbody>
         </Table>
     )

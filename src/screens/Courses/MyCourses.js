@@ -46,17 +46,17 @@ class MyCourses extends Component {
     }
 
     componentDidMount() {
-        this.getCoursesApi()
+        this.getCoursesApi(0)
     }
 
-    getCoursesApi = () => {
+    getCoursesApi = (page) => {
         const auth = this.props.auth
         this.setState({ loading: true })
-        getEnrolledCourses(auth.accessToken, auth.userId).then(response => {
+        getEnrolledCourses(auth.accessToken, auth.userId, page).then(response => {
             this.setState({ 
                 loading: false,
-                total: this.getPage(response.enrolledCourses),
-                current: 1,
+                total: response.total,
+                current: response.current+1,
                 coursesData: response.enrolledCourses,
                 fetchError: null,
                 slicedCourseData: response.enrolledCourses.slice(0,10)

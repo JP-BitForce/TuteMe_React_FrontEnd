@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 
 import Table from '../../components/Table/Table'
+import Pagination from '../../components/Pagination/Paginator'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
@@ -12,16 +13,26 @@ import GetApp from '@material-ui/icons/GetApp';
 
 import './Payments.css'
 
-const PaymentSummary = ({paymentMethods, icons, tableHead, rows, handleDownloadOnClick, handleDeleteCard}) => {
+const PaymentSummary = ({
+    paymentMethods, 
+    icons, 
+    tableHead, 
+    rows, 
+    handleDownloadOnClick, 
+    handleDeleteCard,
+    handlePaginationOnChange,
+    total,
+    current
+}) => {
     const [openMore, setMoreOpen] = useState(null)
 
     const handleMoreOpen = (event) => {
         setMoreOpen(event.currentTarget);
-    };
+    }
     
       const handleMoreClose = () => {
         setMoreOpen(null);
-    };
+    }
 
     const renderPaymentCard = (name, acc_num) => {
         return (
@@ -105,6 +116,13 @@ const PaymentSummary = ({paymentMethods, icons, tableHead, rows, handleDownloadO
                     tableHead = {tableHead}
                     rows = {rows}
                 />
+                <div className = "pagination_div">
+                    <Pagination 
+                        total = {total}
+                        current = {current+1}
+                        handleOnChange = {handlePaginationOnChange}
+                    />
+                </div>
                 <div className = "add_card_block">
                     <span onClick = { handleDownloadOnClick }>
                         <GetApp/>

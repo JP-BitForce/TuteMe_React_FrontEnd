@@ -9,8 +9,8 @@ export const getCourses = (token, page, userId) => {
     return GET(endpoint, token)
 }
 
-export const getEnrolledCourses = (token, uId) => {
-    const endpoint = getEndpointWithPrefix(`enrollment/get_enrolled_courses?uId=${uId}`)
+export const getEnrolledCourses = (token, uId, page) => {
+    const endpoint = getEndpointWithPrefix(`enrollment/get_enrolled_courses?uId=${uId}&page=${page}`)
     return GET(endpoint, token)
 }
 

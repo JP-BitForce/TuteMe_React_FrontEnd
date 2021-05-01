@@ -202,7 +202,8 @@ class OnlineCourses extends Component {
                 userId: auth.userId,
                 courseId: selectedCourse.id,
                 paymentType: subscription,
-                exp: moment(this.state.exp).format('YYYY-MM-DDT00:00:00')
+                exp: moment(this.state.exp).format('YYYY-MM-DDT00:00:00'),
+                amount: selectedCourse.price
             }
             this.setState({ payLoading: true })
             enrollmentByPaypalPay(auth.accessToken, body).then(response => {
@@ -227,6 +228,7 @@ class OnlineCourses extends Component {
                 courseId: selectedCourse.id,
                 paymentType: subscription,
                 depositedAt:  moment(this.state.depositedAt).format('YYYY-MM-DDT00:00:00'),
+                amount: selectedCourse.price
             }
             const formData = new FormData()
             const json = JSON.stringify(body)

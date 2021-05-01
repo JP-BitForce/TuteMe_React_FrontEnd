@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import HeaderCard from '../../components/Header/HeaderCard'
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import PaymentSummary from './PaymentSummary'
 import Checkout from './Checkout'
+import { getPayments } from '../../api/payment'
 
 //Material-UI
 import Subject from '@material-ui/icons/Subject';
@@ -31,7 +33,11 @@ class Payments extends Component {
         card_number: "",
         mm_yy: "",
         cvv: "",
-        total_payment: "0.00"
+        total_payment: "0.00",
+        paymentData:[],
+        total: 1,
+        current: 1,
+        fetchError: null
     }
     tab_links = ["Summary", "Checkout"]
     icons = {
@@ -44,16 +50,35 @@ class Payments extends Component {
         {name: "Master", acc_num: "**** **** **** 1234"},
         {name: "Visa", acc_num: "**** **** **** 1234"},
     ]
-    tableHead = ["#", "Type", "Date", "Amount(LKR)"]
-    rows = [
-        {id: "1", type: "Online", date: "21 April 2020", amount: "1200.00"},
-        {id: "2", type: "Online", date: "18 November 2020", amount: "800.00"},
-        {id: "3", type: "Bank", date: "30 October 2020", amount: "750.00"},
-        {id: "4", type: "Online", date: "26 April 2020", amount: "1500.00"},
-        {id: "5", type: "Online", date: "21 April 2020", amount: "1200.00"},
-        {id: "6", type: "Bank", date: "19 October 2020", amount: "1000.00"},
-    ]
+    tableHead = ["#", "Type", "Method", "Date", "Amount(LKR)"]
+
     cardOptions = ["**** **** **** 1234", "**** **** **** 4567", "**** **** **** 8901"]
+
+    componentDidMount() {
+        this.getPaymentsApi(0)
+    }
+
+    getPaymentsApi = (page) => {
+        const auth = this.props.auth
+        this.setState({ loading: true })
+        getPayments(auth.accessToken, page, auth.userId).then(response => {
+            this.setState({ 
+                loading: false,
+                paymentData: response.payments,
+                total: response.total,
+                current: response.current,
+                fetchError: null
+            })
+        }).catch(err => {
+            this.setState({ 
+                loading: false,
+                paymentData: [],
+                total: 0,
+                current: 0,
+                fetchError: err.message 
+            })
+        })
+    }
 
     handleDownloadOnClick = () => {
 
@@ -96,9 +121,12 @@ class Payments extends Component {
                                 paymentMethods = {this.paymentMethods} 
                                 icons = {this.icons}
                                 tableHead = {this.tableHead}
-                                rows = {this.rows}
+                                rows = {this.state.paymentData}
                                 handleDownloadOnClick = {this.handleDownloadOnClick}
                                 handleDeleteCard = {this.handleDeleteCard}
+                                handlePaginationOnChange = {this.handlePaginationOnChange}
+                                total = {this.state.total}
+                                current = {this.state.current}
                             />
             case 1: return <Checkout
                                 handleInputOnChange = {this.handleInputOnChange}
@@ -155,4 +183,11 @@ class Payments extends Component {
     }
 }
 
-export default Payments
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(Payments)
