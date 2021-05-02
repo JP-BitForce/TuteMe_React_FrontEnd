@@ -6,7 +6,9 @@ import HeaderCard from '../../components/Header/HeaderCard'
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import PaymentSummary from './PaymentSummary'
 import Checkout from './Checkout'
-import { getPayments } from '../../api/payment'
+import UpgradePlanDialog from './UpgradePlan'
+
+import { getPayments, upgradePlan } from '../../api/payment'
 
 //Material-UI
 import Subject from '@material-ui/icons/Subject';
@@ -37,7 +39,9 @@ class Payments extends Component {
         paymentData:[],
         total: 1,
         current: 1,
-        fetchError: null
+        fetchError: null,
+        openUpgradePlanModal: false,
+        subscription: ""
     }
     tab_links = ["Summary", "Checkout"]
     icons = {
@@ -80,8 +84,35 @@ class Payments extends Component {
         })
     }
 
+    handleUpgrade = () => {
+        const auth = this.props.auth
+        const {subscription} = this.state
+        if(subscription) {
+            upgradePlan(auth.accessToken, auth.userId, subscription).then(response => {
+                console.log(response)
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+    }
+
     handleDownloadOnClick = () => {
 
+    }
+
+    handleUpgradePlanOnClick = () => {
+        this.setState({ openUpgradePlanModal: true })
+    }
+
+    handleCancelUpgradePlan = () => {
+        this.setState({ 
+            openUpgradePlanModal: false,
+            subscription: "Premium" 
+        })
+    }
+
+    handlePlanOnChange = (val) => {
+        this.setState({ subscription: val })
     }
 
     handleCancelCard = () => {
@@ -115,19 +146,26 @@ class Payments extends Component {
         })
     }
 
+    renderSummary = () => {
+        const {paymentData, total, current, subscription} = this.state
+        return <PaymentSummary 
+                    paymentMethods = {this.paymentMethods} 
+                    icons = {this.icons}
+                    tableHead = {this.tableHead}
+                    rows = {paymentData}
+                    handleDownloadOnClick = {this.handleDownloadOnClick}
+                    handleDeleteCard = {this.handleDeleteCard}
+                    handlePaginationOnChange = {this.handlePaginationOnChange}
+                    total = {total}
+                    current = {current}
+                    handleUpgradePlanOnClick = {this.handleUpgradePlanOnClick}
+                    subscription = {subscription}
+                />
+    }
+
     renderMainContainer = () => {
         switch(this.state.tabValue) {
-            case 0: return <PaymentSummary 
-                                paymentMethods = {this.paymentMethods} 
-                                icons = {this.icons}
-                                tableHead = {this.tableHead}
-                                rows = {this.state.paymentData}
-                                handleDownloadOnClick = {this.handleDownloadOnClick}
-                                handleDeleteCard = {this.handleDeleteCard}
-                                handlePaginationOnChange = {this.handlePaginationOnChange}
-                                total = {this.state.total}
-                                current = {this.state.current}
-                            />
+            case 0: return this.renderSummary()
             case 1: return <Checkout
                                 handleInputOnChange = {this.handleInputOnChange}
                                 values = {this.state}
@@ -169,7 +207,7 @@ class Payments extends Component {
     }
 
     render() {
-        const {loading} = this.state
+        const {loading, openUpgradePlanModal, subscription} = this.state
         return (
             <div className = "payments_root_div">
                 {
@@ -178,6 +216,13 @@ class Payments extends Component {
                     :
                     this.renderRootContainer()
                 }
+                <UpgradePlanDialog
+                    open = {openUpgradePlanModal}
+                    handleCancel = {this.handleCancelUpgradePlan}
+                    subscription = {subscription}
+                    handlePlanOnChange = {this.handlePlanOnChange}
+                    handleUpgrade = {this.handleUpgrade}
+                />
             </div>
         )
     }

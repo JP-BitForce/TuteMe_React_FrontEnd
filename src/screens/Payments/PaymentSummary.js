@@ -22,7 +22,9 @@ const PaymentSummary = ({
     handleDeleteCard,
     handlePaginationOnChange,
     total,
-    current
+    current,
+    handleUpgradePlanOnClick,
+    subscription
 }) => {
     const [openMore, setMoreOpen] = useState(null)
 
@@ -86,11 +88,15 @@ const PaymentSummary = ({
             <div>
                 <div className = "payment_method_card_top">
                     <span className = "header_title_span">Your Plan</span>
-                    <Button variant="outlined" color="primary" size = "small">
+                    <Button variant="outlined" color="primary" size = "small" onClick = {handleUpgradePlanOnClick} >
                         upgarde plan
                     </Button>
                 </div>
-                <h4 className = "plan_h4">Premium</h4>
+                {
+                    subscription ? <h4 className = "plan_h4">{subscription}</h4>
+                    :
+                    <h5 className = "no_plan_h5">No Plan right now......</h5>
+                }
             </div>
         )
     }
