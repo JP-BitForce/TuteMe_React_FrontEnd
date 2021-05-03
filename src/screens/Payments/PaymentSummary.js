@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 
 import Table from '../../components/Table/Table'
+import Pagination from '../../components/Pagination/Paginator'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
@@ -12,16 +13,28 @@ import GetApp from '@material-ui/icons/GetApp';
 
 import './Payments.css'
 
-const PaymentSummary = ({paymentMethods, icons, tableHead, rows, handleDownloadOnClick, handleDeleteCard}) => {
+const PaymentSummary = ({
+    paymentMethods, 
+    icons, 
+    tableHead, 
+    rows, 
+    handleDownloadOnClick, 
+    handleDeleteCard,
+    handlePaginationOnChange,
+    total,
+    current,
+    handleUpgradePlanOnClick,
+    subscription
+}) => {
     const [openMore, setMoreOpen] = useState(null)
 
     const handleMoreOpen = (event) => {
         setMoreOpen(event.currentTarget);
-    };
+    }
     
       const handleMoreClose = () => {
         setMoreOpen(null);
-    };
+    }
 
     const renderPaymentCard = (name, acc_num) => {
         return (
@@ -75,11 +88,15 @@ const PaymentSummary = ({paymentMethods, icons, tableHead, rows, handleDownloadO
             <div>
                 <div className = "payment_method_card_top">
                     <span className = "header_title_span">Your Plan</span>
-                    <Button variant="outlined" color="primary" size = "small">
+                    <Button variant="outlined" color="primary" size = "small" onClick = {handleUpgradePlanOnClick} >
                         upgarde plan
                     </Button>
                 </div>
-                <h4 className = "plan_h4">Premium</h4>
+                {
+                    subscription ? <h4 className = "plan_h4">{subscription}</h4>
+                    :
+                    <h5 className = "no_plan_h5">No Plan right now......</h5>
+                }
             </div>
         )
     }
@@ -105,6 +122,13 @@ const PaymentSummary = ({paymentMethods, icons, tableHead, rows, handleDownloadO
                     tableHead = {tableHead}
                     rows = {rows}
                 />
+                <div className = "pagination_div">
+                    <Pagination 
+                        total = {total}
+                        current = {current+1}
+                        handleOnChange = {handlePaginationOnChange}
+                    />
+                </div>
                 <div className = "add_card_block">
                     <span onClick = { handleDownloadOnClick }>
                         <GetApp/>

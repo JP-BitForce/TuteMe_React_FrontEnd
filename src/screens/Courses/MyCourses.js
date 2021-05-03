@@ -3,9 +3,9 @@ import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import Header from '../../components/Header/Header'
-import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import CourseEnrolled from '../../components/Card/CourseEnrolled'
 import Pagination from '../../components/Pagination/Paginator'
+import EnrolledCourseFullPreview from './EnrolledCourseFullPreview'
 import { getEnrolledCourses } from '../../api/course'
 
 //Material-UI
@@ -14,7 +14,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 import headerImg from '../../assets/images/Course/course.jpg'
-import reactJs from '../../assets/images/Course/react.jpg'
+import altImage from '../../assets/images/Course/alt.jpg'
 import './Courses.css'
 
 class MyCourses extends Component {
@@ -34,58 +34,32 @@ class MyCourses extends Component {
         total: 1,
         current: 1,
         coursesData:[],
-        fetchError: null
+        slicedCourseData: [],
+        fetchError: null,
+        courseSearched: false,
+        searchFilterLoading: false,
+        openCourseView: false,
+        selectedCourse: null,
+        joinId: "",
+        joinIdValueError: null,
+        joinLoading: false
     }
 
-    courseCategories = [
-        "All",
-        "UI/UX Design",
-        "Art & Design",
-        "Computer Science",
-        "History & Archelogic",
-        "App Development",
-        "Health & Fitness",
-        "Graphic Design",
-        "Marketing",
-        "Music",
-        "Buisness",
-        "Management"
-    ]
-
-    courseInstuctors = ["All"," Ronald Jackson","John Dee","Nathan Messy"," Tony Griffin"]
-
-    courseType = ["All", "Primary", "Ordinary", "Advanced"]
-
-    dummyCourses = [
-        {des:"lorem ipsum", name:"Design for the web", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
-        {des:"lorem ipsum", name:"adobe photoshop", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"web with adobe photoshop", by:"Django Caprio", rating:5},
-    ]
-
     componentDidMount() {
-        this.setState({
-            slicedCourseCategories: this.courseCategories.slice(0,5),
-            slicedCourseInstructors: this.courseInstuctors.slice(0,5),
-            slicedCourseType: this.courseType.slice(0,5),
-            allCoursecategories: this.courseCategories,
-            allCourseInstructors: this.courseInstuctors,
-            allCourseType: this.courseType,
-        })
+        this.getCoursesApi(0)
     }
 
     getCoursesApi = (page) => {
         const auth = this.props.auth
         this.setState({ loading: true })
-        getEnrolledCourses(auth.accessToken, auth.profileId, page).then(response => {
+        getEnrolledCourses(auth.accessToken, auth.userId, page).then(response => {
             this.setState({ 
                 loading: false,
                 total: response.total,
                 current: response.current+1,
-                coursesData: response.data,
-                fetchError: null
+                coursesData: response.enrolledCourses,
+                fetchError: null,
+                slicedCourseData: response.enrolledCourses.slice(0,10)
             })
         }).catch(err => {
             this.setState({ 
@@ -95,40 +69,70 @@ class MyCourses extends Component {
         })
     }
 
+    handleJoin = () => {
+        
+    }
+
+    handleSearchApi = () => {
+        this.setState({ 
+            searchValueError: false, 
+            searchFilterLoading: true, 
+            courseSearched: true  
+        })
+        const {searchValue, coursesData} = this.state
+        const filterData = coursesData.filter(item => {
+            let itemData = item.title.toLowerCase()
+            return itemData.indexOf(searchValue.toLowerCase()) > -1
+        })
+        this.setState({
+            total: this.getPage(filterData),
+            current: 1,
+            slicedCourseData: filterData,
+        })
+    }
+
     handleCourseSearch = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        if (!this.state.searchValue) {
-            this.setState({ searchValueError: true })
+        const {searchValue, courseSearched, coursesData} = this.state
+        if (!courseSearched) {
+            if (!searchValue) {
+                this.setState({ searchValueError: true})
+            } else {
+                this.handleSearchApi()
+            }
         } else {
-            this.setState({ searchValueError: false })
+            this.setState({ 
+                searchValue: "",
+                courseSearched: false,
+                slicedCourseData: coursesData
+            })
         }
     }
 
-    handleFilter = () => {
-        const {
-            categoryChecked, typeChecked, tutorChecked,
-            allCoursecategories, allCourseType, allCourseInstructors
-        } = this.state
-
-        let categoryList = []
-        categoryChecked.filter(idx => {
-            categoryList.push(allCoursecategories[idx])
-            return 0
+    handleCourseOnClick = (course) => {
+        this.setState({
+            openCourseView: true,
+            selectedCourse: course
         })
+    }
 
-        let tutorList = []
-        tutorChecked.filter(idx => {
-            tutorList.push(allCourseInstructors[idx])
-            return 0
+    handleCoursePreviewClose = () => {
+        this.setState({
+            openCourseView: false,
+            selectedCourse: null
         })
+    }
 
-        let typeList = []
-        typeChecked.filter(idx => {
-            typeList.push(allCourseType[idx])
-            return 0
-        })
-        
+    getPage = (data) => {
+        var page = 0;
+        var mod = data.length % 10;
+        if (mod > 0) {
+            page = data.length / 10 - mod / 10 + 1;
+        } else {
+            page = data.length / 10;
+        }
+        return page;
     }
 
     handleInputOnChange = (event) => {
@@ -139,66 +143,20 @@ class MyCourses extends Component {
         })
     }
 
-    handleToggle = (type, index) => {
-        switch(type) {
-            case "Course Category": this.handleCheck("categoryChecked", index)
-                                    break;
-            case "Course Instructors": this.handleCheck("tutorChecked", index)
-                                       break;
-            case "Course Type": this.handleCheck("typeChecked", index)
-                                break;
-            default: return
-        }
-    }
-
-    handleCheck = (type, index) => {
-        const checked = this.state[type]
-        const currentIndex = checked.indexOf(index);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-          newChecked.push(index);
-        } else {
-          newChecked.splice(currentIndex, 1);
-        }
-
-        this.setState({ [type]: newChecked })
-    }
-
-    handleLoadMore = (type) => {
-        const {
-            allCoursecategories, allCourseInstructors, allCourseType
-        } = this.state
-        switch(type) {
-            case "Course Category": this.handleLoad(allCoursecategories, "slicedCourseCategories")
-                                    break;
-            case "Course Instructors": this.handleLoad(allCourseInstructors, "slicedCourseInstructors")
-                                       break;
-            case "Course Type": this.handleLoad(allCourseType, "slicedCourseType")
-                                break;
-            default: return
-        }
-    }
-
-    handleLoad = (all, state) => {
-        let data = all
-        if(this.state[state] === all) {
-            data = all.slice(0,5)
-        } 
+    handlePaginationOnChange = (event, page) => {
+        const {coursesData} = this.state
+        const start = (page-1)*10
+        const end = page*10
         this.setState({
-            [state]: data
+            current: page,
+            slicedCourseData: coursesData.slice(start,end)
         })
     }
 
-    handlePaginationOnChange = (page) => {
-
-    }
-
     renderListHead = () => {
-        const {searchValue, searchValueError} = this.state
+        const {searchValue, searchValueError, courseSearched} = this.state
         return (
             <div className = "courses_list_head">
-                <Button variant="contained" onClick = {this.handleFilter}>Filter courses</Button>
                 <form noValidate autoComplete="off" onSubmit = {this.handleCourseSearch}>
                     <TextField
                         id="standard-basic" 
@@ -211,86 +169,34 @@ class MyCourses extends Component {
                         name = "searchValue"
                         size = "small"
                     />
-                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">Search</Button>
+                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">{courseSearched ? "Cancel" : "Search"}</Button>
                 </form>
             </div>
         )
     }
 
-    renderCategoryFilters = () => {
-        const {
-            slicedCourseCategories, slicedCourseInstructors, slicedCourseType, 
-            categoryChecked, tutorChecked, typeChecked,
-            allCoursecategories, allCourseInstructors, allCourseType
-        } = this.state
-        return (
-            <>
-                <Grid item xs={6} sm={6} md={12}>
-                    <CategoryFilter 
-                        title = "Course Category"
-                        options = {slicedCourseCategories}
-                        handleToggle = {this.handleToggle}
-                        checked = {categoryChecked}
-                        handleLoadMore = {this.handleLoadMore}
-                        total = {allCoursecategories.length}
-                    />
-                </Grid>
-                <Grid item xs={6} sm={6} md={12}>
-                    <CategoryFilter 
-                        title = "Course Instructors"
-                        options = {slicedCourseInstructors}
-                        handleToggle = {this.handleToggle}
-                        checked = {tutorChecked}
-                        handleLoadMore = {this.handleLoadMore}
-                        total = {allCourseInstructors.length}
-                    />
-                </Grid>
-                <Grid item xs={6} sm={6} md={12}>
-                    <CategoryFilter 
-                        title = "Course Type"
-                        options = {slicedCourseType}
-                        handleToggle = {this.handleToggle}
-                        checked = {typeChecked}
-                        handleLoadMore = {this.handleLoadMore}
-                        total = {allCourseType.length}
-                    />
-                </Grid>
-            </>
-        )
-    }
-
     renderCourseCards = (item, index) => {
-        const {name, by, rating} = item
         return (
-            <Grid item xs={6} sm={6} md={4} key = {index}>
-                <div className = "course_enrolled_card">
-                    <CourseEnrolled src = {reactJs} title = {name} by = {by} rating = {rating}/>
+            <Grid item xs={6} sm={6} md={3} key = {index}>
+                <div className = "course_enrolled_card" onClick = {() => this.handleCourseOnClick(item)}>
+                    <CourseEnrolled src = {altImage} item = {item}/>
                 </div>
             </Grid>
         )
     }
 
     renderCoursesConatiner = () => {
-        const {loading, total, current} = this.state
+        const {loading, total, current, slicedCourseData} = this.state
         return (
             <div className = "my_courses__container">
                 <Grid container spacing={4}>
-                    <Grid item xs={12} sm={12} md={3}>
-                        <Grid container spacing={1}>
-                            { this.renderCategoryFilters() }
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={9}>
+                    <Grid item xs={12} sm={12} md={12}>
                         <div maxWidth="md" className = "course__list__root">
                         <div maxWidth="md">
                             { this.renderListHead() }
                         </div>
                             <Grid container spacing={4}>
-                                {
-                                    this.dummyCourses.map((item, index) => {
-                                        return this.renderCourseCards(item, index)
-                                    })
-                                }
+                                { slicedCourseData.map((item, index) => this.renderCourseCards(item, index)) }
                             </Grid>
                         </div>
                         <div className = "pagination_div">
@@ -318,7 +224,7 @@ class MyCourses extends Component {
     }
 
     render() {
-        const {loading} = this.state
+        const {loading, coursesData, selectedCourse, openCourseView} = this.state
         return (
             <div className = "my_courses_root">
                 <Header 
@@ -326,10 +232,22 @@ class MyCourses extends Component {
                     src = {headerImg}
                 />
                 {
-                    loading ? 
-                    <Loading open = {loading} />
+                    loading ? <Loading open = {loading} />
+                    :
+                    coursesData.length === 0 ? this.renderNoCoursesAvailable()
                     :
                     this.renderCoursesConatiner()
+                }
+                {
+                    selectedCourse &&
+                    <EnrolledCourseFullPreview
+                        open = {openCourseView}
+                        course = {selectedCourse}
+                        handleClose = {this.handleCoursePreviewClose}
+                        values = {this.state}
+                        handleInputOnChange = {this.handleInputOnChange}
+                        handleJoin = {this.handleJoin}
+                    />
                 }
             </div>
         )
