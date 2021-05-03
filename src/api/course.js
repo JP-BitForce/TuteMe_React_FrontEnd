@@ -9,8 +9,8 @@ export const getCourses = (token, page, userId) => {
     return GET(endpoint, token)
 }
 
-export const getEnrolledCourses = (token, uId) => {
-    const endpoint = getEndpointWithPrefix(`enrollment/get_enrolled_courses?uId=${uId}`)
+export const getEnrolledCourses = (token, uId, page) => {
+    const endpoint = getEndpointWithPrefix(`enrollment/get_enrolled_courses?uId=${uId}&page=${page}`)
     return GET(endpoint, token)
 }
 
@@ -42,4 +42,9 @@ export const enrollmentByBankPay = (token, formData) => {
 export const enrollmentByPaypalPay = (token, body) => {
     const endpoint = getEndpointWithPrefix(`enrollment/byPaypal`)
     return POST(endpoint, body, token)
+}
+
+export const getCourseById = (token, id) => {
+    const endpoint = getEndpointWithPrefix(`get_course_by_id/${id}`)
+    return GET(endpoint, token)
 }

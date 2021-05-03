@@ -83,7 +83,7 @@ const Checkout = ({
             }
         </DialogContent>
         <DialogActions>
-            { emptyError && <span className = "error">{emptyError}</span>}
+            { emptyError && <span className = "error">{emptyError}</span> }
             <Button onClick = {handlePrev} color="primary"> {values["step"] === 1 ? "Close" : "Previous"} </Button>
             <Button onClick = {handleNext} className = {styles.btn} disabled = {step === 3}>Next</Button>
         </DialogActions>
