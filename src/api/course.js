@@ -43,3 +43,8 @@ export const enrollmentByPaypalPay = (token, body) => {
     const endpoint = getEndpointWithPrefix(`enrollment/byPaypal`)
     return POST(endpoint, body, token)
 }
+
+export const getCourseById = (token, id) => {
+    const endpoint = getEndpointWithPrefix(`get_course_by_id/${id}`)
+    return GET(endpoint, token)
+}

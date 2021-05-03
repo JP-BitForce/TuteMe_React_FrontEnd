@@ -279,7 +279,7 @@
 
 .payment_summary_section__1_special {
     color: #fff;
-    background-color: #FF4842;;
+    background-color: #FF4842;
     cursor: default;
     height: 22px;
     display: inline-flex;
@@ -383,4 +383,13 @@
     border-radius: 16px;
     position: relative;
     z-index: 0;
+    margin-bottom: 2%;
+}
+
+.course_search_div {
+    margin-bottom: 2%;
+}
+
+.payment_method_form {
+    padding: 2%;
 }

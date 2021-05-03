@@ -10,6 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Chip from '@material-ui/core/Chip';
 import Divider from '@material-ui/core/Divider';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -41,7 +42,15 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const UpgradePlan = ({open, handleCancel, handleUpgrade, subscription, handlePlanOnChange}) => {
+const UpgradePlan = ({
+    open, 
+    handleCancel, 
+    handleUpgrade, 
+    subscription, 
+    handlePlanOnChange, 
+    subscriptionEmptyError,
+    upgradeSubscriptionLoading
+}) => {
     const styles = useStyles()
     return (
         <Dialog
@@ -78,8 +87,13 @@ const UpgradePlan = ({open, handleCancel, handleUpgrade, subscription, handlePla
             </DialogContentText>
         </DialogContent>
         <DialogActions>
+            { subscriptionEmptyError && <span className = "error">{subscriptionEmptyError}</span> }
             <Button onClick = {handleCancel} color="primary"> Cancel </Button>
-            <Button onClick = {handleUpgrade} className = {styles.btn}>Upgrade</Button>
+            <Button onClick = {handleUpgrade} className = {styles.btn}>
+                {
+                    upgradeSubscriptionLoading ? <CircularProgress style = {{width: "20px", height: "20px"}}/> : "Upgrade"
+                }
+            </Button>
         </DialogActions>
         </Dialog>
     )

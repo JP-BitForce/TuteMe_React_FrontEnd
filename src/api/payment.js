@@ -13,3 +13,8 @@ export const upgradePlan = (token, userId, value) => {
     const endpoint = getEndpointWithPrefix(`upgrade_plan?uId=${userId}&plan=${value}`)
     return POST(endpoint, null, token)
 }
+
+export const getPaymentPlan = (token, userId) => {
+    const endpoint = getEndpointWithPrefix(`get_payment_plan/${userId}`)
+    return GET(endpoint, token)
+}

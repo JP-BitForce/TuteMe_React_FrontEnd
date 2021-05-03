@@ -121,7 +121,7 @@ const CourseDetails = ({course, handlePaymentTypeOnSelect, subscription}) => {
                 </Card>
             </Grid>
             <Grid item xs={12} sm={12} md={6} className = {styles.content}>
-                { renderDetail("ID", `C${id}`) }
+                { renderDetail("ID", `${id}`) }
                 { renderDetail("Name", name) }
                 { renderDetail("Tutor", tutorName) }
                 { renderDetail("Duration", duration) }
