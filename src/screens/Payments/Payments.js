@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import moment from 'moment';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 import Loading from '../../components/Loading/Loading'
 import HeaderCard from '../../components/Header/HeaderCard'
@@ -10,14 +12,14 @@ import Checkout from './Checkout'
 import UpgradePlanDialog from './UpgradePlan'
 import SnackBar from '../../components/SnackBar/SnackBar'
 
-import { getPayments, upgradePlan, getPaymentPlan } from '../../api/payment'
+import { getPayments, upgradePlan, getPaymentSummaryFacts, deletePaymentCard } from '../../api/payment'
 import { getCourseById, enrollmentByBankPay, enrollmentByPaypalPay  } from '../../api/course'
 
 //Material-UI
 import Subject from '@material-ui/icons/Subject';
 import CreditCard from '@material-ui/icons/CreditCard';
-import masterCard from '../../assets/images/Payments/ic_mastercard.svg'
-import visa from '../../assets/images/Payments/ic_visa.svg'
+import paypalSrc from '../../assets/images/Payments/ic_paypal.svg'
+import BankSrc from '../../assets/images/Payments/bank.png'
 
 import headerImg from '../../assets/images/Payments/headerImg.jpg'
 import './Payments.css'
@@ -61,24 +63,24 @@ class Payments extends Component {
         subscriptionEmptyError: null,
         upgradeSubscriptionLoading: false,
         subscripted: "",
-        paymentType: "Premium"
+        paymentType: "Premium",
+        downloading: false,
+        paymentMethodCards: [],
+        cardType: "",
+        bankAccounts: []
     }
     tab_links = ["Summary", "Checkout"]
     icons = {
         Summary: <Subject/>,
         Checkout: <CreditCard/>,
-        Master: masterCard,
-        Visa: visa
+        Paypal: paypalSrc,
+        Bank: BankSrc
     }
-    paymentMethods = [
-        {name: "Master", acc_num: "**** **** **** 1234"},
-        {name: "Visa", acc_num: "**** **** **** 1234"},
-    ]
     tableHead = ["#", "Type", "Method", "Date", "Amount(LKR)"]
 
     componentDidMount() {
         this.getPaymentsApi(0)
-        this.getPaymentPlanApi()
+        this.getPaymentSummaryFactsApi()
     }
 
     getPaymentsApi = (page) => {
@@ -103,13 +105,15 @@ class Payments extends Component {
         })
     }
 
-    getPaymentPlanApi = () => {
+    getPaymentSummaryFactsApi = () => {
         const auth = this.props.auth
-        getPaymentPlan(auth.accessToken, auth.userId).then(response => {
+        getPaymentSummaryFacts(auth.accessToken, auth.userId).then(response => {
             this.setState({ 
-                subscription: response.message, 
-                subscripted: response.message, 
-                paymentType: response.message,
+                subscription: response.plan, 
+                subscripted: response.plan, 
+                paymentType: response.plan,
+                bankAccounts: response.bankAccounts,
+                paymentMethodCards: response.cards
             })
         }).catch(err => {
             this.setState({ subscription: "" })
@@ -206,7 +210,7 @@ class Payments extends Component {
             const auth = this.props.auth
             const {
                 firstName, lastName, address, city, zip, mobile, email,
-                cvv, cardNo, paymentMethod, selectedCourse, subscription, file
+                cvv, cardNo, paymentMethod, selectedCourse, subscription, file, cardType
             } = this.state
 
             if (paymentMethod === "paypal") {
@@ -217,7 +221,8 @@ class Payments extends Component {
                     courseId: selectedCourse.id,
                     paymentType: subscription,
                     exp: moment(this.state.exp).format('YYYY-MM-DDT00:00:00'),
-                    amount: selectedCourse.price
+                    amount: selectedCourse.price,
+                    cardType: cardType
                 }
                 this.handlePayByPaypalApi(body)
             }
@@ -235,6 +240,34 @@ class Payments extends Component {
                 }
                 this.handlePayByBankApi(body, file)
             }
+        }
+    }
+
+    handleDeleteCardApi = (cardId) => {
+        const auth = this.props.auth
+        deletePaymentCard(auth.accessToken, auth.userId, cardId).then(response => {
+            this.setState({ 
+                subscription: response.plan, 
+                subscripted: response.plan, 
+                paymentType: response.plan,
+                bankAccounts: response.bankAccounts,
+                paymentMethodCards: response.cards
+            })
+        }).catch(err => {
+            this.setState({ 
+                subscription: "", 
+                subscripted: "", 
+                paymentType: "",
+                bankAccounts: [],
+                paymentMethodCards: []
+            })
+        })
+    }
+    
+    handleDeleteCard = (name, value) => {
+        console.log(name, value)
+        if (name === "Paypal") {
+            this.handleDeleteCardApi(value.cardNo)
         }
     }
 
@@ -275,7 +308,21 @@ class Payments extends Component {
     }
 
     handleDownloadOnClick = () => {
-
+        this.setState({ downloading: true })
+        const excelDate = this.state.paymentData.map(payment => {
+            const paymentDetails = {
+                'Payment Id': payment.id,
+                'Payment Type': payment.paymentType,
+                'Payment Method': payment.paymentMethod,
+                'Date': moment(payment.paymentAt).format("YYYY-MM-DD hh:mm a"),
+                'Amount': payment.amount,
+                'Course': payment.course,
+                'Course Id': payment.courseId,
+                'Tutor': payment.tutorName
+            }
+            return paymentDetails
+        })
+        this.exportToCSV(excelDate)
     }
 
     handleUpgradePlanOnClick = () => {
@@ -288,10 +335,6 @@ class Payments extends Component {
             subscriptionEmptyError: null,
             subscription: this.state.subscripted 
         })
-    }
-
-    handleDeleteCard = () => {
-
     }
 
     handleCalculatePayment = (value) => {
@@ -371,10 +414,21 @@ class Payments extends Component {
         })
     }
 
+    exportToCSV = (csvData) => {
+        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+        const fileExtension = '.xlsx'
+        const ws = XLSX.utils.json_to_sheet(csvData)
+        const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+        const data = new Blob([excelBuffer], { type: fileType })
+        FileSaver.saveAs(data, 'Payments' + fileExtension)
+        this.setState({ downloading: false })
+    }
+
     renderSummary = () => {
-        const {paymentData, total, current, subscription} = this.state
+        const {paymentData, total, current, subscription, paymentMethodCards, bankAccounts} = this.state
         return <PaymentSummary 
-                    paymentMethods = {this.paymentMethods} 
+                    paymentMethods = {paymentMethodCards} 
                     icons = {this.icons}
                     tableHead = {this.tableHead}
                     rows = {paymentData}
@@ -385,6 +439,7 @@ class Payments extends Component {
                     current = {current}
                     handleUpgradePlanOnClick = {this.handleUpgradePlanOnClick}
                     subscription = {subscription}
+                    bankAccounts = {bankAccounts}
                 />
     }
 
