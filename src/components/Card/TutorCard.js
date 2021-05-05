@@ -8,22 +8,24 @@ import Avatar from '@material-ui/core/Avatar';
 
 import './InfoCard.css'
 
-const TutorCard = ({media, title, onClick, rate, subject, id}) => {
+const TutorCard = ({media, title, onClick, item}) => {
+    const {rating, subject, id, facebook, twitter, instagram, linkedIn} = item
+
     const socials = [
         {
-            content:"Facebook", 
+            content: facebook, 
             style: "fab  fa-facebook"
         },
         {
-            content:"Twitter", 
+            content: twitter, 
             style: "fab  fa-twitter"
         },
         {
-            content:"Instagram", 
+            content: instagram, 
             style: "fab fa-instagram"
         },
         {
-            content:"linkedIn", 
+            content: linkedIn, 
             style: "fab  fa-linkedin"
         }
     ]
@@ -35,13 +37,13 @@ const TutorCard = ({media, title, onClick, rate, subject, id}) => {
                 <div className = "tutor_card_top_info">
                     <link rel = "stylesheet" type = "text/css" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
                     <h3>{title}</h3>
-                    <span className = "tutor_position">{subject}</span>
+                    <span className = "tutor_position">{subject ? subject : "Unknown"}</span>
                     <p className = "tutor_socials">
                         {
                             socials.map(item => {
                                 const {content, style} = item
                                 return(
-                                    <a href = {content}><span className = {style}></span></a>
+                                    <a href = {content} target ="_blank" rel="noreferrer noopener"><span className = {style}></span></a>
                                 )
                             })
                         }
@@ -51,7 +53,7 @@ const TutorCard = ({media, title, onClick, rate, subject, id}) => {
             <div className = "tutor_des_container">
                 <div className = "online_course_footer">
                     <span>
-                        Rating : <ReadOnlyRating rate = {rate}/>
+                        Rating : <ReadOnlyRating rate = {rating}/>
                     </span>
                     <Button size="small" onClick = {() => onClick(id)} variant = "contained">View More</Button>
                 </div>
