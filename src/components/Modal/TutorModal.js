@@ -40,28 +40,29 @@ const useStyles = makeStyles((theme) => ({
 
 const TutorModal = ({open, handleClose, selectedTutor}) => {
     const classes = useStyles();
-    const {id, firstName, lastName, description, rating, email, district, city, src} = selectedTutor
+    const {
+        id, 
+        firstName, 
+        lastName, 
+        description, 
+        rating, 
+        email, 
+        district, 
+        city, 
+        src, 
+        facebook, 
+        twitter, 
+        instagram, 
+        linkedIn, 
+        subject,
+        subjectId
+    } = selectedTutor
 
     const renderDetail = (content, value) => {
         return (
             <DialogContentText id="alert-dialog-slide-description">
                 <span className = "modal_item_primary"> {content} : </span>
                 <span className = "modal_item_secondary">{value ? value : "Unknown"}</span>
-            </DialogContentText>
-        )
-    }
-
-    const rendersubjects = (values) => {
-        return (
-            <DialogContentText id="alert-dialog-slide-description">
-                <span className = "modal_item_primary">Subject(s) : </span>
-                <div className = {classes.list}>
-                    {
-                        values.map(item => {
-                            return <span className = "modal_item_secondary">{item}</span>
-                        })
-                    }
-                </div>
             </DialogContentText>
         )
     }
@@ -108,12 +109,13 @@ const TutorModal = ({open, handleClose, selectedTutor}) => {
                         <CardMedia
                             className={classes.media}
                             image = {getImageSource(src)}
-                            title = "Paella dish"
+                            title = {firstName}
                         />
                         <CardContent>
-                            { renderLink("Facebook", `http://www.facebook.com`) }
-                            { renderLink("Twitter", `http://www.Twitter.com`) }
-                            { renderLink("LinkedIn", `http://www.LinkedIn.com`) }
+                            { renderLink("Facebook", facebook) }
+                            { renderLink("Twitter", twitter) }
+                            { renderLink("LinkedIn", linkedIn) }
+                            { renderLink("Instagram", instagram) }
                         </CardContent>
                     </Card>
                 </Grid>
@@ -123,7 +125,8 @@ const TutorModal = ({open, handleClose, selectedTutor}) => {
                         { renderDetail("Name", `${firstName} ${lastName}`) }
                         { renderDetail("Email", email) }
                         { renderDetail("About", description) }
-                        { rendersubjects(['A/L Mathematics', 'A/L Physics']) }
+                        { renderDetail("Subject", subject) }
+                        { renderDetail("Subject ID", subjectId) }
                         { renderDetail("Location", getLocation()) }
                         { renderDetail("Rate", <ReadOnlyRating rate = {rating}/>) }
                     </DialogContent>

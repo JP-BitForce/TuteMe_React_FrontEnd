@@ -1,12 +1,14 @@
 import React from 'react'
 
+//React-Boostarp
+import Card from 'react-bootstrap/Card'
+
 //Material-UI
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
-import Paper from '@material-ui/core/Paper';
 
 const TutorCategories = ({handleClick, items}) => {
 
@@ -21,19 +23,14 @@ const TutorCategories = ({handleClick, items}) => {
                 items.map(item => {
                     return (
                         <Grid item xs={6} sm={4}>
-                            <Paper elevation = {3}>
-                            <ListItem
-                                button
-                                divider
-                                onClick={() => handleClick(item)}
-                                role="listitem"
-                            >
-                                <ListItemIcon>
-                                    <Avatar src = {getImageSource(item.src)}/>
-                                </ListItemIcon>
-                                <span>{item.category}</span>
-                            </ListItem>
-                            </Paper>
+                            <Card>
+                                <ListItem button divider onClick={() => handleClick(item)} role="listitem">
+                                    <ListItemIcon>
+                                        <Avatar src = {getImageSource(item.src)}/>
+                                    </ListItemIcon>
+                                    <span>{item.category}</span>
+                                </ListItem>
+                            </Card>
                         </Grid>
                     )
                 })

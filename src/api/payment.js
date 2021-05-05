@@ -18,3 +18,13 @@ export const getPaymentPlan = (token, userId) => {
     const endpoint = getEndpointWithPrefix(`get_payment_plan/${userId}`)
     return GET(endpoint, token)
 }
+
+export const getPaymentSummaryFacts = (token, userId) => {
+    const endpoint = getEndpointWithPrefix(`get_payment_summary_facts/${userId}`)
+    return GET(endpoint, token)
+}
+
+export const deletePaymentCard = (token, userId, cardId) => {
+    const endpoint = getEndpointWithPrefix(`delete_payment_card?uId=${userId}&cardId=${cardId}`)
+    return POST(endpoint, null, token)
+}
