@@ -339,9 +339,7 @@ class MyCourses extends Component {
 
     renderCategoryFilters = () => {
         const {
-            slicedCourseCategories, slicedCourseInstructors, slicedCourseType, 
-            categoryChecked, tutorChecked, typeChecked,
-            allCoursecategories, allCourseInstructors, allCourseType
+            slicedCourseCategories, categoryChecked, allCoursecategories,
         } = this.state
         return (
             <>
@@ -353,26 +351,6 @@ class MyCourses extends Component {
                         checked = {categoryChecked}
                         handleLoadMore = {this.handleLoadMore}
                         total = {allCoursecategories.length}
-                    />
-                </Grid>
-                <Grid item xs={6} sm={6} md={12}>
-                    <CategoryFilter 
-                        title = "Course Instructors"
-                        options = {slicedCourseInstructors}
-                        handleToggle = {this.handleToggle}
-                        checked = {tutorChecked}
-                        handleLoadMore = {this.handleLoadMore}
-                        total = {allCourseInstructors.length}
-                    />
-                </Grid>
-                <Grid item xs={6} sm={6} md={12}>
-                    <CategoryFilter 
-                        title = "Course Type"
-                        options = {slicedCourseType}
-                        handleToggle = {this.handleToggle}
-                        checked = {typeChecked}
-                        handleLoadMore = {this.handleLoadMore}
-                        total = {allCourseType.length}
                     />
                 </Grid>
             </>
