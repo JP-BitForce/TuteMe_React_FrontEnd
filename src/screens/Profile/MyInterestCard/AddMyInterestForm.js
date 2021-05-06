@@ -1,5 +1,5 @@
 import React from 'react';
-import {Paper,Typography,Button,Grid} from "@material-ui/core"
+import {Paper,Typography,Grid} from "@material-ui/core"
 import ComboBox from '../../../components/Profile/ComboBox'
 import Chip from '../../../components/Profile/Chip'
 
@@ -25,9 +25,6 @@ export default function AddMyInterest(){
                 </Grid>
                 <Grid item xs={12} sm={12} align= "center" style={{margin:10}}>
                     <Chip/>
-                </Grid>
-                <Grid item xs={12} sm={12} align= "right">
-                    <Button style={{color:"white",backgroundColor:"#2578F5", margin:10}}> Add </Button>
                 </Grid>
             </Grid>
         </Paper>  
