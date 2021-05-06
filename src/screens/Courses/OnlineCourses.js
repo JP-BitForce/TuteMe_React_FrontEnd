@@ -581,7 +581,7 @@ class OnlineCourses extends Component {
     }
 
     renderCourseList = () =>{
-        const {loading, total, current, coursesData} = this.state
+        const {loading, total, current, coursesData, searchFilterLoading} = this.state
         return (
             <div className = "online_course_list_container">
                 <Grid container spacing={4}>
@@ -595,11 +595,21 @@ class OnlineCourses extends Component {
                             { this.renderListHead() }
                         </div>
                         <Grid container spacing={2}>
-                            { coursesData.map(item => this.renderCourseCard(item)) }
+                            { 
+                                searchFilterLoading ? 
+                                <Grid item xs={6} sm={6} md={12}>
+                                    <CircularProgress/>
+                                </Grid>
+                                :
+                                coursesData.length === 0 ?
+                                this.renderNoCoursesAvailable() 
+                                :
+                                coursesData.map(item => this.renderCourseCard(item)) 
+                            }
                         </Grid>
                         <div className = "pagination_div">
                             {
-                                !loading && 
+                                !loading && coursesData.length > 0 &&
                                 <Pagination 
                                     total = {total}
                                     current = {current}
@@ -615,14 +625,16 @@ class OnlineCourses extends Component {
 
     renderNoCoursesAvailable = () => {
         return (
-            <div className = "no_courses_available_container">
-                <span className = "no_courses_available">NO COURSES AVAILABLE</span>
-            </div>
+            <Grid item xs={6} sm={6} md={12}>
+                <div className = "no_courses_available_container">
+                    <span className = "no_courses_available">NO COURSES AVAILABLE</span>
+                </div>
+            </Grid>
         )
     }
 
     render() {
-        const {loading, selectedCourse, openCheckoutModal, searchFilterLoading, snackBarOn, snackBarMessage, severity, coursesData} = this.state
+        const {loading, selectedCourse, openCheckoutModal, snackBarOn, snackBarMessage, severity} = this.state
         return (
             <div className = "online_courses_root">
                 <Header 
@@ -631,13 +643,6 @@ class OnlineCourses extends Component {
                 />
                 {
                     loading ? <Loading open = {loading} /> 
-                    :
-                    searchFilterLoading ? 
-                    <div className = "main_loading">
-                        <CircularProgress/>
-                    </div>
-                    :
-                    coursesData.length === 0 ? this.renderNoCoursesAvailable()
                     :
                     this.renderCourseList()
                 }
