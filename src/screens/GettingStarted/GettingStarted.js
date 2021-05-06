@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 
 import TopBar from './TopBar'
@@ -14,6 +14,8 @@ import MyCourses from '../Courses/MyCourses'
 import OnlineCourses from '../Courses/OnlineCourses'
 import Blog from '../Blog/Blog'
 import Payments from '../Payments/Payments'
+import Calendar from '../Calendar/Calendar'
+import OneStep from '../OneStep/OneStep'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -23,7 +25,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import './GettingStarted.css'
 
-// const drawerWidth = 210;
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme) => ({
@@ -50,12 +51,19 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const GettingStarted = ({logoutUser, history}) => {
+const GettingStarted = ({logoutUser, history, auth}) => {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
     const [active, setActiveItem] = useState("HOME")
     const [modalOpen, setModalOpen] = useState(false)
+    
+    useEffect(() => {
+      if(!auth) {
+        history.push('/')
+      }
+      // eslint-disable-next-line
+    }, [])
   
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -144,7 +152,7 @@ const GettingStarted = ({logoutUser, history}) => {
                 :
                 active === "ONLINE_COURSES" ? <OnlineCourses/>
                 :
-                active === "ONE_STEP" ? null
+                active === "ONE_STEP" ? <OneStep/>
                 :
                 active === "TRUSTED_TUTORS" ? <TrustedTutors/>
                 :
@@ -154,7 +162,9 @@ const GettingStarted = ({logoutUser, history}) => {
                 :
                 active === "BLOG" ? <Blog/>
                 :
-                active === "PAYMENTS"  && <Payments/>
+                active === "PAYMENTS"  ? <Payments/>
+                :
+                active === "CALENDAR" && <Calendar/>
               }
           </main>
           <Modal
@@ -169,6 +179,11 @@ const GettingStarted = ({logoutUser, history}) => {
     );
 }
 
+const mapStateToProps = (state) => {
+  return {
+      auth: state.auth.user
+  }
+}
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -176,4 +191,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null,mapDispatchToProps)(GettingStarted)
+export default connect(mapStateToProps,mapDispatchToProps)(GettingStarted)

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import CustomButton from '../../components/Button/CustomButton'
+import PasswordInput from '../../components/PasswordInput/PasswordInput'
 
 //Boostrap
 import Form from "react-bootstrap/Form";
@@ -12,7 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const SignInForm = ({handleSubmit, validated, values, handleInputChange}) => {
+const SignInForm = ({handleSubmit, validated, values, handleInputChange, onClick}) => {
 
     const renderInputField = (type, name, placeholder, max) => {
         return (
@@ -41,6 +42,7 @@ const SignInForm = ({handleSubmit, validated, values, handleInputChange}) => {
             onSubmit={handleSubmit}
             noValidate
             validated={validated}
+            style = {{textAlign: "left"}}
         >
             <Row>
                 <Col sm>
@@ -48,11 +50,17 @@ const SignInForm = ({handleSubmit, validated, values, handleInputChange}) => {
                 </Col>
             </Row>
 
-            <Row>
-                <Col sm>
-                    { renderInputField("password", "password", "Password", 30) }
-                </Col>
-            </Row>
+            <PasswordInput
+                type = {values["passwordType"]}
+                name = "password"
+                value = {values["password"]}
+                onChange = {handleInputChange}
+                max = {30}
+                placeholder = "password"
+                onClick = {onClick}
+            />
+
+            <div className = "vertical_seperator"/>
 
             {
                 values['apiCalling'] ? 

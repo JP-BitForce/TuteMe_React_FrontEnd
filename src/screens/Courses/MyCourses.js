@@ -1,18 +1,22 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import Header from '../../components/Header/Header'
-import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import CourseEnrolled from '../../components/Card/CourseEnrolled'
 import Pagination from '../../components/Pagination/Paginator'
+import EnrolledCourseFullPreview from './EnrolledCourseFullPreview'
+import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
+import { getEnrolledCourses, getFilterCategories, filterEnrolledCourses, searchEnrolledCourses } from '../../api/course'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import headerImg from '../../assets/images/Course/course.jpg'
-import reactJs from '../../assets/images/Course/react.jpg'
+import altImage from '../../assets/images/Course/alt.jpg'
 import './Courses.css'
 
 class MyCourses extends Component {
@@ -30,59 +34,177 @@ class MyCourses extends Component {
         allCourseType: [],
         slicedCourseType: [],
         total: 1,
-        current: 1
+        current: 1,
+        coursesData:[],
+        fetchError: null,
+        courseSearched: false,
+        searchFilterLoading: false,
+        openCourseView: false,
+        selectedCourse: null,
+        joinId: "",
+        joinIdValueError: null,
+        joinLoading: false,
+        filterCourse: false,
     }
 
-    courseCategories = [
-        "All",
-        "UI/UX Design",
-        "Art & Design",
-        "Computer Science",
-        "History & Archelogic",
-        "App Development",
-        "Health & Fitness",
-        "Graphic Design",
-        "Marketing",
-        "Music",
-        "Buisness",
-        "Management"
-    ]
-
-    courseInstuctors = ["All"," Ronald Jackson","John Dee","Nathan Messy"," Tony Griffin"]
-
-    courseType = ["All", "Primary", "Ordinary", "Advanced"]
-
-    dummyCourses = [
-        {des:"lorem ipsum", name:"Design for the web", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Classical", by:"Django Caprio", rating:5},
-        {des:"lorem ipsum", name:"adobe photoshop", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"Western", by:"John Smith", rating:4},
-        {des:"lorem ipsum", name:"web with adobe photoshop", by:"Django Caprio", rating:5},
-    ]
-
     componentDidMount() {
-        this.setState({
-            slicedCourseCategories: this.courseCategories.slice(0,5),
-            slicedCourseInstructors: this.courseInstuctors.slice(0,5),
-            slicedCourseType: this.courseType.slice(0,5),
-            allCoursecategories: this.courseCategories,
-            allCourseInstructors: this.courseInstuctors,
-            allCourseType: this.courseType,
+        this.getCoursesApi(0)
+        this.getCategoriesApi()
+    }
+
+    getCoursesApi = (page) => {
+        const auth = this.props.auth
+        this.setState({ loading: true })
+        getEnrolledCourses(auth.accessToken, auth.userId, page).then(response => {
+            this.setState({ 
+                loading: false,
+                total: response.total,
+                current: response.current+1,
+                coursesData: response.enrolledCourses,
+                fetchError: null,
+            })
+        }).catch(err => {
+            this.setState({ 
+                loading: false,
+                fetchError: err.message
+            })
+        })
+    }
+
+    getCategoriesApi = () => {
+        const auth = this.props.auth
+        getFilterCategories(auth.accessToken).then(response => {
+            this.setState({
+                slicedCourseCategories: response.courseCategoryList.slice(0,5),
+                slicedCourseInstructors: response.tutorList.slice(0,5),
+                slicedCourseType: response.courseLevelList.slice(0,5),
+                allCoursecategories: response.courseCategoryList,
+                allCourseInstructors: response.tutorList,
+                allCourseType: response.courseLevelList,
+            })
+        }).catch(err => {
+            this.setState({
+                fetchError: err.message
+            })
+        })
+    }
+
+    handleFilterApi = (page, list) => {
+        if(!this.state.filterCourse) {
+            const auth = this.props.auth
+            const body = {
+                page: page,
+                courseCategories: list.categoryList,
+                userId: auth.userId
+            }
+            this.setState({ filterCourse: true,  searchFilterLoading: true })
+            filterEnrolledCourses(auth.accessToken, body).then(response => {
+                this.setState({ 
+                    searchFilterLoading: false,
+                    coursesData: response.enrolledCourses,
+                    total: response.total,
+                    current: response.current+1,
+                    fetchError: null,
+                })
+            }).catch(err => {
+                this.setState({ 
+                    searchFilterLoading: false,
+                    fetchError: err.message 
+                })
+            })
+        } else {
+            this.setState({ 
+                filterCourse: false,
+                categoryChecked: [0],
+                tutorChecked: [0],
+                typeChecked: [0],
+                priceChecked: [0], 
+            })
+            this.getCoursesApi(0)
+        }
+    }
+
+    handleJoin = (joinId) => {
+        return joinId === "user"
+    }
+
+    handleSearchApi = (page) => {
+        this.setState({ 
+            searchValueError: false, 
+            searchFilterLoading: true, 
+            courseSearched: true  
+        })
+        const auth = this.props.auth
+        const body = {
+            page: page,
+            userId: auth.userId,
+            value: this.state.searchValue
+        }
+        searchEnrolledCourses(auth.accessToken, body).then(response => {
+            this.setState({ 
+                searchFilterLoading: false,
+                coursesData: response.enrolledCourses,
+                total: response.total,
+                current: response.current+1,
+                fetchError: null,
+            })
+        }).catch(err => {
+            this.setState({ 
+                searchFilterLoading: false,
+                fetchError: err.message 
+            })
         })
     }
 
     handleCourseSearch = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        if (!this.state.searchValue) {
-            this.setState({ searchValueError: true })
+        const {searchValue, courseSearched} = this.state
+        if (!courseSearched) {
+            if (!searchValue) {
+                this.setState({ searchValueError: true})
+            } else {
+                this.handleSearchApi()
+            }
         } else {
-            this.setState({ searchValueError: false })
+            this.setState({ 
+                searchValue: "",
+                courseSearched: false,
+            })
+            this.getCoursesApi(0)
         }
     }
 
+    handleCourseOnClick = (course) => {
+        this.setState({
+            openCourseView: true,
+            selectedCourse: course
+        })
+    }
+
+    handleCoursePreviewClose = () => {
+        this.setState({
+            openCourseView: false,
+            selectedCourse: null
+        })
+    }
+
+    getPage = (data) => {
+        var page = 0;
+        var mod = data.length % 10;
+        if (mod > 0) {
+            page = data.length / 10 - mod / 10 + 1;
+        } else {
+            page = data.length / 10;
+        }
+        return page;
+    }
+
     handleFilter = () => {
+        this.handleFilterApi(0, this.getFiltersList())
+    }
+
+    getFiltersList = () => {
         const {
             categoryChecked, typeChecked, tutorChecked,
             allCoursecategories, allCourseType, allCourseInstructors
@@ -105,7 +227,9 @@ class MyCourses extends Component {
             typeList.push(allCourseType[idx])
             return 0
         })
-        
+
+        const list = { categoryList, tutorList, typeList}
+        return list
     }
 
     handleInputOnChange = (event) => {
@@ -167,15 +291,24 @@ class MyCourses extends Component {
         })
     }
 
-    handlePaginationOnChange = (page) => {
-
+    handlePaginationOnChange = (event, page) => {
+        const {filterCourse, courseSearched} = this.state
+        if (courseSearched) {
+            this.handleSearchApi(page-1)
+        } else if (filterCourse) {
+            this.handleFilterApi(page-1, this.getFiltersList())
+        } else {
+            this.getCoursesApi(0)
+        }
     }
 
     renderListHead = () => {
-        const {searchValue, searchValueError} = this.state
+        const {searchValue, searchValueError, courseSearched, filterCourse} = this.state
         return (
             <div className = "courses_list_head">
-                <Button variant="contained" onClick = {this.handleFilter}>Filter courses</Button>
+                <Button variant="contained" onClick = {this.handleFilter}>
+                { filterCourse ? "Cancel" : "Filter courses" }
+                </Button>
                 <form noValidate autoComplete="off" onSubmit = {this.handleCourseSearch}>
                     <TextField
                         id="standard-basic" 
@@ -188,17 +321,25 @@ class MyCourses extends Component {
                         name = "searchValue"
                         size = "small"
                     />
-                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">Search</Button>
+                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">{courseSearched ? "Cancel" : "Search"}</Button>
                 </form>
             </div>
         )
     }
 
+    renderCourseCards = (item, index) => {
+        return (
+            <Grid item xs={6} sm={6} md={4} key = {index}>
+                <div className = "course_enrolled_card" onClick = {() => this.handleCourseOnClick(item)}>
+                    <CourseEnrolled src = {altImage} item = {item}/>
+                </div>
+            </Grid>
+        )
+    }
+
     renderCategoryFilters = () => {
         const {
-            slicedCourseCategories, slicedCourseInstructors, slicedCourseType, 
-            categoryChecked, tutorChecked, typeChecked,
-            allCoursecategories, allCourseInstructors, allCourseType
+            slicedCourseCategories, categoryChecked, allCoursecategories,
         } = this.state
         return (
             <>
@@ -212,43 +353,12 @@ class MyCourses extends Component {
                         total = {allCoursecategories.length}
                     />
                 </Grid>
-                <Grid item xs={6} sm={6} md={12}>
-                    <CategoryFilter 
-                        title = "Course Instructors"
-                        options = {slicedCourseInstructors}
-                        handleToggle = {this.handleToggle}
-                        checked = {tutorChecked}
-                        handleLoadMore = {this.handleLoadMore}
-                        total = {allCourseInstructors.length}
-                    />
-                </Grid>
-                <Grid item xs={6} sm={6} md={12}>
-                    <CategoryFilter 
-                        title = "Course Type"
-                        options = {slicedCourseType}
-                        handleToggle = {this.handleToggle}
-                        checked = {typeChecked}
-                        handleLoadMore = {this.handleLoadMore}
-                        total = {allCourseType.length}
-                    />
-                </Grid>
             </>
         )
     }
 
-    renderCourseCards = (item, index) => {
-        const {name, by, rating} = item
-        return (
-            <Grid item xs={6} sm={6} md={4} key = {index}>
-                <div className = "course_enrolled_card">
-                    <CourseEnrolled src = {reactJs} title = {name} by = {by} rating = {rating}/>
-                </div>
-            </Grid>
-        )
-    }
-
     renderCoursesConatiner = () => {
-        const {loading, total, current} = this.state
+        const {loading, total, current, coursesData, searchFilterLoading} = this.state
         return (
             <div className = "my_courses__container">
                 <Grid container spacing={4}>
@@ -263,16 +373,22 @@ class MyCourses extends Component {
                             { this.renderListHead() }
                         </div>
                             <Grid container spacing={4}>
-                                {
-                                    this.dummyCourses.map((item, index) => {
-                                        return this.renderCourseCards(item, index)
-                                    })
+                                { 
+                                    searchFilterLoading ? 
+                                    <Grid item xs={6} sm={6} md={12}>
+                                        <CircularProgress/>
+                                    </Grid>
+                                    :
+                                    coursesData.length === 0 ? 
+                                    this.renderNoCoursesAvailable() 
+                                    :
+                                    coursesData.map((item, index) => this.renderCourseCards(item, index)) 
                                 }
                             </Grid>
                         </div>
                         <div className = "pagination_div">
                             {
-                                !loading &&
+                                !loading && coursesData.length > 0 &&
                                 <Pagination 
                                     total = {total}
                                     current = {current}
@@ -288,14 +404,16 @@ class MyCourses extends Component {
 
     renderNoCoursesAvailable = () => {
         return (
-            <div className = "no_courses_available_container">
-                <span className = "no_courses_available">NO COURSES AVAILABLE</span>
-            </div>
+            <Grid item xs={6} sm={6} md={12}>
+                <div className = "no_courses_available_container">
+                    <span className = "no_courses_available">NO COURSES AVAILABLE</span>
+                </div>
+            </Grid>
         )
     }
 
     render() {
-        const {loading} = this.state
+        const {loading, selectedCourse, openCourseView} = this.state
         return (
             <div className = "my_courses_root">
                 <Header 
@@ -303,14 +421,31 @@ class MyCourses extends Component {
                     src = {headerImg}
                 />
                 {
-                    loading ? 
-                    <Loading open = {loading} />
+                    loading ? <Loading open = {loading} />
                     :
                     this.renderCoursesConatiner()
+                }
+                {
+                    selectedCourse &&
+                    <EnrolledCourseFullPreview
+                        open = {openCourseView}
+                        course = {selectedCourse}
+                        handleClose = {this.handleCoursePreviewClose}
+                        values = {this.state}
+                        handleInputOnChange = {this.handleInputOnChange}
+                        handleJoin = {this.handleJoin}
+                    />
                 }
             </div>
         )
     }
 }
 
-export default MyCourses
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(MyCourses)

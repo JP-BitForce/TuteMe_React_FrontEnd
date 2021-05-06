@@ -8,22 +8,24 @@ import Avatar from '@material-ui/core/Avatar';
 
 import './InfoCard.css'
 
-const TutorCard = ({media, title, description, onClick, rate}) => {
+const TutorCard = ({media, title, onClick, item}) => {
+    const {rating, subject, id, facebook, twitter, instagram, linkedIn} = item
+
     const socials = [
         {
-            content:"Facebook", 
+            content: facebook, 
             style: "fab  fa-facebook"
         },
         {
-            content:"Twitter", 
+            content: twitter, 
             style: "fab  fa-twitter"
         },
         {
-            content:"Instagram", 
+            content: instagram, 
             style: "fab fa-instagram"
         },
         {
-            content:"linkedIn", 
+            content: linkedIn, 
             style: "fab  fa-linkedin"
         }
     ]
@@ -31,17 +33,17 @@ const TutorCard = ({media, title, description, onClick, rate}) => {
     return (
         <div className = "tutor_div_root">
             <div className = "tutor_card_top">
-                <Avatar src = {media} style = {{width : "100px", height: "100px"}}/>
+                <Avatar src = {media} style = {{width : "120px", height: "120px"}}/>
                 <div className = "tutor_card_top_info">
                     <link rel = "stylesheet" type = "text/css" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
                     <h3>{title}</h3>
-                    <span className = "tutor_position">CSE Teacher</span>
+                    <span className = "tutor_position">{subject ? subject : "Unknown"}</span>
                     <p className = "tutor_socials">
                         {
                             socials.map(item => {
                                 const {content, style} = item
                                 return(
-                                    <a href = {content}><span className = {style}></span></a>
+                                    <a href = {content} target ="_blank" rel="noreferrer noopener"><span className = {style}></span></a>
                                 )
                             })
                         }
@@ -49,13 +51,11 @@ const TutorCard = ({media, title, description, onClick, rate}) => {
                 </div>
             </div>
             <div className = "tutor_des_container">
-                <p>
-                    Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic 
-                    life One day however a small line of blind text by the name.
-                </p>
                 <div className = "online_course_footer">
-                      <ReadOnlyRating rate = {rate}/>
-                      <Button size="small" onClick = {onClick}>View More</Button>
+                    <span>
+                        Rating : <ReadOnlyRating rate = {rating}/>
+                    </span>
+                    <Button size="small" onClick = {() => onClick(id)} variant = "contained">View More</Button>
                 </div>
             </div>
         </div>

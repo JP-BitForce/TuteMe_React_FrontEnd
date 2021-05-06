@@ -1,0 +1,18 @@
+.modal_item_primary {
+    font-weight: 550;
+}
+
+.modal_item_secondary {
+    font-size: 0.8rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.modal_link_primary {
+    font-size: 0.8rem;
+    font-weight: 550;
+}
+
+.modal_link_secondary {
+    font-size: 0.6rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

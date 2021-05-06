@@ -1,163 +1,326 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import TutorCard from '../../components/Card/TutorCard'
 import Modal from '../../components/Modal/Modal'
 import TutorCategories from './TutorCategories'
 import Header from '../../components/Header/Header'
-import CategoryGrid from '../../components/ImageGrid/CategoryBase'
+import Pagination from '../../components/Pagination/Paginator'
+import TutorModal from '../../components/Modal/TutorModal'
+import CategoryBase from '../../components/ImageGrid/CategoryBase'
+import { getTutors, searchTutorByValue, filterTutorsByCategories } from '../../api/tutor'
+import { getCourseCategories } from '../../api/course'
 
 //Material-UI
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-import all from '../../assets/images/courses/all.png'
-import tutor1 from '../../assets/images/dummy tutors/1.jpg'
-import tutor2 from '../../assets/images/dummy tutors/2.jpg'
-import tutor3 from '../../assets/images/dummy tutors/3.jpg'
-import tutor4 from '../../assets/images/dummy tutors/4.jpg'
+import all from '../../assets/images/shared/all.png'
 import headerImg from '../../assets/images/tutors/headerImg.jpg'
-import certified from '../../assets/images/tutors/certified.png'
-import experiencedAdvice from '../../assets/images/tutors/advice.png'
-import design from '../../assets/images/shared/design.jpg'
-import development from '../../assets/images/shared/development.jpg'
-import ordinary_level from '../../assets/images/shared/maths.jpg'
-import medical from '../../assets/images/shared/medical.jpg'
-import musics from '../../assets/images/shared/music.jpg'
+import avatar from '../../assets/images/shared/avatar.png'
 import './TrustedTutors.css'
 
 class TrustedTutors extends Component {
     state = {
         loading: false,
-        selected: { src:all, title:"ALL" },
+        categoryLoading: false,
+        selected: { src: all, category: "ALL" },
         tutorSearch: "",
         categoryOptions: ["All"],
         categoryOption: "All",
         moreCategories: false,
+        searchValueError: false,
+        total: 1,
+        current: 1,
+        tutorData: [],
+        fetchError: null,
+        openTutorModal: false,
+        selectedTutor: null,
+        categoriesdata: [],
+        tutorSearched: false,
+        searchLoading: false,
+        filterLoading: false,
+        tutorFiltered: false
     }
 
-    dummyTutors = [
-        {src:tutor1, des:"lorem ipsum", title:"Allan Nickman"},
-        {src:tutor2, des:"lorem ipsum", title:"Emma Watson"},
-        {src:tutor3, des:"lorem ipsum", title:"Daniel Nickman"},
-        {src:tutor4, des:"lorem ipsum", title:"Bob right"},
-    ]
-
-    cards = [
-        {src : certified, title : "Certified Instructors", description :"Far from the countries Vokalia and Consonantia, there live the blind texts."},
-        {src : experiencedAdvice, title : "Experienced Advice", description :"Far from the countries Vokalia and Consonantia, there live the blind texts."},
-    ]
-
-    categories = [
-        { src: design, title: 'Design', width: '100%' },
-        { src: development, title: 'Development', width: '100%' },
-        { src: ordinary_level, title: 'Ordinary Level', width: '100%' },
-        { src: musics, title: 'Musical', width: '100%' },
-        { src: medical, title: 'Medical', width: '100%' },
-    ]
-
-    handleTutorSearch = (event) => {
-        event.preventDefault()
+    componentDidMount() {
+        this.getCourseCategoriesApi(0)
+        this.getTutorsApi(0)
     }
 
-    handleTutorSearchOnChange = (event) => {
-        this.setState({
-            tutorSearch: event.target.value
+    getTutorsApi = (page) => {
+        const auth = this.props.auth
+        this.setState({loading: true})
+        getTutors(auth.accessToken, page).then(response => {
+            this.setState({
+                total: response.total,
+                current: response.current + 1,
+                tutorData: response.tutorList,
+                loading: false
+            })
+        }).catch(err => {
+            this.setState({
+                fetchError: err.message,
+                loading: false
+            })
         })
     }
 
-    onCategorySelect = (item) => {
+    getCourseCategoriesApi = (page) => {
+        const auth = this.props.auth
+        this.setState({categoryLoading: true})
+        getCourseCategories(auth.accessToken, page).then(response => {
+            this.setState({
+                categoriesdata: response.courseCategoryList,
+                categoryLoading: false
+            })
+        }).catch(err => {
+            this.setState({
+                fetchError: err.message,
+                categoryLoading: false
+            })
+        })
+    }
+
+    searchTutorApi = (page) => {
+        const auth = this.props.auth
+        this.setState({searchLoading: true})
+        searchTutorByValue(auth.accessToken, page, this.state.tutorSearch).then(response => {
+            this.setState({
+                total: response.total,
+                current: response.current + 1,
+                tutorData: response.tutorList,
+                searchLoading: false
+            })
+        }).catch(err => {
+            this.setState({ searchLoading: false })
+        })
+    }
+
+    filterTutorsApi = (page, selected) => {
+        const auth = this.props.auth
+        this.setState({ filterLoading: true, tutorFiltered: true })
+        const body = {
+            page,
+            category: selected.category
+        }
+        filterTutorsByCategories(auth.accessToken, body).then(response => {
+            this.setState({ 
+                filterLoading: false,
+                total: response.total,
+                current: response.current + 1,
+                tutorData: response.tutorList,
+             })
+        }).catch(err => {
+            this.setState({ filterLoading: false })
+        })
+    }
+
+    handleTutorSearch = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const {tutorSearch, tutorSearched} = this.state
+        if (!tutorSearched) {
+            if (tutorSearch) {
+                this.setState({ 
+                    searchValueError: false,
+                    tutorSearched: true 
+                })
+                this.searchTutorApi(0)
+            } else {
+                this.setState({ searchValueError: true })
+            }
+        } else {
+            this.setState({ 
+                tutorSearched: false,
+                tutorSearch: "",
+                searchValueError: false,
+            })
+            this.getTutorsApi(0)
+        }
+    }
+
+    handleInputOnChange = (event) => {
+        const {value, name} = event.target
         this.setState({
-            selected: item
+            [name]: value,
+            searchValueError: false
         })
     }
 
     handleMoreCategories = () => {
         this.setState({
-            moreCategories: !this.state.moreCategories
+            moreCategories: !this.state.moreCategories,
+            selected: { src: all, category: "ALL" },
+        })
+    }
+
+    handleCategoryModalOk = () => {
+        this.setState({
+            moreCategories: false
+        })
+    }
+
+    onCategorySelect = (item) => {
+        this.setState({ selected: item })
+        this.filterTutorsApi(0, item)
+    }
+
+    handlePaginationOnChange = (event, value) => {
+        const {tutorSearched, tutorFiltered, selected} = this.state
+        if (tutorSearched) {
+            this.searchTutorApi(value-1)
+        } else if (tutorFiltered) {
+            this.filterTutorsApi(value-1, selected)
+        } else {
+            this.getTutorsApi(value-1)
+        }
+    }
+
+    getTutorName = (user) => {
+        return `${user.firstName} ${user.lastName}`
+    }
+
+    handleViewMore = (id) => {
+        this.setState({
+            openTutorModal: true,
+            selectedTutor: this.state.tutorData.filter(item => item.id === id )[0]
+        })
+    }
+
+    handleTutorModalClose = () => {
+        this.setState({
+            openTutorModal: false,
+            selectedTutor: null
         })
     }
 
     handleAllOnClick = () => {
         this.setState({
-            selected: { src:all, title:"ALL" }
+            selected: { src: all, category: "ALL" },
+            tutorFiltered: false
         })
+        this.getTutorsApi(0)
     }
 
-    handleCategoryModalOk = () => {
-
+    getImageSource = (blob) => {
+        return `data:image/jpeg;base64,${blob}`
     }
 
     renderCategoryModal = () => {
+        const {moreCategories, categoriesdata} = this.state
         return (
             <Modal
-                open = {this.state.moreCategories}
+                open = {moreCategories}
                 handleClose = {this.handleMoreCategories}
                 title = "Select Tutor Category Here!"
                 handleCancel = {this.handleMoreCategories}
                 handleOk = {this.handleCategoryModalOk}
             >
-                <TutorCategories items = {this.categories} handleClick = {this.onCategorySelect}/>
+                <TutorCategories items = {categoriesdata} handleClick = {this.onCategorySelect}/>
             </Modal>
         )
     }
 
     renderCourseCategory = () => {
-        return this.categories.map(image => {
+        return this.state.categoriesdata.slice(0,8).map(image => {
             return (
              <Grid item xs={6} sm={6} md={3}>
-                <Paper elevation = {3}>
-                    <CategoryGrid image = {image}/>
-                </Paper>
+                {
+                    this.state.categoryLoading ? 
+                    <div className = "loading_div">
+                        <CircularProgress/>
+                    </div>
+                    :
+                    <CategoryBase image = {image} handleOnClick = {this.onCategorySelect}/>
+                }
              </Grid>
             )
         })
     }
 
     renderTutorListHead = () => {
-        const selected = this.state.selected
+        const {selected, tutorSearch, searchValueError, tutorSearched} = this.state
         return (
             <div className = "trusted_tutors_list_head">
                 <div className = "header_category">
-                    <div className = "category_icon_small selected_category">
-                        <Avatar src = {selected.src}/>
+                    <div className = "category_icon_small tutor_selected_category_icon">
+                        <Avatar src = {
+                            selected.category === "ALL" ?  selected.src : this.getImageSource(selected.src)
+                        }
+                        />
                     </div>
                     <span>
-                        {selected.title}
+                        {selected.category}
                     </span>
                 </div>
                 <form noValidate autoComplete="off" onSubmit = {this.handleTutorSearch}>
-                    <TextField id="standard-basic" label="serach" onChange = {this.handleTutorSearchOnChange}/>
+                    <TextField 
+                        id="standard-basic" 
+                        label = "tutor" 
+                        onChange = {this.handleInputOnChange}
+                        variant = "outlined"
+                        error = {searchValueError}
+                        value = {tutorSearch}
+                        helperText = {searchValueError && "Incorrect entry"}
+                        name = "tutorSearch"
+                        size = "small"
+                    />
+                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">
+                        { tutorSearched ? "Cancel" : "Search" }
+                    </Button>
                 </form>
             </div>
         )
     }
 
     renderTutorList = () => {
+        const {loading, total, current, tutorData, searchLoading, filterLoading} = this.state
         return (
             <div className = "trusted_tutors_list">
                 { this.renderTutorListHead() }
                 <Grid container spacing={3}>
                     {
-                        this.dummyTutors.map((item,index) => {
+                        searchLoading || filterLoading ? 
+                        <Grid item xs={12} sm={12} md={12}>
+                            <CircularProgress/> 
+                        </Grid>
+                        :
+                        tutorData.length === 0 ?
+                        <Grid item xs={12} sm={12} md={12}>
+                            <span className = "no_courses_available">NO TUTORS AVAILABLE</span>
+                        </Grid>
+                        :
+                        tutorData.map((item) => {
+                            const {src} = item
                             return (
-                                <Grid item xs={12} sm={6} md={4}>
-                                    <Paper elevation = {3}>
-                                        <TutorCard 
-                                            media={item.src} 
-                                            title={item.title.toUpperCase()} 
-                                            description = {item.des}
-                                            rate = {index+1}
-                                        />
-                                    </Paper>
+                                <Grid item xs={12} sm={12} md={4} key = {item.id}>
+                                    <TutorCard 
+                                        media={ src ? this.getImageSource(src) : avatar} 
+                                        title={this.getTutorName(item).toUpperCase()} 
+                                        onClick = {this.handleViewMore}
+                                        item = {item}
+                                    />
                                 </Grid>
                             )
                         })
                     }
                 </Grid>
+                <div className = "pagination_div">
+                    {
+                        !loading && tutorData.length > 0 &&
+                        <Pagination 
+                            total = {total}
+                            current = {current}
+                            handleOnChange = {this.handlePaginationOnChange}
+                        />
+                    }
+                </div>
             </div>
         )
     }
@@ -166,11 +329,9 @@ class TrustedTutors extends Component {
         return (
             <>
                 <div className = "trusted_tutors_category">
-                    <div className = "trusted_tutors_category_title_container">
-                        <span className = "trusted_tutors_category_title">TOP CATEGORIES</span>
-                    </div>
                     <div className = "trusted_tutors_category_container">
-                        <Grid container spacing={3}>
+                        <span className = "trusted_tutors_category_title">TOP CATEGORIES</span>
+                        <Grid container spacing={3} style = {{marginTop: "10px"}}>
                             { this.renderCourseCategory() }
                         </Grid>
                     </div>
@@ -188,25 +349,35 @@ class TrustedTutors extends Component {
     }
 
     render() {
-        const {loading} = this.state
+        const {loading, openTutorModal, selectedTutor} = this.state
         return (
             <div className = "trusted_tutors_root">
                 <Header 
                     title = "COMUNITY EXPERTS"
-                    src = {headerImg} 
-                    cards = {this.cards}   
+                    src = {headerImg}
                 />
                 {
-                    loading ? 
-                    <Loading open = {loading} />
+                    loading ? <Loading open = {loading} />
                     :
                     this.renderTutorsRoot()
                 }
                 { this.renderCategoryModal() }
+                {
+                    selectedTutor && <TutorModal 
+                        open = {openTutorModal}
+                        handleClose = {this.handleTutorModalClose}
+                        selectedTutor = {selectedTutor}
+                    />
+                }
             </div>
         )
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
 
-export default TrustedTutors
+export default connect(mapStateToProps)(TrustedTutors)

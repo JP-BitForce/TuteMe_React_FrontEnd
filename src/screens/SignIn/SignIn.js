@@ -33,7 +33,8 @@ class SignIn extends Component {
         signInSuccess: false,
         severity: "success",
         snackBarOn: false,
-        snackBarMessage: ""
+        snackBarMessage: "",
+        passwordType: "password"
     }
 
     componentDidMount() {
@@ -43,9 +44,7 @@ class SignIn extends Component {
     
     resize() {
         let mobileView = (window.innerWidth <= 850);
-        this.setState({
-            mobileView: mobileView
-        })
+        this.setState({ mobileView: mobileView })
     }
     
     componentWillUnmount() {
@@ -56,29 +55,16 @@ class SignIn extends Component {
         const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
-        this.setState({
-          validated: !form.checkValidity(),
-        });
-
+        this.setState({ validated: !form.checkValidity() })
         const {email, password} = this.state
 
-        if (!this.validateEmail()) {
-            this.setState({
-                emailError: "Enter a valid email address",
-            })
-            return
-        }
-
         if(email) {
-            this.setState({ 
-                apiCalling: true,
-                emailError: null
-            })
-            const request = { 
-                username: email, 
-                password 
+            if (!this.validateEmail()) {
+                this.setState({ emailError: "Enter a valid email address" })
+                return
             }
-
+            this.setState({ apiCalling: true, emailError: null })
+            const request = { username: email, password }
             signInUser(request).then(response => {
                 const loginResponse = {
                     accessToken: response.token,
@@ -107,6 +93,15 @@ class SignIn extends Component {
                 })
             })
         }
+    }
+
+    handlePasswordTypeChange = () => {
+        const passwordType = this.state.passwordType
+        let type = "password"
+        if(passwordType === "password") {
+            type = "text"
+        }
+        this.setState({ passwordType: type })
     }
 
     handleLoginSuceesRoute = () => {
@@ -174,6 +169,7 @@ class SignIn extends Component {
                     validated = {this.state.validated}
                     values = {this.state}
                     handleInputChange = {this.handleInputOnChange}
+                    onClick = {this.handlePasswordTypeChange}
                 />
             </Card.Body>
         )

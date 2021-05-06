@@ -6,7 +6,7 @@ import EditInfo from './EditInfo'
 import ChangePassword from './ChangePassword'
 import Feedback from './Feedback'
 import Loading from '../../components/Loading/Loading'
-import Interest from "./MyInterestCard/InterestCard"
+import Interest from "../../components/Card/MyInterestCard/InterestCard"
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import SnackBar from '../../components/SnackBar/SnackBar'
 import ProfilePicUploader from './ProfilePicUploader'
@@ -154,6 +154,13 @@ class Profile extends Component {
             getProfileDetails(auth.accessToken, auth.profileId).then(response => {
                 this.setProfileData(response)
                 this.getProfilePicture(response.imageUrl)
+                if( !response.bio || !response.city) {
+                    this.setState({
+                        severity: "info",
+                        snackBarOn: true,
+                        snackBarMessage: "You need to update your profile soon!....",
+                    })
+                }
             }).catch(err => {
                 this.setState({ 
                     loading: false,
@@ -572,12 +579,12 @@ class Profile extends Component {
                     <div className = "info_statistics_block">
                         <div className = "css-1lomthf">
                             <div className = "profile_stat">
-                                <h4>151</h4>
+                                <h4>{profileDetails && profileDetails.courseCount}</h4>
                                 <p>Enrolled Courses</p>
                             </div>
                             <hr/>
                             <div className = "profile_stat">
-                                <h4>235</h4>
+                                <h4>{profileDetails && profileDetails.tutorCount}</h4>
                                 <p>Following Tutors</p>
                             </div>
                         </div>
@@ -725,7 +732,7 @@ class Profile extends Component {
                 }
                 <SnackBar
                     open = {snackBarOn}
-                    autoHideDuration = {3000}
+                    autoHideDuration = {5000}
                     message = {snackBarMessage}
                     severity = {severity}
                     handleClose = {this.handleSnackBarClose}
@@ -741,5 +748,4 @@ const mapStateToProps = (state) => {
         auth: state.auth.user
     }
 }
-
 export default connect(mapStateToProps)(Profile)

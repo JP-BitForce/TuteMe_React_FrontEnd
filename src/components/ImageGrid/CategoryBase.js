@@ -9,12 +9,15 @@ const useStyles = makeStyles((theme) => ({
     root: {
       display: 'flex',
       flexWrap: 'wrap',
-      minWidth: 200,
-      width: '100%',
+      minWidth: 150,
+      width: '80%',
+      overflow: 'hidden',
+      boxShadow:' rgb(145 158 171 / 24%) 0px 0px 2px 0px, rgb(145 158 171 / 24%) 0px 16px 32px -4px',
+      borderRadius: '16px',
     },
     image: {
       position: 'relative',
-      height: 150,
+      height: 120,
       [theme.breakpoints.down('xs')]: {
         width: '100% !important',
         height: 100,
@@ -78,21 +81,27 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const CategoryGridBase = ({image}) => {
+const CategoryGridBase = ({image, handleOnClick}) => {
     const classes = useStyles()
-    const {width, src, title} = image
+    const {category, src} = image
+
+    const getImageSource = (blob) => {
+      return `data:image/jpeg;base64,${blob}`
+    }
+
     return (
         <div className={classes.root}>
             <ButtonBase
                 focusRipple
-                key={image.title}
+                key={category}
                 className={classes.image}
                 focusVisibleClassName={classes.focusVisible}
-                style={{ width: width }}
+                style={{ width: "100%" }}
+                onClick = {() => handleOnClick(image)}
             >
                 <span
                     className={classes.imageSrc}
-                    style={{ backgroundImage: `url(${src})` }}
+                    style={{ backgroundImage: `url(${getImageSource(src)})` }}
                 />
                 <span className={classes.imageBackdrop} />
                 <span className={classes.imageButton}>
@@ -102,7 +111,7 @@ const CategoryGridBase = ({image}) => {
                         color="inherit"
                         className={classes.imageTitle}
                     >
-                        {title}
+                        {category}
                         <span className={classes.imageMarked} />
                     </Typography>
                 </span>

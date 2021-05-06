@@ -71,29 +71,31 @@ class Blog extends Component {
 
     getAllBlogsApi = (page) => {
         const auth = this.props.auth
-        this.setState({ loading: true })
-        getAllBlogs(auth.accessToken, page).then(response => {
-            this.setState({
-                loading: false,
-                blogsData: response.blogs,
-                current: response.current+1,
-                total: response.total
+        if(auth) {
+            this.setState({ loading: true })
+            getAllBlogs(auth.accessToken, page).then(response => {
+                this.setState({
+                    loading: false,
+                    blogsData: response.blogs,
+                    current: response.current+1,
+                    total: response.total
+                })
+            }).catch(err => {
+                this.setState({
+                    loading: false,
+                    fetchError: "Unable to fetch data, please try again",
+                    blogsData: [],
+                    current: 0,
+                    total: 1
+                })
             })
-        }).catch(err => {
-            this.setState({
-                loading: false,
-                fetchError: "Unable to fetch data, please try again",
-                blogsData: [],
-                current: 0,
-                total: 1
-            })
-        })
+        }
     }
 
     getOwnBlogsApi = (page) => {
         const auth = this.props.auth
         const request = {
-            userId: auth.userId,
+            userId: auth.profileId,
             page
         }
         this.setState({ loading: true })

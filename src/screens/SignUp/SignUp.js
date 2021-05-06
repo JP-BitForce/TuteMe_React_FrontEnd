@@ -38,7 +38,8 @@ class SignUp extends Component {
         severity: "success",
         snackBarMessage: "",
         snackBarOn: false,
-        userType: "student"
+        userType: "student",
+        passwordType: "password"
     }
 
     componentDidMount() {
@@ -66,34 +67,22 @@ class SignUp extends Component {
         const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
-        this.setState({
-          validated: !form.checkValidity(),
-        });
-
-        const {firstName, lastName, email, password, passwordScore, userType} = this.state
-
-        if (!this.validateEmail()) {
-            this.setState({
-                emailError: "Enter a valid email address",
-            })
-            return
-        }
-
-        if (passwordScore < 2) {
-            this.setState({
-                passwordError: "Password not strong enough!"
-            })
-            return
-        }
-
-        if(!this.checkPasswordMatch()) {
-            this.setState({
-                passwordMatchError:"Password and Confirm Password did not match"
-            })
-            return
-        }
+        this.setState({ validated: !form.checkValidity() })
+        const {firstName, lastName, email, password, passwordScore, userType, confirmPassword} = this.state
         
-        if (email) {
+        if (email && passwordScore && confirmPassword) {
+            if (!this.validateEmail()) {
+                this.setState({ emailError: "Enter a valid email address" })
+                return
+            }
+            if (passwordScore < 2) {
+                this.setState({ passwordError: "Password not strong enough!" })
+                return
+            }
+            if(!this.checkPasswordMatch()) {
+                this.setState({ passwordMatchError:"Password and Confirm Password did not match" })
+                return
+            }
             this.setState({ 
                 apiCalling: true,
                 passwordError: null,
@@ -118,6 +107,15 @@ class SignUp extends Component {
                 this.setSignUpErrorState(err.message)
             })
         }
+    }
+
+    handlePasswordTypeChange = () => {
+        const passwordType = this.state.passwordType
+        let type = "password"
+        if(passwordType === "password") {
+            type = "text"
+        }
+        this.setState({ passwordType: type })
     }
 
     setSignUpErrorState = (message) => {
@@ -160,9 +158,7 @@ class SignUp extends Component {
     }
 
     handlePasswordScoreOnChange =  (score) => {
-        this.setState({
-            passwordScore: score
-        })
+        this.setState({ passwordScore: score })
     }
 
     handleInputOnChange = (event) => {
@@ -177,6 +173,10 @@ class SignUp extends Component {
             snackBarOn: false,
             snackBarMessage: ""
         })
+    }
+
+    handleUserTypeOnChange = (event) => {
+        this.setState({ userType: event.target.value })
     }
 
     renderSocial = () => {
@@ -210,7 +210,7 @@ class SignUp extends Component {
                     <span className = "already_member">Already a member ? <a href="/signIn">SIGN IN</a> </span>
                     <Selector 
                         value = {this.state.userType}
-                        onChange = {()=> {}}
+                        onChange = {this.handleUserTypeOnChange}
                         options = {["student", "tutor"]}
                         label = "select your role"
                     />
@@ -222,6 +222,7 @@ class SignUp extends Component {
                     values = {this.state}
                     handleInputChange = {this.handleInputOnChange}
                     handlePasswordScoreOnChange = {this.handlePasswordScoreOnChange}
+                    onEyeClick = {this.handlePasswordTypeChange}
                 />
                 <div style = {{marginTop: "10px"}}>
                     <span className = "terms_condition"> By signing up, I agreed to </span> 

@@ -44,7 +44,7 @@
 }
 
 .logo {
-    background-image: url(../../assets/images/logo.png);
+    background-image: url(../../assets/images/shared/logo.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 10vh;
@@ -57,7 +57,16 @@
 }
 
 .login-ins {
-    background-image: url(../../assets/images/instagram.png);
+    background-image: url(../../assets/images/social/instagram.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 5vh;
+    height: 5vh;
+    background-size: cover;
+}
+
+.login-fb {
+    background-image: url(../../assets/images/social/facebook.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 5vh;

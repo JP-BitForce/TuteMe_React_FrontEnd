@@ -35,7 +35,7 @@
     align-items: center;
     justify-content: flex-start;
     text-align: left;
-    margin-top: 5%;
+    margin-top: 1%;
 }
 
 .trusted_tutors_category_title_container {
@@ -47,6 +47,7 @@
 .trusted_tutors_category_title {
     color: #808080;
     font-size: 1.3rem;
+    padding: 2%;
 }
 
 span {
@@ -54,11 +55,9 @@ span {
 }
 
 .trusted_tutors_category_container {
-    display: flex;
-    justify-content: space-between;
     padding: 2%;
+    margin: 3% 1% 2% 1%;
 }
-
 
 .trusted_tutors_list_root {
     margin: 3%;
@@ -83,7 +82,7 @@ span {
 }
 
 .category_icon_small {
-    border: 2px solid #818181;
+    border: 2px solid #f8f8f8;
     box-sizing: border-box;
     border-radius: 50%;
     width: 50px;
@@ -107,41 +106,35 @@ span {
     width: 20px;
 }
 
+.more_category {
+    width: 100%;
+    align-items: flex-end;
+    justify-content: flex-end;
+    display: flex;
+    padding-right: 3%;
+    margin-bottom: 2%;
+}
 
-@media(max-width: 574px) {
-    .category_icon {
-        border: 2px solid #818181;
-        box-sizing: border-box;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 5px;
-    }
+.more_category span {
+    font-size: 1.1rem;
+    color: #808080;
+    text-transform: uppercase;
+}
 
-    .category_icon_src {
-        height: 30px;
-        height: 30px;
-    }
+.more_category span::before {
+    content: '';
+    position: absolute;
+    background-color: #e91e63;
+    height: 2px;
+    box-sizing: border-box;
+    width: 50px;
+}
 
-    .trusted_tutors_category_title {
-        color: #808080;
-        font-size: 0.8rem;
-    }
+.more_category span:hover {
+    cursor: pointer;
+    color: black;
+}
 
-    .category_icon_wrapper span {
-        font-weight: 600;
-        font-size: 0.6rem;
-    }
-
-    .trusted_tutors_list_root {
-        padding: 1%;
-    }
-
-    .trusted_tutors_category_container {
-        padding: 1%;
-    }
-
+.tutor_selected_category_icon {
+    border-color: #f9a83e;
 }
