@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import TopBar from './TopBar'
 import SideBarAlt from '../../components/SideBar/SideBarAlt'
 import Modal from '../../components/Modal/SignOutModal'
-import { logout } from '../../redux/actions/authAction'
+import { logout, storeLoginResponse } from '../../redux/actions/authAction'
 
 import Home from '../Home/Home'
 import Profile from '../Profile/Profile'
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const GettingStarted = ({logoutUser, history, auth}) => {
+const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -59,8 +59,11 @@ const GettingStarted = ({logoutUser, history, auth}) => {
     const [modalOpen, setModalOpen] = useState(false)
     
     useEffect(() => {
-      if(!auth) {
-        history.push('/')
+      const loginResponse = JSON.parse(localStorage.getItem('LOGIN_RESPONSE'))
+      if(!loginResponse && !auth) {
+        history.push('/signIn')
+      } else {
+        storeLoginResponse(loginResponse)
       }
       // eslint-disable-next-line
     }, [])
@@ -81,15 +84,15 @@ const GettingStarted = ({logoutUser, history, auth}) => {
 
     const handleDrawerToggle = () => {
       setMobileOpen(!mobileOpen);
-    };
+    }
 
     const handleMobileMenuClose = () => {
       setMobileMoreAnchorEl(null);
-    };
+    }
   
     const handleMobileMenuOpen = (event) => {
       setMobileMoreAnchorEl(event.currentTarget);
-    };
+    }
 
     const handleSignOut = () => {
       logoutUser()
@@ -187,7 +190,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-      logoutUser: () => { dispatch(logout()) }
+      logoutUser: () => { dispatch(logout()) },
+      storeLoginResponse: data => { dispatch(storeLoginResponse(data)) }
   }
 }
 

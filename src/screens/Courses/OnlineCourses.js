@@ -597,7 +597,7 @@ class OnlineCourses extends Component {
                         <Grid container spacing={2}>
                             { 
                                 searchFilterLoading ? 
-                                <Grid item xs={6} sm={6} md={12}>
+                                <Grid item xs={12} sm={12} md={12}>
                                     <CircularProgress/>
                                 </Grid>
                                 :
@@ -625,7 +625,7 @@ class OnlineCourses extends Component {
 
     renderNoCoursesAvailable = () => {
         return (
-            <Grid item xs={6} sm={6} md={12}>
+            <Grid item xs={12} sm={12} md={12}>
                 <div className = "no_courses_available_container">
                     <span className = "no_courses_available">NO COURSES AVAILABLE</span>
                 </div>

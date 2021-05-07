@@ -336,11 +336,19 @@ class Blog extends Component {
     }
 
     renderBlogs = () => {
+        const {blogsData} = this.state
         return (
             <div className = "blogs_container">
                 <Grid container spacing={4}>
                     {
-                        this.state.blogsData.map(item => {
+                        blogsData.length === 0 ? 
+                        <Grid item xs={12} sm={12} md={12}>
+                            <div className = "no_courses_available_container">
+                                <span className = "no_courses_available">NO BLOGS AVAILABLE</span>
+                            </div>
+                        </Grid>
+                        :
+                        blogsData.map(item => {
                             const {date, description, comments, likes, coverImg, authorImg, title, id } = item
                             return (
                                 <Grid item xs={6} sm={6} md={3} key = {id}>
@@ -365,7 +373,7 @@ class Blog extends Component {
     }
 
     renderBlogsContainer = () => {
-        const { loading, total, current } = this.state
+        const { loading, total, current, blogsData } = this.state
         return (
             <>
             <div className = "blog_search_block">
@@ -387,7 +395,7 @@ class Blog extends Component {
             }
             <div className = "pagination_div">
                 {
-                    !loading &&
+                    !loading && blogsData.length !== 0 &&
                     <Pagination 
                         total = {total}
                         current = {current}
@@ -465,9 +473,7 @@ class Blog extends Component {
         } = this.state
         return (
             <div className = "blog_root_div">
-                {
-                    this.renderRootContainer()
-                }
+                { this.renderRootContainer() }
                 <BlogPreview
                     open = {previewOn}
                     handleClose = {this.handlePreviewOnClose}

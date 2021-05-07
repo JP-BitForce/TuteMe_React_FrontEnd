@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import moment from 'moment';
 
 import ReadOnlyRating from '../../components/Rating/ReadOnlyRating'
-import OnlineLesson from '../../components/OnlineLesson/OnlineLesson'
+import OnlineLessonAlt from '../../components/OnlineLesson/OnlineLessonAlt'
 
 //React-Boostarp
 import Card from 'react-bootstrap/Card'
@@ -183,10 +183,10 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, value
                         {
                             values["joinLoading"] ? <CircularProgress/> 
                             : 
-                            <OnlineLesson 
-                                handleJoin = {handleJoin}
+                            <OnlineLessonAlt
                                 handleInputOnChange = {handleInputOnChange}
                                 joinId = {values["joinId"]}
+                                handleJoin = {handleJoin}
                             />
                         }
                     </Paper>

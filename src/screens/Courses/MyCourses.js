@@ -45,6 +45,7 @@ class MyCourses extends Component {
         joinIdValueError: null,
         joinLoading: false,
         filterCourse: false,
+        btnDisabled: true
     }
 
     componentDidMount() {
@@ -62,6 +63,7 @@ class MyCourses extends Component {
                 current: response.current+1,
                 coursesData: response.enrolledCourses,
                 fetchError: null,
+                btnDisabled: response.enrolledCourses.length === 0
             })
         }).catch(err => {
             this.setState({ 
@@ -185,7 +187,8 @@ class MyCourses extends Component {
     handleCoursePreviewClose = () => {
         this.setState({
             openCourseView: false,
-            selectedCourse: null
+            selectedCourse: null,
+            joinId: ""
         })
     }
 
@@ -303,10 +306,10 @@ class MyCourses extends Component {
     }
 
     renderListHead = () => {
-        const {searchValue, searchValueError, courseSearched, filterCourse} = this.state
+        const {searchValue, searchValueError, courseSearched, filterCourse, btnDisabled} = this.state
         return (
             <div className = "courses_list_head">
-                <Button variant="contained" onClick = {this.handleFilter}>
+                <Button variant="contained" onClick = {this.handleFilter} disabled = {btnDisabled}>
                 { filterCourse ? "Cancel" : "Filter courses" }
                 </Button>
                 <form noValidate autoComplete="off" onSubmit = {this.handleCourseSearch}>
@@ -321,7 +324,14 @@ class MyCourses extends Component {
                         name = "searchValue"
                         size = "small"
                     />
-                    <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit">{courseSearched ? "Cancel" : "Search"}</Button>
+                    <Button 
+                        variant="contained" 
+                        style = {{marginLeft: "5px"}} 
+                        type = "submit"
+                        disabled = {btnDisabled}
+                    >
+                    {courseSearched ? "Cancel" : "Search"}
+                    </Button>
                 </form>
             </div>
         )
@@ -375,7 +385,7 @@ class MyCourses extends Component {
                             <Grid container spacing={4}>
                                 { 
                                     searchFilterLoading ? 
-                                    <Grid item xs={6} sm={6} md={12}>
+                                    <Grid item xs={12} sm={12} md={12}>
                                         <CircularProgress/>
                                     </Grid>
                                     :
@@ -404,7 +414,7 @@ class MyCourses extends Component {
 
     renderNoCoursesAvailable = () => {
         return (
-            <Grid item xs={6} sm={6} md={12}>
+            <Grid item xs={12} sm={12} md={12}>
                 <div className = "no_courses_available_container">
                     <span className = "no_courses_available">NO COURSES AVAILABLE</span>
                 </div>
