@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Dialog, DialogTitle, DialogContent, makeStyles, Typography, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import AddMyInterest from '../../screens/Profile/MyInterestCard/AddMyInterestForm';
@@ -16,10 +16,19 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function AddButtonPopup(props) {
-
+    const [selectData, setSelectData] = useState([]);
     const { title, openPopup, setOpenPopup } = props;
     const classes = useStyles();
 
+    const config = {
+        selectdata : selectData,
+        setselectdata : setSelectData
+    }
+    const handleAdd = () => {
+        props.addData(selectData);
+        setSelectData([]);
+        setOpenPopup(false);
+    }
     return (
         <Dialog open={openPopup} maxWidth="md" classes={{ paper: classes.dialogWrapper }}>
             <DialogTitle className={classes.dialogTitle}>
@@ -28,16 +37,19 @@ export default function AddButtonPopup(props) {
                         {title}
                     </Typography>
                     <Button
-                        onClick={()=>{setOpenPopup(false)}}>
+                        onClick={()=>{
+                            setSelectData([])
+                            setOpenPopup(false)
+                            }}>
                         <CloseIcon />
                     </Button>
                 </div>
             </DialogTitle>
             <DialogContent dividers>
-                <AddMyInterest />
+                <AddMyInterest {...config}/>
             </DialogContent>
             <DialogActions>
-          <Button  style={{color:"white",backgroundColor:"#2578F5", margin:10}}>
+          <Button onClick={handleAdd} style={{color:"white",backgroundColor:"#2578F5", margin:10}}>
             Add
           </Button>
         </DialogActions>
