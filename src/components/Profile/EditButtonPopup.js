@@ -9,7 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import EditMyInterest from '../../screens/Profile/MyInterestCard/EditMyInterestForm';
 
 export default function EditButtonPopup(props) {
-    const {title, openEditPopup, setOpenEditPopup} = props;
+    const {title, openEditPopup, setOpenEditPopup,editData} = props;
 
   const [open, setOpen] = React.useState(false);
   const [scroll] = React.useState('paper');
@@ -49,7 +49,7 @@ export default function EditButtonPopup(props) {
                     </Button>
                 </div></DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
-          <EditMyInterest/>
+          <EditMyInterest data={editData}/>
         </DialogContent>
         <DialogActions>
             <Button  style={{color:"white",backgroundColor:"#2578F5", margin:10}}>
