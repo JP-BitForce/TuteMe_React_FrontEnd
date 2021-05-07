@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Divider,Grid,Tooltip,IconButton, Paper, Box} from "@material-ui/core/";
+import {Typography, Divider,Grid,Tooltip,IconButton, Paper, Box} from "@material-ui/core/";
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import AddButtonPopup from "../../../components/Profile/AddButtonPopup";
@@ -31,8 +31,13 @@ const data =[
 ];
 
 function InterestCard () {
-  const [openPopup, setOpenPopup] = useState(false)
-  const [openEditPopup, setOpenEditPopup] = useState(false)  
+    const [openPopup, setOpenPopup] = useState(false)
+    const [openEditPopup, setOpenEditPopup] = useState(false)
+    const [dataArray, setDataArray] = useState(data)
+
+   const handleAddSkill = async (data) => {
+      console.log(data,"addskill");
+   }
 
    return(
     <> 
@@ -41,7 +46,7 @@ function InterestCard () {
           <Grid item xs={12} style={{marginTop:20, marginLeft:20}}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Box><h5> SKILLS </h5> </Box>
-              <Box display='flex' flexDirection='row'>
+              <Box display='flex' flexDirection='row' marginRight= '20px'>
                 <Tooltip title="Add">
                   <IconButton 
                     variant="contained" 
@@ -62,7 +67,7 @@ function InterestCard () {
             </Box>
           </Grid>                    
         </Grid>
-        { data.map((d)=>(
+        { dataArray.map((d)=>(
          <Grid  style={{marginTop:15,marginLeft:20, marginRight:20}}> 
           <Grid item container direction="row"> 
             <Grid item xs={12} sm={10}>  
@@ -75,12 +80,12 @@ function InterestCard () {
         <Divider orientation="horizontal" style={{marginRight:10}}/>
           <Typography variant="caption" display="block" gutterBottom align="left"  style={{color:"gray", fontSize:14,marginTop:10}}>
             <Grid item container direction="row"  spacing={2}>
-                <Grid item xs={12}sm={3}>{d.sub1}</Grid>
-                <Grid item xs={12}sm={3}>{d.sub2}</Grid>
-                <Grid item xs={12}sm={3}>{d.sub1}</Grid>
-                <Grid item xs={12}sm={3}>{d.sub2}</Grid>
-                <Grid item xs={12}sm={3}>{d.sub2}</Grid>
-                <Grid item xs={12}sm={3}>{d.sub1}</Grid>
+                <Grid item xs={12} sm={3}>{d.sub1}</Grid>
+                <Grid item xs={12} sm={3}>{d.sub2}</Grid>
+                <Grid item xs={12} sm={3}>{d.sub1}</Grid>
+                <Grid item xs={12} sm={3}>{d.sub2}</Grid>
+                <Grid item xs={12} sm={3}>{d.sub2}</Grid>
+                <Grid item xs={12} sm={3}>{d.sub1}</Grid>
             </Grid>
           <br/>  
           </Typography>
@@ -91,11 +96,13 @@ function InterestCard () {
           title="Add Skills Form"
           openPopup={openPopup}
           setOpenPopup={setOpenPopup}
+          addData={handleAddSkill}
           />
         <EditButtonPopup
           title="Edit Skills Form"
           openEditPopup={openEditPopup}
           setOpenEditPopup={setOpenEditPopup}
+          editData={dataArray}
           />           
     </>
   )     
