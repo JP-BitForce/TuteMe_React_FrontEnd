@@ -14,6 +14,7 @@ function generate(element) {
     );
 }
 export default function EditMyInterest(props){
+    console.log(props.data,"edits data")
     return(
         <Paper style={{minWidth:600, margin:"auto", }}>
              <Grid item container direction="column">
