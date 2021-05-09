@@ -204,8 +204,9 @@
 
 .main_chat_lists {
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     flex-grow: 1;
+    margin-top: 2%;
 }
 
 .main_chat__footer {
@@ -268,4 +269,60 @@
 .icon_button:hover {
     background-color: rgb(235, 235, 235);
     border-radius: 50%;
+}
+
+.message_box_mine {
+	padding: 5px 25px 5px 30px;
+	color:#fff;
+	line-height: 25px;
+	max-width: 90%;
+	display: inline-block;
+	border-radius: 5px;
+	word-wrap: break-word;
+    background-color: yellowgreen;
+}
+
+.message_box_other {
+	color:#fff;
+	line-height: 25px;
+	max-width: 90%;
+	display: inline-block;
+	border-radius: 5px;
+	word-wrap: break-word;
+    background-color: teal;
+    padding: 5px 25px 5px 30px;
+}
+
+.chat_list_item_mine {
+    margin-bottom: 1%;
+}
+
+.chat_list_item_other {
+    margin-bottom: 1%;
+    margin-right: 2%;
+}
+
+.chat_list_item_other_box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.message_dateTime {
+    font-size: 0.7rem;
+    color: rgb(167, 164, 167);
+    font-weight: bold;
+}
+
+.chat_connection_failed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    align-self: center;
+    color: red;
+}
+
+.chat_connection_failed span {
+    margin-bottom: 2%;
 }

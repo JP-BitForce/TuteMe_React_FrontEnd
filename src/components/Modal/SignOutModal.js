@@ -26,7 +26,7 @@ const SignOutModal = ({open, handleClose, title, content, handleCancel, handleOk
           <Button onClick={handleOk} color="primary"> yes </Button>
         </DialogActions>
     </Dialog>
-  );
+  )
 }
 
 export default SignOutModal
