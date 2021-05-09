@@ -6,7 +6,7 @@ import EditInfo from './EditInfo'
 import ChangePassword from './ChangePassword'
 import Feedback from './Feedback'
 import Loading from '../../components/Loading/Loading'
-import Interest from "../../components/Card/MyInterestCard/InterestCard"
+import Interest from "./MyInterestCard/InterestCard"
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import SnackBar from '../../components/SnackBar/SnackBar'
 import ProfilePicUploader from './ProfilePicUploader'
@@ -748,5 +748,4 @@ const mapStateToProps = (state) => {
         auth: state.auth.user
     }
 }
-
 export default connect(mapStateToProps)(Profile)
