@@ -92,7 +92,7 @@ export const MULTIPART = (endpoint, formData, authorization) => {
 }
   
 const createRequestUrl = (endpoint) => {
-    return `http://localhost:8080/api/${endpoint}`
+    return `http://localhost:5050/api/${endpoint}`
 };
   
 const createRequestBody = (requestBody) => {
