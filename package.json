@@ -40,6 +40,7 @@
     "simple-peer": "^9.11.0",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.0.1",
+    "sockjs-client": "^1.5.1",
     "web-vitals": "^0.2.4",
     "xlsx": "^0.16.9"
   },

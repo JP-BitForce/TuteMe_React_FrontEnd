@@ -313,3 +313,16 @@
     color: rgb(167, 164, 167);
     font-weight: bold;
 }
+
+.chat_connection_failed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    align-self: center;
+    color: red;
+}
+
+.chat_connection_failed span {
+    margin-bottom: 2%;
+}
