@@ -48,3 +48,13 @@ export const getCourseById = (token, id) => {
     const endpoint = getEndpointWithPrefix(`get_course_by_id/${id}`)
     return GET(endpoint, token)
 }
+
+export const filterEnrolledCourses = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`enrollment/filter_enrolled_courses`)
+    return POST(endpoint, body, token)
+}
+
+export const searchEnrolledCourses = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`enrollment/search_enrolled_courses`)
+    return POST(endpoint, body, token)
+}

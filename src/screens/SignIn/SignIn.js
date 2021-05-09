@@ -74,6 +74,7 @@ class SignIn extends Component {
                     role: response.role,
                     profileId: response.profileId
                 }
+                localStorage.setItem('LOGIN_RESPONSE', JSON.stringify(loginResponse))
                 this.props.storeLoginResponse(loginResponse)
                 this.setState ({
                     signInSuccess: true,

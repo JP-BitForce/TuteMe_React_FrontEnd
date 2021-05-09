@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import moment from 'moment';
 
 import ReadOnlyRating from '../../components/Rating/ReadOnlyRating'
+import OnlineLessonAlt from '../../components/OnlineLesson/OnlineLessonAlt'
 
 //React-Boostarp
 import Card from 'react-bootstrap/Card'
@@ -18,16 +19,14 @@ import Slide from '@material-ui/core/Slide';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 
-import src from '../../assets/images/shared/video-optimization.png'
 import fileSrc from '../../assets/images/shared/file.png'
 import videoSrc from '../../assets/images/shared/video.png'
 import linkSrc from '../../assets/images/shared/link.png'
@@ -84,9 +83,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handleInputOnChange, values}) => {
+const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, values, handleInputOnChange}) => {
     const {title, courseImg, description, rating, duration, enrolledAt, tutorName, id, schedules, resources} = course
-    const {joinIdValueError, joinId, joinLoading} = values
     const classes = useStyles({ img: `data:image/jpeg;base64,${courseImg}` })
 
     const filters = ["Home", "Resources", "Upcoming Events"]
@@ -145,51 +143,35 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handl
         }
     }
 
-    const renderInputField = () => {
-        return (
-            <div className = "courses_list_head">
-                <TextField
-                    id="standard-basic" 
-                    onChange = {handleInputOnChange} 
-                    variant = "outlined"
-                    error = {joinIdValueError}
-                    value = {joinId}
-                    helperText = {joinIdValueError && "Incorrect entry"}
-                    name = "joinId"
-                    size = "small"
-                    placeholder = "enter join id here.."
-                    fullWidth
-                />
-                <Button variant="contained" style = {{marginLeft: "5px"}} type = "submit" onClick = {handleJoin}>Join</Button>
-            </div>
-        )
-    }
-
     const renderHome = () => {
         return (
             <div className = "en_course_prev_main_content">
                 <h5>Schedule</h5>
-                <div className = "en_course_prev_main_content_cal">
+                <Grid container spacing={4}>
                     {
                         days.map(item => {
                             if(getActive(item)) {
                                 return (
-                                    <div className = "day_root_active" onClick = {() => setDaySelected(getScheduleItem(item))}>
-                                        <span>{item.slice(0,3)}</span>
-                                    </div>
+                                    <Grid item xs={4} sm={6} md={1}>
+                                        <div className = "day_root_active" onClick = {() => setDaySelected(getScheduleItem(item))}>
+                                            <span>{item.slice(0,3)}</span>
+                                        </div>
+                                    </Grid>
                                 ) 
                             } else {
                                 return (
-                                    <div className = "day_root">
-                                        <span>{item.slice(0,3)}</span>
-                                    </div>
+                                    <Grid item xs={4} sm={6} md={1}>
+                                        <div className = "day_root">
+                                            <span>{item.slice(0,3)}</span>
+                                        </div>
+                                    </Grid>
                                 )
                             }
                         })
                     }
-                </div>
+                </Grid>
                 <div className = "en_course_prev_main_content_day">
-                    <Typography variant="h6"><span>{daySelected.day}</span></Typography>
+                    <Typography variant="h4"><span>{daySelected.day}</span></Typography>
                     <div className = "en_course_prev_main_content_cal_item">
                         <span>Starts: {daySelected.startTime}</span>
                         <span>Ends: {daySelected.endTime}</span>
@@ -197,12 +179,15 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handl
                 </div>
                 <Divider/>
                 <div className = "en_course_prev_main_content_vid">
-                    <h5>Join your lesson here</h5>
-                    { renderInputField() }
                     <Paper elevation = {3} className = {classes.paper}>
                         {
-                            joinLoading ? <CircularProgress/> : 
-                            <img src = {src} alt = "" className = "alt_img_src"/>
+                            values["joinLoading"] ? <CircularProgress/> 
+                            : 
+                            <OnlineLessonAlt
+                                handleInputOnChange = {handleInputOnChange}
+                                joinId = {values["joinId"]}
+                                handleJoin = {handleJoin}
+                            />
                         }
                     </Paper>
                 </div>
@@ -259,23 +244,23 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handl
 
     const renderNavs = () => {
         return (
-            <div>
+            <div className = "en_course_breadcrumb_div">
+            <Breadcrumbs aria-label="breadcrumb">
                 {
                     filters.map((item, idx) => {
-                        return (
-                            <div 
-                                className = { 
-                                    nav === idx ? [
-                                        "en_course_prev_card", "en_course_prev_card_active"
-                                        ].join(" ") 
-                                    : "en_course_prev_card"
-                                } 
-                                onClick = {() => setNav(idx)}
-                                key = {idx}
-                            >{item}</div>
-                        )
+                        return <span 
+                            onClick = {() => setNav(idx)} 
+                            key = {idx}
+                            className = {
+                                nav === idx ? ["en_course_breadcrumb_span", "en_course_breadcrumb_span_acive"].join(" ") 
+                                : "en_course_breadcrumb_span"
+                            }
+                        >
+                        {item}
+                        </span>
                     })
                 }
+            </Breadcrumbs>
             </div>
         )
     }
@@ -292,10 +277,10 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, handl
     const renderMainContainer = () => {
         return (
             <Grid container className = {classes.mainRoot}>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={12}>
                     { renderNavs() }
                 </Grid>
-                <Grid item xs={12} sm={6} md={9}>
+                <Grid item xs={12} sm={6} md={12}>
                     <div className = "en_course_prev_main_root">
                         <div className = "en_course_prev_main">
                             {
