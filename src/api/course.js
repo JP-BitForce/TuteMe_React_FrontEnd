@@ -58,3 +58,8 @@ export const searchEnrolledCourses = (token, body) => {
     const endpoint = getEndpointWithPrefix(`enrollment/search_enrolled_courses`)
     return POST(endpoint, body, token)
 }
+
+export const createNewCourse = (token, formData) => {
+    const endpoint = getEndpointWithPrefix(`createNew`)
+    return MULTIPART(endpoint, formData, token)
+}
