@@ -104,9 +104,14 @@ const SideBarAlt = ({itemOnClick, active, auth}) => {
     }
 
     useEffect(() => {
+        const loginResponse = JSON.parse(localStorage.getItem('LOGIN_RESPONSE'))
         if(auth) {
             setUserDetails(auth)
             setUserRole(auth.role)
+        } 
+        else if (loginResponse) {
+            setUserDetails(loginResponse)
+            setUserRole(loginResponse.role)
         }
         // eslint-disable-next-line
     }, [])

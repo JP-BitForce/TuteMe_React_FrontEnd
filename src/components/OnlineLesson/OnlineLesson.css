@@ -405,3 +405,7 @@
   width: 100%;
   height: auto;
 }
+
+.video-container_non {
+  display: none;
+}

@@ -33,10 +33,9 @@ const data =[
 function InterestCard () {
     const [openPopup, setOpenPopup] = useState(false)
     const [openEditPopup, setOpenEditPopup] = useState(false)
-    const [dataArray, setDataArray] = useState(data)
 
    const handleAddSkill = async (data) => {
-      console.log(data,"addskill");
+      
    }
 
    return(
@@ -67,7 +66,7 @@ function InterestCard () {
             </Box>
           </Grid>                    
         </Grid>
-        { dataArray.map((d)=>(
+        { data.map((d)=>(
          <Grid  style={{marginTop:15,marginLeft:20, marginRight:20}}> 
           <Grid item container direction="row"> 
             <Grid item xs={12} sm={10}>  
@@ -102,7 +101,7 @@ function InterestCard () {
           title="Edit Skills Form"
           openEditPopup={openEditPopup}
           setOpenEditPopup={setOpenEditPopup}
-          editData={dataArray}
+          editData={data}
           />           
     </>
   )     
