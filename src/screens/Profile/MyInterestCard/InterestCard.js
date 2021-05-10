@@ -4,6 +4,8 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import AddButtonPopup from "../../../components/Profile/AddButtonPopup";
 import EditButtonPopup from "../../../components/Profile/EditButtonPopup";
+import CustomButton from '../../../components/Button/CustomButton'
+
 
 const data =[
     {
@@ -38,41 +40,48 @@ function InterestCard () {
       
    }
 
+   const handleSave = () => {
+     
+   }
+
    return(
     <> 
-      <Paper>
+      <Paper style={{boxShadow:'none'}}>
         <Grid container  >
           <Grid item xs={12} style={{marginTop:20, marginLeft:20}}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Box><h5> SKILLS </h5> </Box>
-              <Box display='flex' flexDirection='row' marginRight= '20px'>
-                <Tooltip title="Add">
-                  <IconButton 
-                    variant="contained" 
-                    onClick={() => { setOpenPopup(true); }}
-                    >
-                      <AddIcon/>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Edit">
-                  <IconButton 
-                    variant="contained" 
-                    onClick={ () => { setOpenEditPopup(true)}}
-                    >
-                      <EditIcon/>
-                  </IconButton>
-                </Tooltip>
-              </Box>
+              
             </Box>
           </Grid>                    
         </Grid>
         { data.map((d)=>(
          <Grid  style={{marginTop:15,marginLeft:20, marginRight:20}}> 
           <Grid item container direction="row"> 
-            <Grid item xs={12} sm={10}>  
-              <Typography variant="caption" display="block"  align="left"  style={{marginTop:5,fontWeight:300, color:"black", fontSize:15}}>
-                    {d.name}
-              </Typography> 
+            <Grid item xs={12} >  
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="caption" display="block"  align="left"  style={{marginTop:5,fontWeight:300, color:"black", fontSize:15}}>
+                      {d.name}
+                </Typography> 
+                <Box display='flex' flexDirection='row' marginRight= '20px'>
+                  <Tooltip title="Add">
+                    <IconButton 
+                      variant="contained" 
+                      onClick={() => { setOpenPopup(true); }}
+                      >
+                        <AddIcon/>
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Edit">
+                    <IconButton 
+                      variant="contained" 
+                      onClick={ () => { setOpenEditPopup(true)}}
+                      >
+                        <EditIcon/>
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </Box>
             </Grid>
           </Grid>
           
@@ -90,6 +99,12 @@ function InterestCard () {
           </Typography>
         </Grid>          
        ))}
+
+       <div style={{float:'right', marginBottom:10, marginRight:10}}>  
+                          
+         <CustomButton label = "Save" type="submit" onClick={handleSave} />
+                        
+         </div>
       </Paper>
         <AddButtonPopup
           title="Add Skills Form"
