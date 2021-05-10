@@ -11,8 +11,13 @@ export default function AddMyInterest(props){
     const {selectdata,setselectdata} = props
 
     const handleSelect = (select)=> {
-        setselectdata([...selectdata,select])
-    }
+        if(selectdata.findIndex(e => e === select) === -1){
+            setselectdata([...selectdata,select])
+        }
+        else{
+            alert("already selected");
+            }
+        }
 
     const handleDelete = (select)=> {
         setselectdata(selectdata.filter((i)=>(i !== select)));
