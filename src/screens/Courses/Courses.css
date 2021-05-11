@@ -312,3 +312,34 @@
     font-size: 0.6rem !important;
     color: black !important;
 }
+
+.schedule_grid_item_1 {
+    padding: "2%";
+    align-items: "center";
+    justify-content: "center";
+}
+
+.customDatePickerWidth, 
+.customDatePickerWidth > div.react-datepicker-wrapper, 
+.customDatePickerWidth > div > div.react-datepicker__input-container
+.customDatePickerWidth > div > div.react-datepicker__input-container input {
+    width: 100%;
+    margin-bottom: 3%;
+}
+
+.react-datepicker__input-container  {
+    width: inherit;
+}
+
+.react-datepicker__input-container input {
+    width: inherit;
+}
+
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+.schedule_grid_item_2 {
+    height: 150px;
+    overflow-y: auto;
+}

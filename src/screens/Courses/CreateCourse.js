@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
+import moment from 'moment'
 
-import DatePicker from "react-datepicker";
-import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from "react-datepicker"
+import 'react-datepicker/dist/react-datepicker.css'
 
 import HeaderTopper from '../../components/Header/HeaderTopper'
 import HeaderCard from '../../components/Header/HeaderCard'
@@ -11,24 +12,28 @@ import Dropdown from '../../components/Input/Dropdown'
 import InputField from '../../components/Input/InputField'
 import TextArea from '../../components/Input/TextArea'
 import SnackBar from '../../components/SnackBar/SnackBar'
-import {createNewCourse} from '../../api/course'
+import {createNewCourse, getFilterCategories} from '../../api/course'
 
 //Boostarp
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
 import InputGroup from 'react-bootstrap/InputGroup'
+import Card from "react-bootstrap/Card"
 
 //Material-UI
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import Paper from '@material-ui/core/Paper';
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Container from '@material-ui/core/Container'
+import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import Checkbox from '@material-ui/core/Checkbox'
 
-import Create from '@material-ui/icons/Create';
-import Update from '@material-ui/icons/Update';
+import Create from '@material-ui/icons/Create'
+import Update from '@material-ui/icons/Update'
 
 import upload from '../../assets/images/Blog/upload.svg'
 import headerImg from '../../assets/images/Course/new.jpg'
@@ -59,33 +64,60 @@ class CreateCourse extends Component {
         snackBarMessage: "",
         start: null,
         end: null,
-        schedules: []
+        schedules: [],
+        checked: [],
+        day: "Monday",
+        disableAdd: true,
+        categoriesData: [],
+        typesData: [],
+        loading: false
     }
-
     inputFile = React.createRef()
-
     TAB_LINKS = ["Create", "Update"]
-
     ICONS = {
         Create: <Create/>,
         Update: <Update/>,
     }
-
     YEAR = [0, 1, 2]
     MONTH = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     DAYS = [0, 5, 10, 15, 20, 25, 30]
     WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    componentDidMount() {
+        this.getCategoriesApi()
+    }
+
+    getCategoriesApi = () => {
+        const auth = this.props.auth
+        this.setState({loading: true})
+        getFilterCategories(auth.accessToken).then(response => {
+            if (response) {
+                this.setState({
+                    categoriesData: response.courseCategoryList,
+                    typesData: response.courseLevelList,
+                    category: response.courseCategoryList[0],
+                    type: response.courseLevelList[0],
+                    loading: false
+                })
+            }
+        }).catch(err => {
+            this.setState({
+                fetchError: err.message,
+                loading: false
+            })
+        })
+    }
 
     handleSubmit = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
         this.setState({ validated: !form.checkValidity() })
-        const {id, fullName, email, name, description, price, category, type, file, years, month, days} = this.state
+        const {id, fullName, email, name, description, price, category, type, file, years, month, days, schedules} = this.state
         if (id && email && name && description && price && file) {
             this.setState({ apiCalling : true })
             const auth = this.props.auth
-            const course = { id, fullName, description, email, name, price, category, type, years, month, days }
+            const course = { tutorId: id, fullName, description, email, courseName: name, price, category, type, years, month, days, schedules}
             const formData = new FormData()
             const json = JSON.stringify(course)
             const blob = new Blob([json], {
@@ -99,7 +131,7 @@ class CreateCourse extends Component {
                 this.setSnackBar("success", response.message)
             }).catch(err => {
                 this.setState({ apiCalling : false })
-                this.setSnackBar("success", err.message)
+                this.setSnackBar("error", "server error, please try again")
             })
         }
     }
@@ -120,15 +152,48 @@ class CreateCourse extends Component {
     }
 
     handleDateOnchange = (name, val) => {
-        this.setState({ [name]: val })
+        const {start, end} = this.state
+        let disableAdd = true
+        if (name === "start") {
+            if (end) {
+                disableAdd = false
+            }
+        } else {
+            if (start) {
+                disableAdd = false
+            }
+        }
+        this.setState({ [name]: val, disableAdd })
     }
 
     handleAdd = () => {
-
+        const {day, start, end, schedules} = this.state
+        const newSchedule = { day, startTime: moment(start).format('hh:mm a'), endTime: moment(end).format('hh:mm a') } 
+        schedules.push(newSchedule)
+        this.setState({ schedules })
     }
 
     handleRemove = () => {
+        const {schedules, checked} = this.state
+        let newSchedule = schedules.filter(schedule => !checked.includes(schedule))
+        this.setState({ schedules: newSchedule, checked: this.not(checked, schedules) })
+    }
 
+    handleToggle = (value) => () => {
+        let checked = this.state.checked
+        const currentIndex = checked.indexOf(value)
+        const newChecked = [...checked]
+    
+        if (currentIndex === -1) {
+          newChecked.push(value);
+        } else {
+          newChecked.splice(currentIndex, 1)
+        }
+        this.setState({ checked: newChecked })
+    }
+
+    not = (a, b) => {
+        return a.filter((value) => b.indexOf(value) === -1)
     }
     
     handleCoverPicOnSelect = (file) => {
@@ -295,52 +360,69 @@ class CreateCourse extends Component {
         )
     }
 
-    renderDatePicker = (value, placeholder) => {
+    renderDatePicker = (name, placeholder) => {
         return  <DatePicker
                     className = "date_picker__input"
-                    selected = {value}
-                    onChange = {(date) => this.handleDateOnchange(value, date)}
+                    selected = {this.state[name]}
+                    onChange = {(date) => this.handleDateOnchange(name, date)}
                     showTimeSelect
                     showTimeSelectOnly
                     timeIntervals = {30}
                     timeCaption = "Time"
                     dateFormat = "h:mm aa"
                     placeholderText = {placeholder}
+                    isClearable
                 />
     }
 
     renderSchedule = () => {
+        const {day, checked, disableAdd, schedules} = this.state
         return (
             <Grid container spacing={2} justify="center" alignItems="center">
-                <Grid item>
-                    <Paper style = {{padding: "2%", alignItems: "center", justifyContent: "center"}}>
-                        <Row>
-                            <Col sm> 
-                                <Dropdown 
-                                    options = {this.WEEK} 
-                                    onChange = {this.handleInputOnChange} 
-                                    value = {this.state["day"]} 
-                                    name = "day"
-                                /> 
-                            </Col>
-                            <Col sm> { this.renderDatePicker(this.state["start"], "Starts") } </Col>
-                            <Col sm> { this.renderDatePicker(this.state["end"], "Ends") } </Col>
-                        </Row>
-                    </Paper>
+                <Grid item xs={12} sm={12} md={5}>
+                    <div className = "schedule_grid_item_1">
+                        <Dropdown options = {this.WEEK} onChange = {this.handleInputOnChange} value = {day} name = "day"/>
+                        <div className = "customDatePickerWidth">
+                            { this.renderDatePicker("start", "Starts") }
+                            { this.renderDatePicker("end", "Ends") }
+                        </div> 
+                    </div>
                 </Grid>
-                <Grid item>
+                <Grid item xs={12} sm={12} md={2}>
                     <Grid container direction="column" alignItems="center">
-                        <Button variant = "outlined" size = "small" onClick = {this.handleAdd}> ≫ </Button>
+                        <Button variant = "outlined" size = "small" onClick = {this.handleAdd} disabled = {disableAdd}> ≫ </Button>
                         <div className = "vertical_seperator"/>
-                        <Button variant = "outlined" size ="small" onClick = {this.handleRemove}> ≪ </Button>
+                        <Button variant = "outlined" size ="small" onClick = {this.handleRemove} disabled = {checked.length === 0}> ≪ </Button>
                     </Grid>
                 </Grid>
-                <Grid item>
-                    <Paper>
+                <Grid item xs={12} sm={12} md={5}>
+                    <Card className = "schedule_grid_item_2">
                         <List dense component="div" role="list">
-
+                        {
+                            schedules.map((value, idx) => {
+                                const labelId = `transfer-list-all-item-${idx}-label`
+                                const {day, startTime, endTime} = value
+                                return (
+                                    <ListItem key={idx} role="listitem" button onClick={this.handleToggle(value)}>
+                                        <ListItemIcon>
+                                            <Checkbox
+                                                checked = {checked.indexOf(value) !== -1}
+                                                tabIndex = {-1}
+                                                disableRipple
+                                                inputProps = {{ 'aria-labelledby': labelId }}
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText 
+                                            id={labelId} 
+                                            primary = {day} 
+                                            secondary = {`${startTime} - ${endTime}`}
+                                        />
+                                    </ListItem>
+                                )
+                            })
+                        }
                         </List>
-                    </Paper>
+                    </Card>
                 </Grid>
             </Grid>
         )
@@ -366,15 +448,15 @@ class CreateCourse extends Component {
             <>
                 <span className = "header_title_span text_left">Course Details</span>
                 <Row>
-                    <Col sm = {6}> { this.renderInputField("text", "name", "Course name", 10) } </Col>
+                    <Col sm = {6}> { this.renderInputField("text", "name", "Course name", 50) } </Col>
                     <Col sm = {6}> { this.renderPriceField() } </Col>
                 </Row>
                 <Row>
                     <Col sm> { this.renderTextArea("description", "Description", 3, 320) } </Col>
                 </Row>
                 <Row>
-                    <Col sm> { this.renderDropDown([], "category", "Course category") } </Col>
-                    <Col sm> { this.renderDropDown([], "type", "Course type") } </Col>
+                    <Col sm> { this.renderDropDown(this.state.categoriesData, "category", "Course category") } </Col>
+                    <Col sm> { this.renderDropDown(this.state.typesData, "type", "Course type") } </Col>
                 </Row>
                 <span className = "header_title_span text_left">Course Duration</span>
                 <Row>
