@@ -9,7 +9,6 @@ import CustomComboBox from "../../../components/Profile/CustomComboBox";
 export default function AddMyInterest(props){
 
     const {selectdata,setselectdata} = props
-
     const handleSelect = (select)=> {
         if(selectdata.findIndex(e => e === select) === -1){
             setselectdata([...selectdata,select])
@@ -27,7 +26,7 @@ export default function AddMyInterest(props){
         <Paper style={{maxWidth:800,minWidth:600, margin:"auto"}}>
             <Grid item container direction="column" >
                 <Grid item xs={12} sm={12} align= "center">
-                    <CustomComboBox selectData={handleSelect}/>
+                    <CustomComboBox selectData={handleSelect} {...props} />
                 </Grid>
                 <Grid>
                     {selectdata && selectdata.map((data) => {
@@ -37,7 +36,7 @@ export default function AddMyInterest(props){
                                 style={{backgroundColor: '#00875a', color: '#fff', marginLeft:15, marginTop:15}}
                                 onDelete={true}
                                 onClick={() => handleDelete(data)}
-                                deleteIcon={<DoneIcon style={{color:'#fff'}} />}
+                                deleteIcon={<DoneIcon style={{color:'#fff'}} /> }
                             />
                         );
                     })}
@@ -49,7 +48,7 @@ export default function AddMyInterest(props){
                     </Typography>
                 </Grid>
                 <Grid item xs={12} sm={12} align= "center" style={{margin:10}}>
-                    <CustomChip selectData={handleSelect}/>
+                    <CustomChip selectData={handleSelect} {...props}/>
                 </Grid>
             </Grid>
         </Paper>
