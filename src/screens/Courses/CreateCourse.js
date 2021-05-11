@@ -44,7 +44,7 @@ import './Courses.css'
 class CreateCourse extends Component {
     state = {
         childNav: ["Create Course", "Create"],
-        tabValue: 1,
+        tabValue: 0,
         validated: false,
         apiCalling: false,
         name: "",

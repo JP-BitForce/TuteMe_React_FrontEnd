@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 //Material-UI
 import Avatar from '@material-ui/core/Avatar';
@@ -29,7 +30,7 @@ const BlogCard = ({src, avatar, date, description, comments, likes, title, handl
                 </div>
             </div>
             <div className = "blog_card_content">
-                <span className = "blog_card_content_date">{date}</span>
+                <span className = "blog_card_content_date">{moment(date).format("YYYY MM DD hh:mm a")}</span>
                 <p className = "blog_card_content_title">{title}</p>
                 <p className = "blog_card_content_des">{description}</p>
                 <div className = "blog_card_footer">
