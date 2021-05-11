@@ -12,7 +12,7 @@ import Dropdown from '../../components/Input/Dropdown'
 import InputField from '../../components/Input/InputField'
 import TextArea from '../../components/Input/TextArea'
 import SnackBar from '../../components/SnackBar/SnackBar'
-import {createNewCourse, getFilterCategories} from '../../api/course'
+import {createNewCourse, getFilterCategories, getCourseByTutor, updateCourse, updateCourseWithoutFormData} from '../../api/course'
 
 //Boostarp
 import Form from "react-bootstrap/Form"
@@ -20,6 +20,7 @@ import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import InputGroup from 'react-bootstrap/InputGroup'
 import Card from "react-bootstrap/Card"
+import CardMedia from '@material-ui/core/CardMedia';
 
 //Material-UI
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -33,21 +34,19 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Checkbox from '@material-ui/core/Checkbox'
 
 import Create from '@material-ui/icons/Create'
-import Update from '@material-ui/icons/Update'
+import MenuBook from '@material-ui/icons/MenuBook'
 
 import upload from '../../assets/images/Blog/upload.svg'
 import headerImg from '../../assets/images/Course/new.jpg'
+import src from '../../assets/images/Course/alt.jpg'
 import './Courses.css'
 
 class CreateCourse extends Component {
     state = {
         childNav: ["Create Course", "Create"],
-        tabValue: 0,
+        tabValue: 1,
         validated: false,
         apiCalling: false,
-        id: "",
-        fullName: "",
-        email: "",
         name: "",
         description: "",
         price: "",
@@ -70,13 +69,29 @@ class CreateCourse extends Component {
         disableAdd: true,
         categoriesData: [],
         typesData: [],
-        loading: false
+        loading: false,
+        updateFormValidated: false,
+        tutorCourseData: null,
+        updating: false,
+        newName: "",
+        newPrice: "",
+        newDescription: "",
+        newCategory: "",
+        newType: "",
+        newImgTitle: null,
+        NewYears: 0,
+        newMonth: 0,
+        newDays: 0,
+        newSchedules: [],
+        newCover: null,
+        newFile: null
     }
     inputFile = React.createRef()
-    TAB_LINKS = ["Create", "Update"]
+    courseImgFile = React.createRef()
+    TAB_LINKS = ["Create", "Course"]
     ICONS = {
         Create: <Create/>,
-        Update: <Update/>,
+        Course: <MenuBook/>,
     }
     YEAR = [0, 1, 2]
     MONTH = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -85,6 +100,7 @@ class CreateCourse extends Component {
 
     componentDidMount() {
         this.getCategoriesApi()
+        this.getCourseByTutorApi()
     }
 
     getCategoriesApi = () => {
@@ -97,13 +113,25 @@ class CreateCourse extends Component {
                     typesData: response.courseLevelList,
                     category: response.courseCategoryList[0],
                     type: response.courseLevelList[0],
-                    loading: false
                 })
             }
         }).catch(err => {
             this.setState({
                 fetchError: err.message,
-                loading: false
+            })
+        })
+    }
+
+    getCourseByTutorApi = () => {
+        const auth = this.props.auth
+        getCourseByTutor(auth.accessToken, auth.profileId).then(response => {
+            this.setState({ tutorCourseData: response, loading: false })
+            this.setTutorCourseValues(response)
+        }).catch(err=> {
+            this.setState({ 
+                fetchError: err.meesge, 
+                loading: false, 
+                tutorCourseData: null 
             })
         })
     }
@@ -113,11 +141,11 @@ class CreateCourse extends Component {
         event.preventDefault();
         event.stopPropagation();
         this.setState({ validated: !form.checkValidity() })
-        const {id, fullName, email, name, description, price, category, type, file, years, month, days, schedules} = this.state
-        if (id && email && name && description && price && file) {
+        const {name, description, price, category, type, file, years, month, days, schedules} = this.state
+        if (name && description && price && file) {
             this.setState({ apiCalling : true })
             const auth = this.props.auth
-            const course = { tutorId: id, fullName, description, email, courseName: name, price, category, type, years, month, days, schedules}
+            const course = { tutorId: auth.profileId, description, courseName: name, price, category, type, years, month, days, schedules}
             const formData = new FormData()
             const json = JSON.stringify(course)
             const blob = new Blob([json], {
@@ -127,13 +155,85 @@ class CreateCourse extends Component {
             formData.append("file", file)
 
             createNewCourse(auth.accessToken, formData).then(response => {
-                this.setState({ apiCalling : false })
-                this.setSnackBar("success", response.message)
+                this.setState({ tutorCourseData: response, apiCalling : false })
+                this.setTutorCourseValues(response)
+                this.setSnackBar("success", "new course created successfully")
             }).catch(err => {
                 this.setState({ apiCalling : false })
                 this.setSnackBar("error", "server error, please try again")
             })
         }
+    }
+
+    handleUpdateSubmit = (event) => {
+        const form = event.currentTarget;
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({ updateFormValidated: !form.checkValidity() })
+        this.setState({ updating : true })
+        const { newName, newPrice, newDescription, newCategory, newType, NewYears,
+            newMonth, newDays, newSchedules, newFile, tutorCourseData, newCover
+        } = this.state
+        const auth = this.props.auth
+        const course = { 
+            courseId: tutorCourseData.id,
+            tutorId: auth.profileId, 
+            description: newDescription, 
+            courseName: newName, 
+            price: newPrice, 
+            category: newCategory, 
+            type: newType, 
+            years: NewYears, 
+            month: newMonth, 
+            days: newDays, 
+            schedules: newSchedules
+        }
+        if (newCover && newCover === this.getImageSource(tutorCourseData.courseImg)) {
+            updateCourseWithoutFormData(auth.accessToken, course).then(response => {
+                this.setState({ tutorCourseData: response, updating : false })
+                this.setTutorCourseValues(response)
+                this.setSnackBar("success", "course updated successfully")
+            }).catch(err => {
+                this.setState({ updating : false, tutorCourseData: null  })
+                this.setSnackBar("error", "server error, please try again")
+            })
+        } else {
+            const formData = new FormData()
+            const json = JSON.stringify(course)
+            const blob = new Blob([json], {
+                type: 'application/json'
+            });
+            formData.append("course", blob)
+            formData.append("file", newFile)
+    
+            updateCourse(auth.accessToken, formData).then(response => {
+                this.setState({ tutorCourseData: response, updating : false })
+                this.setTutorCourseValues(response)
+                this.setSnackBar("success", "course updated successfully")
+            }).catch(err => {
+                this.setState({ updating : false, tutorCourseData: null  })
+                this.setSnackBar("error", "server error, please try again")
+            })
+        }
+    }
+
+    checkChanges = () => {
+        let changed = false
+        const { newName, newPrice, newDescription, newCategory, newType, NewYears,
+            newMonth, newDays, newSchedules, newCover, tutorCourseData
+        } = this.state
+        
+        const {title, price, description, courseCategory, courseType, courseDuration, schedules, courseImg} = tutorCourseData
+
+        if (newName !== title || newPrice !== price || newDescription !== description || newCategory !== courseCategory.category
+            || newType !== courseType.title || NewYears !== courseDuration.year || newMonth !== courseDuration.month ||
+            newDays !== courseDuration.days || newSchedules !== schedules
+        ) {
+            changed = true
+        } else {
+            changed = newCover && newCover !== this.getImageSource(courseImg)
+        }
+        return changed
     }
 
     handleTabChange = (newValue) => {
@@ -196,13 +296,14 @@ class CreateCourse extends Component {
         return a.filter((value) => b.indexOf(value) === -1)
     }
     
-    handleCoverPicOnSelect = (file) => {
+    handleCoverPicOnSelect = (file, title) => {
         let reader = new FileReader()
         reader.onloadend = () => {
-            this.setState({ 
-                cover: reader.result,
-                file 
-            });
+            if (title === "imgTitle") {
+                this.setState({ cover: reader.result, file })
+            } else {
+                this.setState({ newCover: reader.result, newFile: file })
+            }
         }
         reader.readAsDataURL(file)
     }
@@ -223,6 +324,26 @@ class CreateCourse extends Component {
         })
     }
 
+    setTutorCourseValues = (data) => {
+        this.setState({
+            newName: data.title,
+            newPrice: data.price,
+            newDescription: data.description,
+            newCategory: data.courseCategory.category,
+            newType: data.courseType.title,
+            NewYears: data.courseDuration.year,
+            newMonth: data.courseDuration.month,
+            newDays: data.courseDuration.days,
+            newSchedules: data.schedules,
+            newImgTitle: null,
+            newCover: data.courseImg ? this.getImageSource(data.courseImg) : null
+        })
+    }
+
+    getImageSource = (blob) => {
+        return `data:image/jpeg;base64,${blob}`
+    }
+
     removeImageOnClick = () => {
         this.setState({ 
             imgTitle: null,
@@ -235,19 +356,39 @@ class CreateCourse extends Component {
         this.inputFile.current.click()
     }
 
-    coverPicOnChange = (e) => {
-        const { files } = e.target;
-        if (files && files.length) {
-            this.handleCoverPicOnSelect(files[0])
-        }
-        this.setState({ imgTitle: files[0].name })
+    coursePicOnClick = () => {
+        this.courseImgFile.current.click()
     }
 
-    renderSubmitBtn = () => {
+    coverPicOnChange = (e, title) => {
+        const { files } = e.target;
+        if (files && files.length) {
+            this.handleCoverPicOnSelect(files[0], title)
+        }
+        this.setState({ [title]: files[0].name })
+    }
+
+    renderSubmitBtn = (label) => {
         return (
             <Row className = "submit_btn">
                 <Col sm> 
-                    <CustomButton type="submit" fullWidth label = "Create New"/>                     
+                    <CustomButton type="submit" fullWidth label = {label} disabled = {label === "Update" && !this.checkChanges()}/>                     
+                </Col>
+            </Row>
+        )
+    }
+
+    renderCanceltBtn = () => {
+        const {tutorCourseData} = this.state
+        return (
+            <Row className = "submit_btn">
+                <Col sm> 
+                    <Button 
+                        variant="outlined" 
+                        fullWidth 
+                        onClick = {() => this.setTutorCourseValues(tutorCourseData)}
+                        disabled = {!this.checkChanges()}
+                    >Cancel</Button>                    
                 </Col>
             </Row>
         )
@@ -273,7 +414,7 @@ class CreateCourse extends Component {
                         tabindex = "-1" 
                         style = {{display: 'none'}} 
                         ref = {this.inputFile}
-                        onChange = {this.coverPicOnChange}
+                        onChange = {(e) => this.coverPicOnChange(e, "imgTitle")}
                     />
                     <img src = {upload} alt = "" className = "upload_img_src" onClick = {this.coverePicOnClick}/>
                     <div className = "blog_cover_text">
@@ -296,7 +437,7 @@ class CreateCourse extends Component {
         )
     }
 
-    renderPriceField = () => {
+    renderPriceField = (name) => {
         return (
             <Form.Group>
                 <InputGroup className="mb-3">
@@ -305,8 +446,8 @@ class CreateCourse extends Component {
                     </InputGroup.Prepend>
                     <Form.Control
                         type = "number"
-                        name = "price"
-                        value = {this.state.price} 
+                        name = {name}
+                        value = {this.state[name]} 
                         onChange = {this.handleInputOnChange}
                         required
                         maxLength = {5}
@@ -375,8 +516,8 @@ class CreateCourse extends Component {
                 />
     }
 
-    renderSchedule = () => {
-        const {day, checked, disableAdd, schedules} = this.state
+    renderSchedule = (schedules) => {
+        const {day, checked, disableAdd} = this.state
         return (
             <Grid container spacing={2} justify="center" alignItems="center">
                 <Grid item xs={12} sm={12} md={5}>
@@ -428,35 +569,21 @@ class CreateCourse extends Component {
         )
     }
 
-    renderTutorFormContent = () => {
-        return (
-            <>
-                <span className = "header_title_span text_left">Tutor Details</span>
-                <Row>
-                    <Col sm = {6}> { this.renderInputField("text", "id", "Your ID", 10) } </Col>
-                    <Col sm = {6}> { this.renderInputField("text", "fullName", "Full name", 50) } </Col>
-                </Row>
-                <Row>
-                    <Col sm> { this.renderInputField("email", "email", "Your Email", 320) } </Col>
-                </Row>
-            </>
-        )
-    }
-
     renderCourseFormContent = () => {
+        const {categoriesData, typesData, schedules} = this.state
         return (
             <>
                 <span className = "header_title_span text_left">Course Details</span>
                 <Row>
                     <Col sm = {6}> { this.renderInputField("text", "name", "Course name", 50) } </Col>
-                    <Col sm = {6}> { this.renderPriceField() } </Col>
+                    <Col sm = {6}> { this.renderPriceField("price") } </Col>
                 </Row>
                 <Row>
                     <Col sm> { this.renderTextArea("description", "Description", 3, 320) } </Col>
                 </Row>
                 <Row>
-                    <Col sm> { this.renderDropDown(this.state.categoriesData, "category", "Course category") } </Col>
-                    <Col sm> { this.renderDropDown(this.state.typesData, "type", "Course type") } </Col>
+                    <Col sm> { this.renderDropDown(categoriesData, "category", "Course category") } </Col>
+                    <Col sm> { this.renderDropDown(typesData, "type", "Course type") } </Col>
                 </Row>
                 <span className = "header_title_span text_left">Course Duration</span>
                 <Row>
@@ -465,22 +592,98 @@ class CreateCourse extends Component {
                     <Col sm> { this.renderDropDown(this.DAYS, "days", "Days") } </Col>
                 </Row>
                 <span className = "header_title_span text_left">Course Schedule</span>
-                { this.renderSchedule() }
+                { this.renderSchedule(schedules) }
             </>
         )
     }
 
-    renderForm = () => {
+    renderUpdateCourseForm = () => {
+        const {updating, categoriesData, typesData, newSchedules, newCover} = this.state
+        return (
+            <>
+                <span className = "header_title_span text_left">Course Details</span>
+                <Row>
+                    <Col sm = {6}>
+                        <Card>
+                            <input type = "file" autocomplete = "off" tabindex = "-1" style = {{display: 'none'}} 
+                                ref = {this.courseImgFile}
+                                onChange = {(e) => this.coverPicOnChange(e, "newImgTitle")}
+                            />
+                            <CardMedia image = { newCover ? newCover : src} title = "course"
+                                className = "tutor_course_img_src"
+                                onClick = {this.coursePicOnClick} 
+                            />
+                        </Card>
+                    </Col>
+                    <Col sm = {6}>
+                        { this.renderInputField("text", "newName", "Course name", 50) } 
+                        { this.renderPriceField("newPrice") }
+                        { this.renderTextArea("newDescription", "Description", 3, 320) }
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm> { this.renderDropDown(categoriesData, "newCategory", "Course category") } </Col>
+                    <Col sm> { this.renderDropDown(typesData, "newType", "Course type") } </Col>
+                </Row>
+                <span className = "header_title_span text_left">Course Duration</span>
+                <Row>
+                    <Col sm> { this.renderDropDown(this.YEAR, "newYear", "Year") } </Col>
+                    <Col sm> { this.renderDropDown(this.MONTH, "newMonth", "Month") } </Col>
+                    <Col sm> { this.renderDropDown(this.DAYS, "newDays", "Days") } </Col>
+                </Row>
+                <span className = "header_title_span text_left">Course Schedule</span>
+                { this.renderSchedule(newSchedules) }
+                { 
+                    updating ? this.renderLoading() 
+                    :
+                    <Row>
+                        <Col sm> { this.renderCanceltBtn() } </Col>
+                        <Col sm> { this.renderSubmitBtn("Update") } </Col>
+                    </Row>
+                }
+            </>
+        )
+    }
+
+    renderNoCourseAvailable = () => {
+        return (
+            <Grid container spacing={1}>
+                <Grid item xs={12} sm={12} md={12}>
+                    <div className = "no_courses_available_container">
+                        <span className = "no_courses_available">NO COURSE AVAILABLE</span>
+                    </div>
+                </Grid>
+            </Grid>
+        )
+    }
+
+    renderUpdateForm = () => {
+        const {updateFormValidated, tutorCourseData} = this.state
+        return (
+            <Form onSubmit = {this.handleUpdateSubmit} noValidate validated={updateFormValidated} className = "create_course_form">
+                { tutorCourseData ? this.renderUpdateCourseForm() :  this.renderNoCourseAvailable() }
+            </Form>
+        )
+    }
+
+    renderCreateForm = () => {
         const {validated, apiCalling} = this.state
         return (
             <Form onSubmit={this.handleSubmit} noValidate validated={validated} className = "create_course_form">
-                { this.renderTutorFormContent() }
                 { this.renderCourseFormContent() }
                 { this.renderImageSelector() }
-                { apiCalling ? this.renderLoading() : this.renderSubmitBtn() }
+                { apiCalling ? this.renderLoading() : this.renderSubmitBtn("Create New") }
             </Form>
         )
     } 
+
+    renderMainContainer = () => {
+        switch(this.state.tabValue) {
+            case 0 : return this.renderCreateForm()
+            case 1 : return this.renderUpdateForm()
+            default : return this.renderCreateForm()
+        }
+    }
 
     render() {
         const {childNav, tabValue, snackBarOn, snackBarMessage, severity} = this.state
@@ -497,7 +700,7 @@ class CreateCourse extends Component {
                     />
                 </div>
                 <Container>
-                    { this.renderForm() }
+                    { this.renderMainContainer() }
                 </Container>
                 <SnackBar
                     open = {snackBarOn}

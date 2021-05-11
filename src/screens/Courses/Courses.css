@@ -305,6 +305,7 @@
     text-align: left;
     font-size: 0.9rem !important;
     margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 .text_left_label {
@@ -342,4 +343,14 @@
 .schedule_grid_item_2 {
     height: 150px;
     overflow-y: auto;
+}
+
+.tutor_course_img_src {
+    height: 200px;
+    cursor: pointer;
+}
+
+.upadte_form_bottom {
+    display: flex;
+    justify-content: space-between;
 }
