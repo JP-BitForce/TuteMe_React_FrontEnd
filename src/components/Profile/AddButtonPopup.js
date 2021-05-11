@@ -21,6 +21,7 @@ export default function AddButtonPopup(props) {
     const classes = useStyles();
 
     const config = {
+        title : title,
         selectdata : selectData,
         setselectdata : setSelectData
     }
@@ -29,12 +30,27 @@ export default function AddButtonPopup(props) {
         setSelectData([]);
         setOpenPopup(false);
     }
+    const checkSkills = (title) => {
+        switch (title) {
+            case 'Add Subjects': 
+            return title
+
+            case 'Add Top Skills': 
+            return title
+
+            case 'Add Tools & Technologies': 
+            return title
+
+            default: 
+            return title
+        }
+    }
     return (
         <Dialog open={openPopup} maxWidth="md" classes={{ paper: classes.dialogWrapper }}>
             <DialogTitle className={classes.dialogTitle}>
                 <div style={{ display: 'flex' }}>
-                    <Typography variant="h6" component="div" style={{ flexGrow: 1 }}>
-                        {title}
+                    <Typography variant="h6" component="div" style={{ flexGrow: 1 }}>    
+                        {checkSkills(title)}
                     </Typography>
                     <Button
                         onClick={()=>{
@@ -46,7 +62,7 @@ export default function AddButtonPopup(props) {
                 </div>
             </DialogTitle>
             <DialogContent dividers>
-                <AddMyInterest {...config}/>
+                <AddMyInterest {...config} />
             </DialogContent>
             <DialogActions>
           <Button onClick={handleAdd} style={{color:"white",backgroundColor:"#2578F5", margin:10}}>

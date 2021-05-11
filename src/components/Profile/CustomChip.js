@@ -17,7 +17,23 @@ const useStyles = makeStyles((theme) => ({
 
 function CustomChip(props) {
   const classes = useStyles();
-  const skillData = [
+  const {title} = props;
+
+  const subjectData = [
+    { title: 'Mathematics', key: 0 },
+    { title: 'Science', key: 1 },
+    { title: 'History', key: 2 },
+    { title: 'Physics', key: 3 },
+    { title: 'Chemistry', key: 4 },
+  ];
+
+  const topSkillsData = [
+    { title: 'leadership',key: 7 },
+    { title: 'time management', key: 8 },
+    { title: 'communication skill', key: 9 },
+  ];
+
+  const toolsData = [
     { key: 0, title: 'Angular' },
     { key: 1, title: 'jQuery' },
     { key: 2, title: 'Polymer' },
@@ -25,9 +41,25 @@ function CustomChip(props) {
     { key: 4, title: 'Vue.js' },
   ];
 
+  const checkSkills = (title) => {
+   
+    switch (title) {
+        case 'Add Subjects': 
+        return subjectData
+
+        case 'Add Top Skills': 
+        return topSkillsData
+
+        case 'Add Tools & Technologies': 
+        return toolsData
+
+        default: 
+        return subjectData
+    }
+}
   return (
       <div className={classes.root}>
-        {skillData.map((data) => {
+        {checkSkills(title).map((data) => {
           return(
               <Chip
                   label={data.title}

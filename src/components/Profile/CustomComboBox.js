@@ -4,7 +4,9 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 
 function CustomComboBox(props) {
-  const [value, setValue] = React.useState(skillsArray[0]);
+  const {title} = props
+  
+  const [value, setValue] = React.useState('');
 
   const selectSkills = (newValue) => {
    setValue(newValue);
@@ -12,6 +14,23 @@ function CustomComboBox(props) {
      props.selectData(newValue)
    }
   }
+
+  const checkSkills = (title) => {
+   
+    switch (title) {
+        case 'Add Subjects': 
+        return subjectArray
+
+        case 'Add Top Skills': 
+        return topSkillsArray
+
+        case 'Add Tools & Technologies': 
+        return toolsArray
+
+        default: 
+        return subjectArray
+    }
+}
   return (
       <div>
         <Autocomplete
@@ -20,7 +39,7 @@ function CustomComboBox(props) {
               selectSkills(newValue)
             }}
             id="controllable-states-demo"
-            options={skillsArray.map((option) => option.title)}
+            options={checkSkills(title).map((option) => option.title)}
             style={{ width: "90%", margin:10 }}
             renderInput={(params) => <TextField {...params} label="skills" variant="outlined" />}
         />
@@ -32,16 +51,24 @@ export default React.memo(CustomComboBox);
 
 // filter data
 
-const skillsArray = [
+const subjectArray = [
   { title: 'Mathematics', key: 0 },
   { title: 'Science', key: 1 },
   { title: 'History', key: 2 },
   { title: 'Physics', key: 3 },
   { title: 'Chemistry', key: 4 },
   { title: "Biology", key: 5 },
-  { title: 'Accounts', key: 6 },
-  { title: 'Business Studies',key: 7 },
-  { title: 'English', key: 8 },
+];
+
+const topSkillsArray = [
+ 
+  { title: 'leadership',key: 7 },
+  { title: 'time management', key: 8 },
+  { title: 'communication skill', key: 9 },
+ 
+];
+
+const toolsArray = [
   { title: 'React', key: 9 },
   { title: 'Java', key: 10 },
   { title: 'JavaScript', key: 11 },
