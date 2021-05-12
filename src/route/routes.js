@@ -3,6 +3,7 @@ import SignUp from '../screens/SignUp/SignUp'
 import LandingPage from '../screens/LandingPage/LandingPage'
 import ForgotPassword from '../screens/ForwardPassword/ForgotPassword'
 import GettingStarted from '../screens/GettingStarted/GettingStarted'
+import PublicCourses from '../screens/Courses/PublicCourses'
 
 const routes = {
     data: [
@@ -24,6 +25,13 @@ const routes = {
         name: "Home",
         path: "/",
         component: LandingPage,
+        type: "main",
+        children: [],
+      },
+      {
+        name: "Courses",
+        path: "/courses",
+        component: PublicCourses,
         type: "main",
         children: [],
       },

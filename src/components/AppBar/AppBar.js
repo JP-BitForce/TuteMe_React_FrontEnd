@@ -26,7 +26,7 @@ const AppBar = ({auth, history, logoutUser}) => {
 
     const nav = [
       {label:"Home", href:"/", icon: <HomeIcon className = "icon" />},
-      {label:"Courses", href:"/", icon: <GrainIcon className = "icon" />},
+      {label:"Courses", href:"/courses", icon: <GrainIcon className = "icon" />},
       {label:"Staffs", href:"/", icon: <WhatshotIcon className = "icon" />},
       {label:"Contact", href:"/", icon: <InboxIcon className = "icon" />},
     ];

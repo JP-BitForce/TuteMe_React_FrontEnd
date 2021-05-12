@@ -102,7 +102,7 @@ class OnlineCourses extends Component {
             }
         }).catch(err => {
             this.setState({
-                fetchError: err.message
+                fetchError: err.c
             })
         })
     }
