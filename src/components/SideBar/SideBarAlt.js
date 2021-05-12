@@ -22,6 +22,7 @@ import RateReview from '@material-ui/icons/RateReview';
 import Today from '@material-ui/icons/Today';
 import Payment from '@material-ui/icons/Payment';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import AccessTime from '@material-ui/icons/AccessTime';
 
 import './SideBar.css'
 import routes from '../../route/routes'
@@ -108,7 +109,8 @@ const SideBarAlt = ({itemOnClick, active, auth, src}) => {
         PAYMENTS : <Payment/>,
         SIGN_OUT : <ExitToApp/>,
         TUTOR_PROFILE: <Person/>,
-        CREATE_COURSE: <Grain/>
+        CREATE_COURSE: <Grain/>,
+        LECTURE: <AccessTime/>
     }
 
     useEffect(() => {

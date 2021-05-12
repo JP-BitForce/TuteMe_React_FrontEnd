@@ -18,6 +18,7 @@ import Calendar from '../Calendar/Calendar'
 import OneStep from '../OneStep/OneStep'
 import CreateCourse from '../Courses/CreateCourse'
 import TutorProfile from '../Profile/TutorProfile'
+import Lecture from '../Lecture/Lecture'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -204,7 +205,9 @@ const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
                 :
                 active === "CREATE_COURSE" ? <CreateCourse/>
                 :
-                active === "TUTOR_PROFILE" && <TutorProfile/>
+                active === "TUTOR_PROFILE" ? <TutorProfile/>
+                :
+                active === "LECTURE" && <Lecture/>
               }
           </main>
           <Modal

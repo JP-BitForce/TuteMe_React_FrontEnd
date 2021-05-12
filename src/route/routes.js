@@ -92,6 +92,12 @@ const routes = {
             children: [],
             acceptUserRole : ["ROLE_TUTOR"]
           },
+          {
+            name: "LECTURE",
+            id: "LECTURE",
+            children: [],
+            acceptUserRole : ["ROLE_TUTOR"]
+          },
         ]
       },//END OF PAGES
       {
