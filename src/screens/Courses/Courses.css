@@ -282,3 +282,17 @@
     cursor: pointer;
     font-weight: 550;
 }
+
+/*publicCours*/
+.coursePublic{
+    padding: 20px;
+    margin: 20px;
+
+    display: flex;
+    flex-direction: row;
+}
+.coursePublicCard{
+    margin: 20px;
+    height: 550px;
+    width: 600px;
+}

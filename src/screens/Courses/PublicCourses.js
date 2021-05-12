@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 const PublicCourses = () => {
     const styles = useStyles()
 
-    const [courses, setCourses] = useState();
+    const [courses, setCourses] = useState([]);
     const [total, setTotal] = useState();
     const [current, setCurrent] = useState();
     const [loading, setLoading] = useState(false);
@@ -84,33 +84,32 @@ const PublicCourses = () => {
     }
 
     return(
-        courses.map(course => {
-        const { name, rating, price, description, tutorName, duration, id, imageUrl } = course
+        <div className="coursePublic">
+            {courses.map(course => {
+        const { name, rating, price, description, tutorName, duration, imageUrl } = course
         return(
-            <Grid container>
                 <Grid item xs={12} sm={12} md={6}>
-                    <Card>
+                    <Card className="coursePublicCard">
                         <CardMedia
                             className={styles.media}
                             image = { imageUrl ?  getImageSource(imageUrl) : src}
                             title = "Paella dish"
                         />
                         <CardContent>
+                            <Grid item xs={12} sm={12} md={6} className = {styles.content}>
+                                { renderDetail("Name", name) }
+                                { renderDetail("Tutor", tutorName) }
+                                { renderDetail("Duration", duration) }
+                                { renderDetail("Price", `Rs. ${price}`) }
+                                { renderDetail("Description", description) }
+                                { renderDetail("Rate", <ReadOnlyRating rate = {rating}/>) }
+                            </Grid>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} className = {styles.content}>
-                    { renderDetail("ID", `${id}`) }
-                    { renderDetail("Name", name) }
-                    { renderDetail("Tutor", tutorName) }
-                    { renderDetail("Duration", duration) }
-                    { renderDetail("Price", `Rs. ${price}`) }
-                    { renderDetail("Description", description) }
-                    { renderDetail("Rate", <ReadOnlyRating rate = {rating}/>) }
-                </Grid>
-            </Grid>
         )
-    })
+    })}
+            </div>
     )
 }
 export default PublicCourses;
