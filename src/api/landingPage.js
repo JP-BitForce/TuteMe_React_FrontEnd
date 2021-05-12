@@ -5,6 +5,6 @@ export const getEndpointWithPrefix = (endpoint) => {
 }
 
 export const getCoursesForLandingPage = (page) => {
-    const endpoint = getEndpointWithPrefix(`courses?page=${page}`)
+    const endpoint = getEndpointWithPrefix(`courses/${page}`)
     return GET(endpoint)
 }
