@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {connect} from 'react-redux'
 
 import HeaderTopper from '../../components/Header/HeaderTopper'
-import HeaderCard from '../../components/Header/HeaderCard'
 
 import './Lecture.css'
 
