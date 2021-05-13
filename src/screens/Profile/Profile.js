@@ -36,7 +36,7 @@ import Grade from '@material-ui/icons/Grade';
 import Settings from '@material-ui/icons/Settings';
 import PermIdentity from '@material-ui/icons/Face';
 
-import ProfileImage from '../../assets/images/shared/minimal_avatar.jpg'
+import ProfileImage from '../../assets/images/shared/avatar.png'
 import sharedJson from '../../json/shared.json'
 import './Profile.css'
 
@@ -86,6 +86,7 @@ class Profile extends Component {
         passwordScore: 0,
         passwordError: null,
         profilePic: null,
+        role: "ROLE_STUDENT"
     }
 
     tab_links = ["General", "Edit", "Feedback", "Settings"]
@@ -120,7 +121,7 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        this.getUserProfileDetails()
+        this.getStudentProfileDetails()
         this.getNotificationSettings()
     }
 
@@ -133,13 +134,13 @@ class Profile extends Component {
                 }
             }).then(res => res.blob())
             .then(blob => {
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
+                const reader = new FileReader()
+                reader.readAsDataURL(blob)
                 return new Promise(resolve => {
-                reader.onloadend = () => {
-                    resolve(reader.result);
-                };
-                });
+                    reader.onloadend = () => {
+                        resolve(reader.result)
+                    }
+                })
             })
             .then(finalResult => { 
                 this.setState({profilePic: finalResult})
@@ -147,14 +148,14 @@ class Profile extends Component {
         }
     }
 
-    getUserProfileDetails = () => {
+    getStudentProfileDetails = () => {
         const auth = this.props.auth
-        if(auth) {
+        if (auth) {
             this.setState({ loading: true })
             getProfileDetails(auth.accessToken, auth.profileId).then(response => {
                 this.setProfileData(response)
                 this.getProfilePicture(response.imageUrl)
-                if( !response.bio || !response.city) {
+                if (!response.bio || !response.city) {
                     this.setState({
                         severity: "info",
                         snackBarOn: true,
@@ -555,10 +556,10 @@ class Profile extends Component {
 
     handleRenderTabs = () => {
         switch(this.state.tabValue) {
-            case 0: return <Interest/>;
-            case 1: return this.renderEditTab();
-            case 2: return this.renderFeedbackTab();;
-            case 3: return this.renderSettings();
+            case 0: return <Interest/>
+            case 1: return this.renderEditTab()
+            case 2: return this.renderFeedbackTab()
+            case 3: return this.renderSettings()
             default: return <Interest/>
         }
     }

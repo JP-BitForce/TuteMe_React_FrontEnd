@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 const Dropdown = ({options, onChange, value, name}) => {
     return (
         <Form.Group>
-            <Form.Control as="select"  onChange={onChange} defaultValue = {value} name = {name}>
+            <Form.Control as="select"  onChange={onChange} defaultValue = {value} name = {name} value = {value}>
                 {
                     options.map(item => {
                         return (
