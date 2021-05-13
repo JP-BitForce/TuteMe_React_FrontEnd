@@ -5,18 +5,17 @@ import DoneIcon from '@material-ui/icons/Done';
 import CustomChip from "../../../components/Profile/CustomChip";
 import CustomComboBox from "../../../components/Profile/CustomComboBox";
 
+function AddMyInterest(props){
+    const {selectdata,setselectdata} = props;
 
-export default function AddMyInterest(props){
-
-    const {selectdata,setselectdata} = props
     const handleSelect = (select)=> {
         if(selectdata.findIndex(e => e === select) === -1){
             setselectdata([...selectdata,select])
         }
         else{
             alert("already selected");
-            }
         }
+    }
 
     const handleDelete = (select)=> {
         setselectdata(selectdata.filter((i)=>(i !== select)));
@@ -34,13 +33,11 @@ export default function AddMyInterest(props){
                             <Chip
                                 label={data}
                                 style={{backgroundColor: '#00875a', color: '#fff', marginLeft:15, marginTop:15}}
-                                onDelete={true}
                                 onClick={() => handleDelete(data)}
-                                deleteIcon={<DoneIcon style={{color:'#fff'}} /> }
+                                icon={<DoneIcon style={{color:'#fff'}} />}
                             />
                         );
                     })}
-
                 </Grid>
                 <Grid item xs={12} sm={12} align= "left">
                     <Typography style={{marginLeft:15, marginTop:20}}>
@@ -54,3 +51,5 @@ export default function AddMyInterest(props){
         </Paper>
     );
 }
+
+export default React.memo(AddMyInterest);
