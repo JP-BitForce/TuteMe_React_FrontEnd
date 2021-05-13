@@ -72,7 +72,8 @@ class SignIn extends Component {
                     email: response.email,
                     userId: response.userId,
                     role: response.role,
-                    profileId: response.profileId
+                    profileId: response.profileId,
+                    imageSrc: response.imgSrc
                 }
                 localStorage.setItem('LOGIN_RESPONSE', JSON.stringify(loginResponse))
                 this.props.storeLoginResponse(loginResponse)

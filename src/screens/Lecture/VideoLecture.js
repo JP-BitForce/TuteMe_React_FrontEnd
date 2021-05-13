@@ -11,12 +11,12 @@ import share from '../../assets/images/Course/videoChat/share.svg'
 import hangup from '../../assets/images/Course/videoChat/hang-up.svg'
 import fullscreen from '../../assets/images/Course/videoChat/fullscreen.svg'
 import minimize from '../../assets/images/Course/videoChat/minimize.svg'
+
 import './OnlineLesson.css'
 
-  
 const webSocketConnection = new WebSocket("ws://localhost:8080/videochat");
 
-const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
+const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnect, connectedTo}) => {
     const videoSelf = useRef()
     const videoCaller = useRef()
     const myPeer = useRef()
@@ -43,6 +43,9 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
     }, [simplePeer])
 
     const sendOrAcceptInvitation = (isInitiator, offer) => {
+        if (isInitiator) {
+            handleStart()
+        }
         navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((mediaStream) => {
             const video = videoSelf.current
             video.srcObject = mediaStream
@@ -105,6 +108,7 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
             track.stop()
         })
         setConnectionStatus(null)
+        handleDisconnect()
     }
     
     const shareScreen = () => {
@@ -198,35 +202,22 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
 
     const renderOpener = () => {
         return (
-            <div className="u-margin-top-xxlarge u-margin-bottom-xxlarge">
-                <div className="o-wrapper-l">
-                    <div className="hero flex flex-column">
-                        <div>
-                            <div className="actionText">
-                                Want to join ?
-                            </div>
-                        </div>
-                        <div className="callBox flex">
-                            <input 
-                                type = "text" 
-                                placeholder = "Join ID" 
-                                value = {joinId} 
-                                onChange = {handleInputOnChange} 
-                                className = "form-input"
-                                name = "joinId"    
-                            />
-                            <button 
-                                onClick={() => sendOrAcceptInvitation(() => handleJoin(joinId))} 
-                                className="primaryButton"
-                            >
-                            Join
-                            </button>
-                        </div>
-                        <div>
-                            Send your joining ID and wait for tutor accept your joining
-                        </div>
-                    </div>
+            <div className = "video_lec_opener_root">
+                <h5> Just click the button & start your online lesson </h5>
+                <div className="callBox flex">
+                    <input 
+                        type = "text" 
+                        placeholder = "Join ID" 
+                        value = {joinId} 
+                        onChange = {handleInputOnChange} 
+                        className = "form-input"
+                        name = "joinId"    
+                    />
+                    <button onClick={() => sendOrAcceptInvitation(true)} className="primaryButton">
+                        Start
+                    </button>
                 </div>
+                <h6 className = "secondary_text"> find the best experience for the year ahead </h6>
             </div>
         )
     }
@@ -251,6 +242,7 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
         )
     }
 
+
     return (
         <div className="web-rtc-page">
             {connectionStatus === null && renderOpener()}
@@ -263,4 +255,4 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
     )
 }
 
-export default OnlineLessonAlt
+export default VideoLecture

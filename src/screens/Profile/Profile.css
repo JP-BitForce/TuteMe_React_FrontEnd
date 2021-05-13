@@ -419,3 +419,23 @@
 .api_error {
     color: red;
 }
+
+.tutor_profile_root {
+    padding: 2%;
+}
+
+.social_links {
+    width: 100%;
+    padding: 4%;
+}
+
+.social_links_title {
+    text-transform: uppercase;
+    color: rgb(65, 42, 165);
+    font-size: 0.7rem !important;
+    font-weight: bold;
+}
+
+.social_links_value {
+    font-size: 0.7rem !important;
+}

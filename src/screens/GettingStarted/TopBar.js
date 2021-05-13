@@ -17,8 +17,6 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MenuIcon from '@material-ui/icons/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
-import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
-
 const drawerWidth = 210;
 
 const useStyles = makeStyles((theme) => ({
@@ -52,17 +50,20 @@ const useStyles = makeStyles((theme) => ({
   },
 
   profile_image : {
-    marginLeft: "2%"
+    marginLeft: "2%",
+    cursor: "pointer"
   }
 
-}));
+}))
 
 const TopBar = ({
     handleDrawerToggle, 
     mobileMoreAnchorEl, 
     isMobileMenuOpen, 
     handleMobileMenuClose, 
-    handleMobileMenuOpen
+    handleMobileMenuOpen,
+    src,
+    handleProfileRoute
 }) => {
     const classes = useStyles();
 
@@ -85,8 +86,8 @@ const TopBar = ({
               open={isMobileMenuOpen}
               onClose={handleMobileMenuClose}
           >
-          { renderMenuItem(4, <MailIcon />, "Messages") }
-          { renderMenuItem(11, <NotificationsIcon />, "Notifications") }
+          { renderMenuItem(0, <MailIcon />, "Messages") }
+          { renderMenuItem(0, <NotificationsIcon />, "Notifications") }
           </Menu>
         )
     }
@@ -105,13 +106,13 @@ const TopBar = ({
 
                 <div className = "grow"/>
                 <div className={classes.sectionDesktop}>
-                    <Batch content = {4} icon = {<MailIcon />} />
-                    <Batch content = {17} icon = {<NotificationsIcon />} />
+                    <Batch content = {0} icon = {<MailIcon />} />
+                    <Batch content = {0} icon = {<NotificationsIcon />} />
                 </div>
 
                 <div className = {classes.profile_image}>
                   <Tooltip title="Profile" aria-label="back">
-                      <Avatar src = {minimal_avatar}/>
+                      <Avatar src = {src} onClick = {() => handleProfileRoute("TUTOR_PROFILE")}/>
                   </Tooltip>
                 </div>
 

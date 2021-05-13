@@ -57,7 +57,6 @@ class SignUp extends Component {
     componentWillUnmount() {
         window.removeEventListener("resize", this.resize.bind(this));
     }
-
     
     handleHomeRoute = () => {
        window.location.replace('/') 

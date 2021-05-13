@@ -58,3 +58,23 @@ export const searchEnrolledCourses = (token, body) => {
     const endpoint = getEndpointWithPrefix(`enrollment/search_enrolled_courses`)
     return POST(endpoint, body, token)
 }
+
+export const createNewCourse = (token, formData) => {
+    const endpoint = getEndpointWithPrefix(`createNew`)
+    return MULTIPART(endpoint, formData, token)
+}
+
+export const getCourseByTutor = (token, id) => {
+    const endpoint = getEndpointWithPrefix(`get_course_by_tutor/${id}`)
+    return GET(endpoint, token)
+}
+
+export const updateCourse = (token, formData) => {
+    const endpoint = getEndpointWithPrefix(`update_course`)
+    return MULTIPART(endpoint, formData, token)
+}
+
+export const updateCourseWithoutFormData = (token, body) => {
+    const endpoint = getEndpointWithPrefix(`update_course/no_form_data`)
+    return POST(endpoint, body, token)
+}
