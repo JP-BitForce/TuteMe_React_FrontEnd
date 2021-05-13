@@ -208,6 +208,23 @@ class TutorProfile extends Component {
         }
     }
 
+    handleProfilePicUpload = async(file) => {
+        let reader = new FileReader()
+        reader.onloadend = () => {
+            this.setState({ profilePic: reader.result })
+        }
+        reader.readAsDataURL(file)
+
+        const formData = new FormData()
+        formData.append("file", file)
+        const auth = this.props.auth
+        updateProfilePic(auth.accessToken, auth.userId, formData).then(response => {
+            this.setSnackBarSuccess("Profile Picture updated successfully")
+        }).catch(err => {
+            this.setSnackBarError("Unable update, please try again")
+        })
+    }
+
     handlePasswordScoreOnChange = (score) => {
         this.setState({ passwordScore: score })
     }
@@ -226,23 +243,6 @@ class TutorProfile extends Component {
 
     handleRatingOnChange = (value) => {
         this.setState({ feedbackRate: value })
-    }
-
-    handleProfilePicUpload = async(file) => {
-        let reader = new FileReader()
-        reader.onloadend = () => {
-            this.setState({ profilePic: reader.result })
-        }
-        reader.readAsDataURL(file)
-
-        const formData = new FormData()
-        formData.append("file", file)
-        const auth = this.props.auth
-        updateProfilePic(auth.accessToken, auth.userId, formData).then(response => {
-            this.setSnackBarSuccess("Profile Picture updated successfully")
-        }).catch(err => {
-            this.setSnackBarError("Unable update, please try again")
-        })
     }
 
     handleTabChange = (newValue) => {
