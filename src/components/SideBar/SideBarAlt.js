@@ -8,7 +8,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import ListItem from '@material-ui/core/ListItem';
 import Avatar from '@material-ui/core/Avatar'
-import Typography from '@material-ui/core/Typography'; 
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';  
 import { makeStyles } from '@material-ui/core/styles';
 
 import Dashboard from '@material-ui/icons/Dashboard';
@@ -21,8 +22,8 @@ import RateReview from '@material-ui/icons/RateReview';
 import Today from '@material-ui/icons/Today';
 import Payment from '@material-ui/icons/Payment';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import AccessTime from '@material-ui/icons/AccessTime';
 
-import avatar from '../../assets/images/shared/minimal_avatar.jpg'
 import './SideBar.css'
 import routes from '../../route/routes'
 
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
     primary: {
         fontSize: "0.7rem",
+        fontWeight: "550"
     },
     secondary: {
         color: "#555",
@@ -82,10 +84,15 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "0.7rem",
         color: "#5D6D7E",
         fontWeight: "550"
+    },
+    role: {
+        color: "#555",
+        fontFamily : "Be Vietnam",
+        fontSize: "0.6rem",
     }
 }));
 
-const SideBarAlt = ({itemOnClick, active, auth}) => {
+const SideBarAlt = ({itemOnClick, active, auth, src}) => {
     const styles = useStyles()
     const [open, setOpen] = useState("")
     const [userDetails, setUserDetails] = useState(null)
@@ -100,7 +107,10 @@ const SideBarAlt = ({itemOnClick, active, auth}) => {
         MY_CHATS : <RateReview/>,
         CALENDAR : <Today/>,
         PAYMENTS : <Payment/>,
-        SIGN_OUT : <ExitToApp/>
+        SIGN_OUT : <ExitToApp/>,
+        TUTOR_PROFILE: <Person/>,
+        CREATE_COURSE: <Grain/>,
+        LECTURE: <AccessTime/>
     }
 
     useEffect(() => {
@@ -182,43 +192,50 @@ const SideBarAlt = ({itemOnClick, active, auth}) => {
         )
     }
 
-    return (
-        <div className = {styles.root}>
+    const renderNavs = (item) => {
+        const {caption, navs} = item
+        return (
+            <div className = "navigation_category_content">
+                <Typography variant="caption" className = {styles.categoty_head}>{caption}</Typography>
+                <List className = {styles.navList_root}>
+                    {
+                        navs
+                        .filter(({acceptUserRole}) => acceptUserRole && acceptUserRole.includes(userRole))
+                        .map((item) => {
+                            const {name, children, id} = item
+                            return (
+                                children.length > 0 ?
+                                renderWithSubItems(name, children, id)
+                                :
+                                renderNavItem(name, id)
+                            )
+                        })
+                    }
+                </List>
+            </div>
+        )
+    }
+
+    const renderProfileCard = () => {
+        return (
             <div className = "profile_card">
                 <div className = {styles.avatar}>
-                    <Avatar src = {avatar}/>
+                    <Avatar src = {src}/>
                 </div>
                 <div className = {styles.info}>
                     <span className = {styles.primary}>{userDetails && userDetails.email}</span>
-                    <span className = {styles.secondary}>{userDetails && userDetails.role.toLowerCase()}</span>
+                    <span className = {styles.role}>{userDetails && userDetails.role}</span>
                 </div>
             </div>
+        )
+    }
+
+    return (
+        <div className = {styles.root}>
+            { renderProfileCard() }
             <div className = "navigations_root">
-                {
-                    routes.sidebarNav.map(item => {
-                        const {caption, navs} = item
-                        return (
-                            <div className = "navigation_category_content">
-                                <Typography variant="caption" className = {styles.categoty_head}>{caption}</Typography>
-                                <List className = {styles.navList_root}>
-                                    {
-                                        navs
-                                        .filter(({acceptUserRole}) => acceptUserRole === userRole)
-                                        .map((item) => {
-                                            const {name, children, id} = item
-                                            return (
-                                                children.length > 0 ?
-                                                renderWithSubItems(name, children, id)
-                                                :
-                                                renderNavItem(name, id)
-                                            )
-                                        })
-                                    }
-                                </List>
-                            </div>
-                        )
-                    })
-                }
+                { routes.sidebarNav.map(item => renderNavs(item)) }
+                <Divider/>
                 { renderNavItem("SIGN-OUT", "SIGN_OUT") }
             </div>
         </div>

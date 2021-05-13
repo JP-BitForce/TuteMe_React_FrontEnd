@@ -16,6 +16,9 @@ import Blog from '../Blog/Blog'
 import Payments from '../Payments/Payments'
 import Calendar from '../Calendar/Calendar'
 import OneStep from '../OneStep/OneStep'
+import CreateCourse from '../Courses/CreateCourse'
+import TutorProfile from '../Profile/TutorProfile'
+import Lecture from '../Lecture/Lecture'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -23,6 +26,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import { makeStyles } from '@material-ui/core/styles';
 
+import avatar from '../../assets/images/shared/avatar.png'
 import './GettingStarted.css'
 
 const drawerWidth = 260;
@@ -48,8 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   toolbar: theme.mixins.toolbar,
-
-}));
+}))
 
 const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
     const classes = useStyles();
@@ -99,6 +102,27 @@ const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
       history.push('/')
     }
 
+    const getImageSource = (blob) => {
+      return `data:image/jpeg;base64,${blob}`
+    }
+
+    const getSource = () => {
+      const loginResponse = JSON.parse(localStorage.getItem('LOGIN_RESPONSE'))
+      if (auth) {
+        if (auth.imageSrc) {
+          return getImageSource(auth.imageSrc)
+        } else {
+          return avatar
+        }
+      } else if (loginResponse) {
+        if (loginResponse.imageSrc) {
+          return getImageSource(loginResponse.imageSrc)
+        } else {
+          return avatar
+        }
+      }
+    }
+
     const renderPermanentDrawer = () => {
         return (
           <Hidden xsDown implementation="css">
@@ -107,7 +131,11 @@ const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
               variant="permanent"
               open
             >
-              <SideBarAlt itemOnClick = {handleSetActiveItem} active = {active}/>
+              <SideBarAlt 
+                itemOnClick = {handleSetActiveItem} 
+                active = {active} 
+                src = {getSource()}
+              />
             </Drawer>
           </Hidden>
         )
@@ -124,7 +152,11 @@ const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
                   classes = {{ paper: classes.drawerPaper }}
                   ModalProps={{ keepMounted: true }}
               >
-                <SideBarAlt itemOnClick = {handleSetActiveItem} active = {active}/>
+                <SideBarAlt 
+                  itemOnClick = {handleSetActiveItem} 
+                  active = {active} 
+                  src = {getSource()}
+                />
               </Drawer>
           </Hidden>
         )
@@ -139,6 +171,8 @@ const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
             isMobileMenuOpen = {isMobileMenuOpen}
             handleMobileMenuClose = {handleMobileMenuClose}
             handleMobileMenuOpen = {handleMobileMenuOpen}
+            src = {getSource()}
+            handleProfileRoute = {handleSetActiveItem}
           />
 
           <nav className={classes.drawer} aria-label="mailbox folders">
@@ -167,7 +201,13 @@ const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
                 :
                 active === "PAYMENTS"  ? <Payments/>
                 :
-                active === "CALENDAR" && <Calendar/>
+                active === "CALENDAR" ? <Calendar/>
+                :
+                active === "CREATE_COURSE" ? <CreateCourse/>
+                :
+                active === "TUTOR_PROFILE" ? <TutorProfile/>
+                :
+                active === "LECTURE" && <Lecture/>
               }
           </main>
           <Modal

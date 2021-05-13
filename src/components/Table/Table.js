@@ -110,7 +110,7 @@ const TableComponent = ({type, tableHead, rows}) => {
                 {
                     rows.length === 0 ? 
                     <td>
-                        <div>No paymenst found</div>
+                        <div>No payments found</div>
                     </td>
                     :
                     rows.map(item => <Row row = {item} type = {type}/> ) 
