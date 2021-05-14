@@ -33,3 +33,13 @@ export const sendMessage = (body) => {
     const endpoint = getEndpointWithPrefix(`send_message`)
     return POST(endpoint, body)
 }
+
+export const getLandingPageContents = () => {
+    const endpoint = getEndpointWithPrefix(`get_landing_page_contents`)
+    return GET(endpoint)
+}
+
+export const subscribe = (email) => {
+    const endpoint = getEndpointWithPrefix(`subscribe_to_newsletter/${email}`)
+    return POST(endpoint)
+}
