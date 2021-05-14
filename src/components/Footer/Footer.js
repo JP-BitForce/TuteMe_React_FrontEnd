@@ -47,7 +47,7 @@ const Footer = () => {
                                 json.social_content.map(item => {
                                     const {content, style} = item
                                     return(
-                                        <a href = {content}><i className = {style}></i></a>
+                                        <a href = {content} target ="_blank" rel="noreferrer noopener"><i className = {style}></i></a>
                                     )
                                 })
                             }
