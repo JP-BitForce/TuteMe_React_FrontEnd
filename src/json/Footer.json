@@ -16,19 +16,19 @@
 
     "social_content":[
         {
-            "content":"Facebook", 
+            "content":"https://www.facebook.com/", 
             "style": "fab  fa-facebook"
         },
         {
-            "content":"Twitter", 
+            "content":"https://twitter.com/", 
             "style": "fab  fa-twitter"
         },
         {
-            "content":"Instagram", 
+            "content":"https://www.instagram.com/", 
             "style": "fab fa-instagram"
         },
         {
-            "content":"linkedIn", 
+            "content":"https://www.linkedin.com/", 
             "style": "fab  fa-linkedin"
         }
     ]
