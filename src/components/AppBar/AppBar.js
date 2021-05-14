@@ -22,14 +22,14 @@ import GrainIcon from '@material-ui/icons/Grain';
 import './AppBar.css'
 
 const AppBar = ({auth, history, logoutUser}) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null)
 
     const nav = [
       {label:"Home", href:"/", icon: <HomeIcon className = "icon" />},
-      {label:"Courses", href:"/", icon: <GrainIcon className = "icon" />},
-      {label:"Staffs", href:"/", icon: <WhatshotIcon className = "icon" />},
-      {label:"Contact", href:"/", icon: <InboxIcon className = "icon" />},
-    ];
+      {label:"Courses", href:"/PublicCourses", icon: <GrainIcon className = "icon" />},
+      {label:"Staffs", href:"/staffs", icon: <WhatshotIcon className = "icon" />},
+      {label:"Contact", href:"/contact", icon: <InboxIcon className = "icon" />},
+    ]
 
     const handleLoginRoute = () => {
         history.push('/signIn')
