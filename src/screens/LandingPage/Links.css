@@ -1,0 +1,165 @@
+.public_course_content_top_root {
+    position: relative;
+    z-index: 0;
+    background-image: url("../../assets/images/landing page/onlineCourses.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    position: relative;
+    width: 100%;
+    display: block;
+    height: 70vh;
+}
+
+.content_top__container {
+    width: 100%;
+    padding-right: var(--bs-gutter-x, 0.75rem);
+    padding-left: var(--bs-gutter-x, 0.75rem);
+    margin-right: auto;
+    margin-left: auto;
+    color: white;
+}
+
+.public_course_main_root {
+    padding: 2%;
+    background-color: rgb(235, 235, 235);
+}
+
+.public_card_item {
+    -webkit-box-shadow: 0 2px 10px 0 rgb(0 0 0 / 10%);
+    box-shadow: 0 2px 10px 0 rgb(0 0 0 / 10%);
+}
+
+.course_thumnail {
+    position: relative;
+    margin: 0 0 1rem;
+    display: block;
+}
+
+.course_thumnail_img {
+    max-width: 100%;
+    height: 24vh;
+    vertical-align: middle;
+    border-style: none;
+}
+
+.course_card__meta {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    display: -webkit-box !important;
+    display: flex !important;
+    color: #a6a6a6;
+    justify-content: space-between;
+    margin-top: 4%;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.col {
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.section_title h1 {
+    padding-top: 15px;
+}
+
+.section_title h1::before {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 55px;
+    height: 4px;
+    content: '';
+    background: #ffb606;
+}
+
+/*.........staffs............*/
+
+.staffs_content_top_root {
+    position: relative;
+    z-index: 0;
+    background-image: url("../../assets/images/landing page/background2.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    position: relative;
+    width: 100%;
+    display: block;
+    height: 70vh;
+}
+
+.public_staffs_main_root {
+    padding: 2%;
+    background-color: rgb(235, 235, 235);
+}
+
+/*.........contact............*/
+
+.contact_content_top_root {
+    position: relative;
+    z-index: 0;
+    background-image: url("../../assets/images/landing page/contact.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 4em 0;
+    position: relative;
+    width: 100%;
+    display: block;
+    height: 70vh;
+}
+
+.contact_main_root {
+    padding: 2%;
+    background-color: rgb(235, 235, 235);
+}
+
+.contact_detail_card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgb(145 158 171 / 24%) 0px 0px 2px 0px, rgb(145 158 171 / 24%) 0px 16px 32px -4px;
+    border-radius: 16px;
+    background-color: white;
+    flex-direction: column;
+    padding: 5%;
+}
+
+.contact_detail_card h4 {
+    color: rgb(190, 190, 190);
+    text-transform: uppercase;
+}
+
+.contact_detail_card span {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-top: 2%;
+    color: black;
+}
+
+.contact_form_root {
+    box-shadow: rgb(145 158 171 / 24%) 0px 0px 2px 0px, rgb(145 158 171 / 24%) 0px 16px 32px -4px;
+    border-radius: 16px;
+    background-color: white;
+    padding: 4%;
+}

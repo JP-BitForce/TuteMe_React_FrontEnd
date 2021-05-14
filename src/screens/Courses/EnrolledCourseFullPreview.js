@@ -171,10 +171,10 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, value
                     }
                 </Grid>
                 <div className = "en_course_prev_main_content_day">
-                    <Typography variant="h4"><span>{daySelected.day}</span></Typography>
+                    <Typography variant="h4"><span>{daySelected && daySelected.day}</span></Typography>
                     <div className = "en_course_prev_main_content_cal_item">
-                        <span>Starts: {daySelected.startTime}</span>
-                        <span>Ends: {daySelected.endTime}</span>
+                        <span>Starts: {daySelected && daySelected.startTime}</span>
+                        <span>Ends: {daySelected && daySelected.endTime}</span>
                     </div>
                 </div>
                 <Divider/>
