@@ -1,19 +1,16 @@
 import React, { Component } from 'react'
 
-import Header from '../../components/Header/Header'
 import Event from './Event'
 import FeatureCard from './FeatureCard'
 import Blog from './Blog'
+import Loading from '../../components/Loading/Loading'
+import {getLandingPageContents, subscribe} from '../../api/landing'
 
 //Material-UI
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 
-import instructor from '../../assets/images/Home/experts.png'
-import life_time from '../../assets/images/Home/life_time.png'
-import courses_plus from '../../assets/images/Home/courses_plus.png'
-import headerImg from '../../assets/images/Home/header.jpg'
 import event1 from '../../assets/images/Home/event1.jpg'
 import event2 from '../../assets/images/Home/event2.jpg'
 import blog from '../../assets/images/Home/blog.jpg'
@@ -30,19 +27,15 @@ import json from '../../json/Home.json'
 import './Home.css'
 
 class Home extends Component {
-
-    cards = [
-        {src : instructor, title : "Expert instructors", description :"The automated process all your website tasks."},
-        {src : courses_plus, title : "100+ courses ",  description :"The automated process all your website tasks."},
-        {src : life_time, title : "Life time access", description :"The automated process all your website tasks."}
-    ]
-
-    counts = [
-        {label : "Courses", count: "1524"},
-        {label : "Students", count: "853"},
-        {label : "Teachers Online", count: "300"},
-        {label : "Cities", count: "76"},
-    ]
+    state = {
+        counts: null,
+        loading: false,
+        subLoading: false,
+        open: false,
+        message: "",
+        severity: "success",
+        email : ""
+    }
 
     features = {
         "Certifications": certificattion,
@@ -53,7 +46,6 @@ class Home extends Component {
         "Certified Teachers": certificate_people
     }
     
-
     event = [
         { src : event1, date: 15, month: "Jan", time: "10:00 AM - 11:00 AM", location: "Online Event", description:"One make creepeth man for so bearing their firmament won't fowl meat over seas great"},
         { src : event2, date: 21, month: "Feb", time: "04:00 PM - 05:30 AM", location: "Hilton Quebec", description:"One make creepeth man for so bearing their firmament won't fowl meat over seas great"},
@@ -65,7 +57,56 @@ class Home extends Component {
         {date: 16, month: "Mar", year: "2021", comments: 1, title: json.main_section_4.blog[2].title, content: json.main_section_4.blog[0].des, src: blog2}
     ]
 
+    componentDidMount() {
+        this.setState({ loading: true })
+        getLandingPageContents().then(response => {
+            let counts = [
+                {label : "Courses", count: response.counts.courses},
+                {label : "Students", count: response.counts.students},
+                {label : "Teachers Online", count: response.counts.tutors},
+                {label : "Schedules", count: response.counts.schedules},
+            ]
+            this.setState({
+                counts: counts,
+                loading: false
+            })
+        }).catch(err => {
+            this.setState({
+                count: null,
+                loading: false
+            })
+        })
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        this.setState({ subLoading: true })
+        subscribe(this.state.email).then(response => {
+            this.setState({ 
+                subLoading: true,
+                email: "",
+                open: true,
+                message: response.message,
+                severity: "success",
+            })
+        }).catch(err => {
+            this.setState({ 
+                subLoading: true,
+                email: "",
+                open: true,
+                message: err.message,
+                severity: "error",
+            })
+        })
+    }
+
+    handleInputOnChange = (event) => {
+        this.setState({ email: event.target.value })
+    }
+
     renderSection1 = () => {
+        const {counts} = this.state
         return (
             <section className = "section_1_ftc">
                 <div className = "section_1_container">
@@ -75,7 +116,7 @@ class Home extends Component {
                     </div>
                     <div className = "row">
                         {
-                            this.counts.map(item => {
+                            counts && counts.map(item => {
                                 return (
                                     <Grid item xs={6} md={3} sm={6} style = {{marginBottom:"5%"}}>
                                         <div className = "column">
@@ -170,8 +211,8 @@ class Home extends Component {
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={12} md={6}>
-                        <form className = "newsletter_form">
-                            <input type = "email" placeholder = "Email address"/>
+                        <form className = "newsletter_form" onSubmit = {this.handleSubmit}>
+                            <input type = "email" placeholder = "Email address" onChange = {this.handleInputOnChange}/>
                             <button type = "submit">Subscribe Now</button>
                         </form>
                     </Grid>
@@ -203,18 +244,12 @@ class Home extends Component {
     }
 
     render() {
+        const {loading} = this.state
         return (
             <div className = "home_div_root">
                 <React.Fragment>
                     <CssBaseline />
-                    <main>
-                        <Header 
-                            title = {json.header_content_1} 
-                            src = {headerImg} 
-                            cards = {this.cards}    
-                        />
-                        { this.renderMainContents() }
-                    </main>
+                    {  loading ? <Loading open = {loading} /> : this.renderMainContents() }
                 </React.Fragment>
             </div>
         )

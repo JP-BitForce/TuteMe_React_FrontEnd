@@ -109,7 +109,7 @@ const LandingContents = ({history, auth, countsData, feedbacks}) => {
         }).catch(err => {
             setSnackBar({
                 open: true,
-                message: "server error, please try again later",
+                message: err.message,
                 severity: "error"
             })
             setEmail("")
