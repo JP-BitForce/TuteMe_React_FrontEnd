@@ -13,7 +13,6 @@
 .main_contents_grid {
     display: flex;
     flex-direction: column;
-    margin-top: 8%;
 }
 
 .parallax {
