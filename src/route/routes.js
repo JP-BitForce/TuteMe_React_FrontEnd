@@ -3,6 +3,9 @@ import SignUp from '../screens/SignUp/SignUp'
 import LandingPage from '../screens/LandingPage/LandingPage'
 import ForgotPassword from '../screens/ForwardPassword/ForgotPassword'
 import GettingStarted from '../screens/GettingStarted/GettingStarted'
+import PublicCourses from '../screens/LandingPage/PublicCourse'
+import Staffs from '../screens/LandingPage/Staffs'
+import Contact from '../screens/LandingPage/Contact'
 
 const routes = {
     data: [
@@ -41,7 +44,27 @@ const routes = {
         type: "",
         children: [],
       },
-  
+      {
+        name: "Courses",
+        path: "/PublicCourses",
+        component: PublicCourses,
+        type: "main",
+        children: [],
+      },
+      {
+        name: "Stafss",
+        path: "/staffs",
+        component: Staffs,
+        type: "main",
+        children: [],
+      },
+      {
+        name: "Contact",
+        path: "/contact",
+        component: Contact,
+        type: "main",
+        children: [],
+      },
     ],
 
     sidebarNav : [
