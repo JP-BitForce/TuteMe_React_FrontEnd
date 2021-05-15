@@ -36,17 +36,17 @@
         {
             "header":"Online Lessons",
             "src":"features-icon-1",
-            "para":"This is a paragraph. Click here to add  and edit your own text here."
+            "para":"We provide online based lessons and resources, which can access anywhere anytime."
         },
         {
             "header":"One Step",
             "src":"features-icon-2",
-            "para":"This is a paragraph. Click here to add  and edit your own text here."
+            "para":"This is a feature, students can request answer for their particular questions or doubts."
         },
         {
             "header":"Blogs",
             "src":"features-icon-3",
-            "para":"This is a paragraph. Click here to add  and edit your own text here."
+            "para":"Users can write blogs and articles, which they interest on."
         }
     ],
 
@@ -54,17 +54,17 @@
         {
             "header":"Social Collaboration",
             "src":"features-icon-4",
-            "para":"This is a paragraph. Click here to add  and edit your own text here."
+            "para":"Users can connect & chat with other people who joined with our system."
         },
         {
             "header":"Find tutors & courses",
             "src":"features-icon-5",
-            "para":"This is a paragraph. Click here to add  and edit your own text here."
+            "para":"Users can search courses & teachers/lecturers that they looking for"
         },
         {
             "header":"Online Payments",
             "src":"features-icon-6",
-            "para":"This is a paragraph. Click here to add  and edit your own text here."
+            "para":"Online payment facilities available for easier contribution but also bank payment also available."
         }
     ]
 }

@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import SimplePeer, { Instance, SignalData } from "simple-peer"
 
+//Material-UI
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import camera from '../../assets/images/Course/videoChat/camera.svg'
@@ -16,7 +20,7 @@ import './OnlineLesson.css'
 
 const webSocketConnection = new WebSocket("ws://localhost:8080/videochat");
 
-const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnect, connectedTo}) => {
+const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnect, connectedTo, startLoading, startError}) => {
     const videoSelf = useRef()
     const videoCaller = useRef()
     const myPeer = useRef()
@@ -42,10 +46,27 @@ const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnec
         }
     }, [simplePeer])
 
-    const sendOrAcceptInvitation = (isInitiator, offer) => {
-        if (isInitiator) {
-            handleStart()
+    const handleStartOnClick = async() => {
+        const verified = await handleStart()
+        if (verified) {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((mediaStream) => {
+                const video = videoSelf.current
+                video.srcObject = mediaStream
+                video.play()
+                setStream(mediaStream)
+                const sp = new SimplePeer({
+                    trickle: false,
+                    initiator: true,
+                    stream: mediaStream,
+                })
+                setUserVideoOn(true)
+                setConnectionStatus("OFFERING")
+                handleSimplepeer(sp)
+            })
         }
+    }
+
+    const sendOrAcceptInvitation = (offer) => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((mediaStream) => {
             const video = videoSelf.current
             video.srcObject = mediaStream
@@ -53,29 +74,30 @@ const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnec
             setStream(mediaStream)
             const sp = new SimplePeer({
                 trickle: false,
-                initiator: isInitiator,
+                initiator: false,
                 stream: mediaStream,
             })
             setUserVideoOn(true)
-
-            if (isInitiator) setConnectionStatus("OFFERING")
-            else offer && sp.signal(offer)
-
-            sp.on("signal", (data) => {
-                webSocketConnection.send(JSON.stringify(data))
-            })
-            sp.on("connect", () => {
-                setConnectionStatus("CONNECTED")
-            })
-            sp.on("stream", (stream) => {
-                const video = videoCaller.current;
-                video.srcObject = stream;
-                video.play()
-            })
-            setCallerVideoOn(true)
-            setSimplePeer(sp)
-            myPeer.current = sp
+            sp.signal(offer)
+            handleSimplepeer(sp)
         })
+    }
+
+    const handleSimplepeer = (sp) => {
+        sp.on("signal", (data) => {
+            webSocketConnection.send(JSON.stringify(data))
+        })
+        sp.on("connect", () => {
+            setConnectionStatus("CONNECTED")
+        })
+        sp.on("stream", (stream) => {
+            const video = videoCaller.current;
+            video.srcObject = stream;
+            video.play()
+        })
+        setCallerVideoOn(true)
+        setSimplePeer(sp)
+        myPeer.current = sp
     }
 
     const toggleMuteAudio = () => {
@@ -186,17 +208,25 @@ const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnec
         }
     }
 
-    const renderInComing = () => {
+    const renderModal = () => {
         return (
-            <div className="incomingCallContainer">
-                <div className="incomingCall flex flex-column">
-                    <div><span className="callerID"></span> is calling you!</div>
-                    <div className="incomingCallButtons flex">
-                        <button name="accept" className="alertButtonPrimary" onClick={() => sendOrAcceptInvitation(false, offerSignal)}>Accept</button>
-                        <button name="reject" className="alertButtonSecondary" onClick={rejectCall}>Reject</button>
-                    </div>
-                </div>
-            </div>
+            <Dialog
+                open={connectionStatus === "RECEIVING"}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle>
+                    <div><span className = "callerID"></span> trying to join you!</div>
+                </DialogTitle>
+                <DialogContent> 
+                    <button 
+                        name = "accept" 
+                        className = "alertButtonPrimary" 
+                        onClick = {() => sendOrAcceptInvitation(offerSignal)}
+                    >Accept</button>
+                    <button name = "reject" className = "alertButtonSecondary" onClick = {rejectCall}>Reject</button>
+                </DialogContent>
+            </Dialog>
         )
     }
 
@@ -204,7 +234,7 @@ const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnec
         return (
             <div className = "video_lec_opener_root">
                 <h5> Just click the button & start your online lesson </h5>
-                <div className="callBox flex">
+                <div className = "callBox flex">
                     <input 
                         type = "text" 
                         placeholder = "Join ID" 
@@ -213,9 +243,12 @@ const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnec
                         className = "form-input"
                         name = "joinId"    
                     />
-                    <button onClick={() => sendOrAcceptInvitation(true)} className="primaryButton">
-                        Start
+                    <button onClick={handleStartOnClick} className="primaryButton">
+                        { startLoading ? <CircularProgress/> : "Start" }
                     </button>
+                </div>
+                <div className = "flex">
+                { startError && <span className = "error">{startError}</span>}
                 </div>
                 <h6 className = "secondary_text"> find the best experience for the year ahead </h6>
             </div>
@@ -247,7 +280,7 @@ const VideoLecture = ({joinId, handleInputOnChange, handleStart, handleDisconnec
         <div className="web-rtc-page">
             {connectionStatus === null && renderOpener()}
             {connectionStatus === "OFFERING" && <CircularProgress/>}
-            {connectionStatus === "RECEIVING" && renderInComing()}
+            {connectionStatus === "RECEIVING" && renderModal()}
             <div className = { userVideoOn && callerVideoOn ? "callContainer" : "video-container_non" }>
                 { renderConnectedContainer() }
             </div>

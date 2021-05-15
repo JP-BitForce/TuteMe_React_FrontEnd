@@ -10,12 +10,12 @@
         "header" : "What We Offer",
         "subHeader": "Replenish man have thing gathering lights yielding shall you",
         "contents": [
-            {"title": "Scholarship Facility", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
-            {"title": "Certifications", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
-            {"title": "Offers & Discounts", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
-            {"title": "Creative Lessons", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
-            {"title": "Regular Classes", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."},
-            {"title": "Certified Teachers", "description": "Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus ele ifend, et auctor lorem hendrerit."}
+            {"title": "Scholarship Facility", "description": "We provide scholarships for students who perform well in during lessons."},
+            {"title": "Certifications", "description": "We provide certificates for each courses that students successfully compeleted."},
+            {"title": "Offers & Discounts", "description": "Students who perform well in exams & lessons and a good contribution to system will get an offers and discounts."},
+            {"title": "Creative Lessons", "description": "We provvide creative lessons to increase students knowledge to next level."},
+            {"title": "Regular Classes", "description": "Courses will be continuesly conducted even like pandemic situations."},
+            {"title": "Certified Teachers", "description": "We ensure our tutors and staffs are certified to conduct a lessons and provide advices."}
         ]
     },
     "main_section_3": {

@@ -243,7 +243,7 @@ h1::before {
 .content_top_root {
     position: relative;
     z-index: 0;
-    background-image: url("../../assets/images/landing page/background1.jpg");
+    background-image: url("../../assets/images/landing page/background3.jpg");
     background-attachment: fixed;
     background-size: cover;
     background-repeat: no-repeat;
