@@ -1,32 +1,32 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 import Loading from '../../components/Loading/Loading'
 import HeaderTopper from '../../components/Header/HeaderTopper'
 
 //Material-UI
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider';
-import Avatar from '@material-ui/core/Avatar';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Box from '@material-ui/core/Box';
-import Collapse from '@material-ui/core/Collapse';
-import Button from '@material-ui/core/Button';
-import Backdrop from '@material-ui/core/Backdrop';
+import Grid from '@material-ui/core/Grid'
+import TextField from '@material-ui/core/TextField'
+import Divider from '@material-ui/core/Divider'
+import Avatar from '@material-ui/core/Avatar'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import Box from '@material-ui/core/Box'
+import Collapse from '@material-ui/core/Collapse'
+import Button from '@material-ui/core/Button'
+import Backdrop from '@material-ui/core/Backdrop'
 
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Search from '@material-ui/icons/Search';
-import Edit from '@material-ui/icons/Edit';
-import Videocam from '@material-ui/icons/Videocam';
-import More from '@material-ui/icons/MoreVert';
-import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
-import AttachFile from '@material-ui/icons/AttachFile';
-import Mic from '@material-ui/icons/Mic';
-import Send from '@material-ui/icons/Send';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import ChevronRight from '@material-ui/icons/ChevronRight'
+import Search from '@material-ui/icons/Search'
+import Edit from '@material-ui/icons/Edit'
+import Videocam from '@material-ui/icons/Videocam'
+import More from '@material-ui/icons/MoreVert'
+import InsertEmoticon from '@material-ui/icons/InsertEmoticon'
+import AttachFile from '@material-ui/icons/AttachFile'
+import Mic from '@material-ui/icons/Mic'
+import Send from '@material-ui/icons/Send'
 
-import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
-import avatar_2 from '../../assets/images/shared/avatar_2.jpg'
+import avatar from '../../assets/images/shared/avatar.png'
 import './Chat.css'
 
 var stompClient = null;
@@ -50,16 +50,18 @@ class MyChat extends Component {
         curTime: '',
         openNotifications: false,
         bellRing: false,
-        privateMessages: []
+        privateMessages: [],
+        userImg: avatar
     }
 
     componentDidMount() {
         window.addEventListener("resize", this.resize.bind(this))
         this.resize()
-
+        
         this.setState({ curTime: new Date().toLocaleString() })
         this.timerID = setInterval(() => this.state.bellRing ? this.setState({ bellRing: false }) : "", 10000)
         this.connect()
+        this.setUserImage()
     }
     
     resize() {
@@ -82,8 +84,8 @@ class MyChat extends Component {
         const Stomp = require('stompjs')
         var SockJS = require('sockjs-client')
         SockJS = new SockJS('http://localhost:8080/ws')
-        stompClient = Stomp.over(SockJS);
-        stompClient.connect({}, this.onConnected, this.onError);
+        stompClient = Stomp.over(SockJS)
+        stompClient.connect({}, this.onConnected, this.onError)
     }
 
     onConnected = () => {
@@ -279,11 +281,25 @@ class MyChat extends Component {
 
     }
 
+    setUserImage = () => {
+        const auth = this.props.auth
+        let src = avatar
+        if (auth.imageSrc) {
+            src = this.getImageSource(auth.imageSrc)
+        }
+        this.setState({ userImg: src })
+    }
+    
+    getImageSource = (blob) => {
+        return `data:image/jpeg;base64,${blob}`
+    }
+
     renderChatListTop = () => {
+        const {userImg} = this.state
         return (
             <div className = "chat_list_top">
                 <div className = "own_avatar_div">
-                    <Avatar src = {minimal_avatar}/>
+                    <Avatar src = {userImg}/>
                     <span/>
                 </div>
                 <div className = "flex_grow"/>
@@ -338,7 +354,7 @@ class MyChat extends Component {
                 onClick = {() => this.handleListItemOnClick(item)}
             >
                 <div className = "list_tem_avatar">
-                    <Avatar src = {avatar_2}/>
+                    <Avatar src = {avatar}/>
                 </div>
                 <div className = "list_item_text">
                     <span>{item.sender.split('~')[0]}</span>
@@ -570,4 +586,10 @@ class MyChat extends Component {
 }
 
 
-export default MyChat
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(MyChat)
