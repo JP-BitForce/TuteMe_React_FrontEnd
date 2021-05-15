@@ -10,6 +10,7 @@ import SnackBar from '../../components/SnackBar/SnackBar'
 
 import {getCourseByTutor} from '../../api/course'
 import {uploadFile, uploadVideo, uploadLink} from '../../api/resource'
+import {createJoinId, startLesson} from '../../api/lesson'
 
 //React-Boostarp
 import Card from 'react-bootstrap/Card'
@@ -17,6 +18,7 @@ import Card from 'react-bootstrap/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import Grid from '@material-ui/core/Grid'
 import DialogContentText from '@material-ui/core/DialogContentText'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import Home from '@material-ui/icons/Home'
 import PostAdd from '@material-ui/icons/PostAdd'
@@ -45,6 +47,11 @@ class Lecture extends Component {
         snackBarOn: false,
         severity: "success",
         snackBarMessage: "",
+        startLoading: false,
+        createLoading: false,
+        newJoinId: "",
+        prefix: "",
+        startError: null
     }
 
     TAB_LINKS = ["Home", "Resources"]
@@ -160,8 +167,70 @@ class Lecture extends Component {
         }
     }
 
-    handleStart = () => {
-        this.setState({ connected: true })
+    handleCreate = () => {
+        const {prefix, tutorCourseData} = this.state
+        const auth = this.props.auth
+        if (prefix) {
+            this.setState({ createLoading: true })
+            const body = {
+                tutorId: auth.profileId,
+                courseId: tutorCourseData.id,
+                joinId: prefix
+            }
+            createJoinId(auth.accessToken, body).then(response => {
+                this.setState({ 
+                    createLoading: false,
+                    newJoinId: response.message,
+                    prefix: "" 
+                })
+            }).catch(err => {
+                this.setState({ 
+                    createLoading: false,
+                    newJoinId: "" 
+                })
+            })
+        }
+    }
+
+    handleStart = async() => {
+        const {joinId, tutorCourseData} = this.state
+        let verified = false
+        if (joinId) {
+            this.setState({ startLoading: true })
+            const auth = this.props.auth
+            const body = {
+                tutorId: auth.profileId,
+                courseId: tutorCourseData.id,
+                joinId: joinId
+            }
+            try {
+                await startLesson(auth.accessToken, body)
+                this.setState({ 
+                    startLoading: false,
+                    connected: true,
+                    startError: null,
+                    joinId: ""
+                })
+                verified =  true
+            } catch (err) {
+                let startError = null
+                if (err.message === "JOIN_ID_NOT_FOUND") {
+                    startError = "You not created a join id for this course, please create first"
+                } 
+                else if (err.message === "JOIN_ID_MISMATCH") {
+                    startError = "Oops! sorry id is incorrect, try again"
+                }
+                else {
+                    startError = "server error, please try again later"
+                }
+                this.setState({ 
+                    startLoading: false,
+                    connected: false,
+                    startError
+                })
+            }
+        }
+        return verified
     }
 
     handleDisconnect = () => {
@@ -185,7 +254,7 @@ class Lecture extends Component {
 
     handleInputOnChange = (event) => {
         const {name, value} = event.target
-        this.setState({ [name]: value })
+        this.setState({ [name]: value, startError: null })
     }
 
     handleTabChange = (newValue) => {
@@ -284,6 +353,7 @@ class Lecture extends Component {
                             </div>
                         </Grid>
                     </Grid>
+                    { this.renderCreateId() }
                 </Card.Body>
             </Card>
         )
@@ -305,8 +375,36 @@ class Lecture extends Component {
         )
     }
 
+    renderCreateId = () => {
+        const {prefix, newJoinId, createLoading} = this.state
+        return (
+            <div className = "create_new_pre_root">
+                <h5> Create a new join Id prefix for your course </h5>
+                <div className="callBox flex">
+                    <input 
+                        type = "text" 
+                        placeholder = "Prefix" 
+                        value = {prefix} 
+                        onChange = {this.handleInputOnChange} 
+                        className = "form-input"
+                        name = "prefix" 
+                        max = {3}   
+                    />
+                    <button onClick={this.handleCreate} className="primaryButton">
+                        { createLoading ? <CircularProgress/> : "Create" }
+                    </button>
+                </div>
+                { newJoinId && <h6 className = "secondary_text"> 
+                            Your Join ID: <span className = "new_join_id">{newJoinId} </span>
+                            (Please make sure you can get remember)
+                    </h6>
+                }
+            </div>
+        )
+    }
+
     renderVideoLecture = () => {
-        const {joinId, connected, tutorCourseData} = this.state
+        const {joinId, connected, tutorCourseData, startLoading, startError} = this.state
         return (
             <div className = "video_lec_main">
                 <span className = "header_title_span text_left">Your Course</span>
@@ -319,6 +417,8 @@ class Lecture extends Component {
                             handleStart = {this.handleStart}
                             connectedTo = {connected}
                             handleDisconnect = {this.handleDisconnect}
+                            startLoading = {startLoading}
+                            startError = {startError}
                         />
                     </div>
                 </Card>

@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {connect} from 'react-redux'
 
 import { logout } from '../../redux/actions/authAction'
+import CustomButton from '../../components/Button/CustomButton'
 
 //Boostrap
 import Navbar from 'react-bootstrap/Navbar'
@@ -103,9 +104,9 @@ const AppBar = ({auth, history, logoutUser}) => {
                   {
                     !auth ? (
                       <div className = "setion_desktop_container">
-                        <Button variant="outline-primary" onClick = {handleLoginRoute}> SIGN IN </Button>
+                        <Button variant="outlined" onClick = {handleLoginRoute} style = {{borderColor: "#EB984E", color: "#EB984E"}}> SIGN IN </Button>
                         <div className = "horizontal_seperator"/>
-                        <Button variant="outline-primary" onClick = {handleSignUpRoute}> SIGN UP</Button>
+                        <Button variant="outlined" onClick = {handleSignUpRoute} style = {{borderColor: "#EB984E", color: "#EB984E"}}> SIGN UP</Button>
                         <div className = "horizontal_seperator"/>
                       </div>
                     )
