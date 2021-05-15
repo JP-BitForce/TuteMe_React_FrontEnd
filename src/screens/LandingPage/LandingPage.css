@@ -76,8 +76,8 @@ h1::before {
     content: '';
     position: absolute;
     bottom: -10px;
-    background-color: black;
-    height: 2px;
+    background-color: #EB984E;
+    height: 3px;
     box-sizing: border-box;
     width: 100px;
 }
@@ -243,7 +243,7 @@ h1::before {
 .content_top_root {
     position: relative;
     z-index: 0;
-    background-image: url("../../assets/images/landing page/background3.jpg");
+    background-image: url("../../assets/images/landing page/background4.jpg");
     background-attachment: fixed;
     background-size: cover;
     background-repeat: no-repeat;
@@ -252,7 +252,7 @@ h1::before {
     position: relative;
     width: 100%;
     display: block;
-    height: 90vh;
+    height: 100vh;
 }
 
 .content_top__container {
@@ -311,7 +311,7 @@ h1::before {
 }
 
 .landing_content_section_features {
-    margin-bottom: 2%;
+    margin-bottom: 4%;
     margin-top: 2%;
 }
 
@@ -405,4 +405,11 @@ h1::before {
     text-align: left;
     color: white;
     min-height: 15rem;
+}
+
+.card_offer {
+    box-shadow: rgb(145 158 171 / 24%) 0px 0px 2px 0px, rgb(145 158 171 / 24%) 0px 16px 32px -4px;
+    border-radius: 16px;
+    padding: 2%;
+    background-color: rgb(255, 255, 255);
 }
