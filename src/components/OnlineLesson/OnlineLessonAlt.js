@@ -16,7 +16,7 @@ import './OnlineLesson.css'
   
 const webSocketConnection = new WebSocket("ws://localhost:8080/videochat");
 
-const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
+const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin, courseId, tutorId}) => {
     const videoSelf = useRef()
     const videoCaller = useRef()
     const myPeer = useRef()
@@ -42,37 +42,41 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
         }
     }, [simplePeer])
 
-    const sendOrAcceptInvitation = (isInitiator, offer) => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((mediaStream) => {
-            const video = videoSelf.current
-            video.srcObject = mediaStream
-            video.play()
-            setStream(mediaStream)
-            const sp = new SimplePeer({
-                trickle: false,
-                initiator: isInitiator,
-                stream: mediaStream,
-            })
-            setUserVideoOn(true)
-
-            if (isInitiator) setConnectionStatus("OFFERING")
-            else offer && sp.signal(offer)
-
-            sp.on("signal", (data) => {
-                webSocketConnection.send(JSON.stringify(data))
-            })
-            sp.on("connect", () => {
-                setConnectionStatus("CONNECTED")
-            })
-            sp.on("stream", (stream) => {
-                const video = videoCaller.current;
-                video.srcObject = stream;
+    const sendOrAcceptInvitation = async(offer) => {
+        const verified = await handleJoin(courseId, tutorId)
+        if (verified) {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((mediaStream) => {
+                const video = videoSelf.current
+                video.srcObject = mediaStream
                 video.play()
+                setStream(mediaStream)
+                const sp = new SimplePeer({
+                    trickle: false,
+                    initiator: false,
+                    stream: mediaStream,
+                })
+                setUserVideoOn(true)
+                sp.signal(offer)
+                handleSimplepeer(sp)
             })
-            setCallerVideoOn(true)
-            setSimplePeer(sp)
-            myPeer.current = sp
+        }
+    }
+
+    const handleSimplepeer = (sp) => {
+        sp.on("signal", (data) => {
+            webSocketConnection.send(JSON.stringify(data))
         })
+        sp.on("connect", () => {
+            setConnectionStatus("CONNECTED")
+        })
+        sp.on("stream", (stream) => {
+            const video = videoCaller.current;
+            video.srcObject = stream;
+            video.play()
+        })
+        setCallerVideoOn(true)
+        setSimplePeer(sp)
+        myPeer.current = sp
     }
 
     const toggleMuteAudio = () => {
@@ -87,13 +91,6 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
             setVideoMuted(!videoMuted)
             stream.getVideoTracks()[0].enabled = videoMuted
         }
-    }
-
-    const rejectCall = () => {
-        setStream(null)
-        setUserVideoOn(false)
-        setCallerVideoOn(false)
-        setConnectionStatus(null)
     }
 
     const endCall = () => {
@@ -182,29 +179,13 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
         }
     }
 
-    const renderInComing = () => {
-        return (
-            <div className="incomingCallContainer">
-                <div className="incomingCall flex flex-column">
-                    <div><span className="callerID"></span> is calling you!</div>
-                    <div className="incomingCallButtons flex">
-                        <button name="accept" className="alertButtonPrimary" onClick={() => sendOrAcceptInvitation(false, offerSignal)}>Accept</button>
-                        <button name="reject" className="alertButtonSecondary" onClick={rejectCall}>Reject</button>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
     const renderOpener = () => {
         return (
             <div className="u-margin-top-xxlarge u-margin-bottom-xxlarge">
                 <div className="o-wrapper-l">
                     <div className="hero flex flex-column">
                         <div>
-                            <div className="actionText">
-                                Want to join ?
-                            </div>
+                            <div className="actionText"> Want to join ? </div>
                         </div>
                         <div className="callBox flex">
                             <input 
@@ -214,17 +195,13 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
                                 onChange = {handleInputOnChange} 
                                 className = "form-input"
                                 name = "joinId"    
+                                disabled = {connectionStatus !== "RECEIVING"}
                             />
-                            <button 
-                                onClick={() => sendOrAcceptInvitation(() => handleJoin(joinId))} 
-                                className="primaryButton"
-                            >
-                            Join
+                            <button onClick={() => sendOrAcceptInvitation(offerSignal)} className="primaryButton" disabled = {connectionStatus !== "RECEIVING"}>
+                             Join
                             </button>
                         </div>
-                        <div>
-                            Send your joining ID and wait for tutor accept your joining
-                        </div>
+                        <div> Send your joining ID and wait for tutor accept your joining </div>
                     </div>
                 </div>
             </div>
@@ -253,9 +230,8 @@ const OnlineLessonAlt = ({handleInputOnChange, joinId, handleJoin}) => {
 
     return (
         <div className="web-rtc-page">
-            {connectionStatus === null && renderOpener()}
+            {(connectionStatus === null || connectionStatus === "RECEIVING") && renderOpener()}
             {connectionStatus === "OFFERING" && <CircularProgress/>}
-            {connectionStatus === "RECEIVING" && renderInComing()}
             <div className = { userVideoOn && callerVideoOn ? "callContainer" : "video-container_non" }>
                 { renderConnectedContainer() }
             </div>

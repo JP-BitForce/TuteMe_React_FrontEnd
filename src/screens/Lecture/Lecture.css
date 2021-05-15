@@ -66,3 +66,20 @@
 .title_from-control {
     width: 30%;
 }
+
+.create_new_pre_root {
+    margin-top: 2%;
+    text-align: left;
+}
+
+.create_new_pre_root h5 {
+    text-transform: uppercase;
+    color: rgb(136, 136, 136);
+    font-size: 1rem !important;
+}
+
+.new_join_id {
+    font-size: 1.2rem;
+    color: crimson;
+    font-weight: 600;
+}
