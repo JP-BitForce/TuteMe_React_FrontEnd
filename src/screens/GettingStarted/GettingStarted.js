@@ -173,6 +173,7 @@ const GettingStarted = ({logoutUser, history, auth, storeLoginResponse}) => {
             handleMobileMenuOpen = {handleMobileMenuOpen}
             src = {getSource()}
             handleProfileRoute = {handleSetActiveItem}
+            auth = {auth}
           />
 
           <nav className={classes.drawer} aria-label="mailbox folders">

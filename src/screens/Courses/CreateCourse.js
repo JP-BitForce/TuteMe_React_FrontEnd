@@ -361,7 +361,7 @@ class CreateCourse extends Component {
     }
 
     coverPicOnChange = (e, title) => {
-        const { files } = e.target;
+        const { files } = e.target
         if (files && files.length) {
             this.handleCoverPicOnSelect(files[0], title)
         }

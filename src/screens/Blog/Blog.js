@@ -26,7 +26,7 @@ import Search from '@material-ui/icons/Search';
 import Dialpad from '@material-ui/icons/Dialpad';
 import HowToReg from '@material-ui/icons/HowToReg';
 
-import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
+import avatar from '../../assets/images/shared/avatar.png'
 import headerImg from '../../assets/images/Blog/headerImg.jpg'
 import './Blog.css'
 
@@ -355,7 +355,7 @@ class Blog extends Component {
                                 <Grid item xs={6} sm={6} md={3} key = {id}>
                                     <BlogCard
                                         src = {this.getImageSource(coverImg)}
-                                        avatar = {authorImg ? this.getImageSource(authorImg) : minimal_avatar}
+                                        avatar = {authorImg ? this.getImageSource(authorImg) : avatar}
                                         date = {date}
                                         description = {description}
                                         comments = {comments.length}
