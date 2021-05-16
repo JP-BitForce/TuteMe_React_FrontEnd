@@ -167,9 +167,10 @@
 /*FAQ*/
 .FAQ{
     width: 900px;
-    height: 600px;
+    height: auto;
     margin-top: 10px;
     margin-left: 300px;
+    margin-bottom: 10px;
 }
 .faq-qst{
     font-size: 2em;
