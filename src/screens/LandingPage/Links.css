@@ -163,3 +163,19 @@
     background-color: white;
     padding: 4%;
 }
+
+/*FAQ*/
+.FAQ{
+    width: 900px;
+    height: 600px;
+    margin-top: 10px;
+    margin-left: 300px;
+}
+.faq-qst{
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffc535;
+}
+.faq-ans{
+    font-size: 1.5em;
+}
