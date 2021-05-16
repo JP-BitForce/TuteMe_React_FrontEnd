@@ -9,7 +9,7 @@ const Footer = () => {
         "Contact us": '/contact',
         "our services": '/',
         "privacy policy": '/',
-        "FAQ": '/',
+        "FAQ": '/FAQ',
         "Payment options": '/',
         "Courses": '/PublicCourses',
         "tutors": '/staffs',
