@@ -1,30 +1,16 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
+import moment from 'moment'
 
 import Loading from '../../components/Loading/Loading'
 import HeaderTopper from '../../components/Header/HeaderTopper'
+import Aside from './Aside'
+import Messanger from './Messanger'
 
 //Material-UI
-import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField'
-import Divider from '@material-ui/core/Divider'
-import Avatar from '@material-ui/core/Avatar'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import Box from '@material-ui/core/Box'
 import Collapse from '@material-ui/core/Collapse'
 import Button from '@material-ui/core/Button'
 import Backdrop from '@material-ui/core/Backdrop'
-
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRight from '@material-ui/icons/ChevronRight'
-import Search from '@material-ui/icons/Search'
-import Edit from '@material-ui/icons/Edit'
-import Videocam from '@material-ui/icons/Videocam'
-import More from '@material-ui/icons/MoreVert'
-import InsertEmoticon from '@material-ui/icons/InsertEmoticon'
-import AttachFile from '@material-ui/icons/AttachFile'
-import Mic from '@material-ui/icons/Mic'
-import Send from '@material-ui/icons/Send'
 
 import avatar from '../../assets/images/shared/avatar.png'
 import './Chat.css'
@@ -40,7 +26,7 @@ class MyChat extends Component {
         recipients: "",
         currentPersonnel: null,
         broadcastMessages: [],
-        username: "spr",
+        username: "",
         mobileView: false,
         channelConnected: false,
         chatMessage: '',
@@ -51,14 +37,22 @@ class MyChat extends Component {
         openNotifications: false,
         bellRing: false,
         privateMessages: [],
-        userImg: avatar
+        userImg: avatar,
+        attachemTitle: "",
+        cover: null,
+        file: null,
+        currentPersonnelMessages: []
     }
 
     componentDidMount() {
+        const auth = this.props.auth
         window.addEventListener("resize", this.resize.bind(this))
         this.resize()
         
-        this.setState({ curTime: new Date().toLocaleString() })
+        this.setState({ 
+            curTime: new Date().toLocaleString(),
+            username: auth && auth.email.split("@")[0]
+        })
         this.timerID = setInterval(() => this.state.bellRing ? this.setState({ bellRing: false }) : "", 10000)
         this.connect()
         this.setUserImage()
@@ -94,19 +88,6 @@ class MyChat extends Component {
         stompClient.subscribe('/topic/pubic', this.onMessageReceived)
         // Registering user to server as a public chat user
         stompClient.send("/app/addUser", {}, JSON.stringify({ sender: this.state.username, type: 'JOIN' }))
-    }
-    
-    sendMessage = (type, value) => {
-        const {username} = this.state
-        if (stompClient) {
-          var chatMessage = {
-            sender: username,
-            content: value,
-            type: type
-          }
-          // send public message
-          stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessage))
-        }
     }
 
     onMessageReceived = (payload) => {
@@ -165,6 +146,19 @@ class MyChat extends Component {
         }
     }
 
+    sendMessage = (type, value) => {
+        const {username} = this.state
+        if (stompClient) {
+          var chatMessage = {
+            sender: username,
+            content: value,
+            type: type
+          }
+          // send public message
+          stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessage))
+        }
+    }
+
     handlePrivateConnection = () => {
         const Stomp = require('stompjs')
         var SockJS = require('sockjs-client')
@@ -174,24 +168,26 @@ class MyChat extends Component {
     }
 
     onPrivateConnected = () => {
-        const name = this.state.currentPersonnel.sender.split('~')[0]
+        const {currentPersonnel} = this.state
+        const name = currentPersonnel && currentPersonnel.sender
         // Subscribing to the private topic
-        stompClient.subscribe('/user/' + name + '/reply', this.onPrivateMessageReceived);
+        stompClient.subscribe('/user/' + name + '/reply', this.onPrivateMessageReceived)
 
         // Registering user to server as a private chat user
         stompClient.send('/app/addPrivateUser', {}, JSON.stringify({ sender: name, type: 'JOIN' }))
     }
 
     sendPrivateMessage = (type, value) => {
+        const {username, currentPersonnel} = this.state
         if (stompClient) {
           var chatMessage = {
-            sender: this.state.username,
-            receiver: this.state.currentPersonnel.sender.split('~')[0],
+            sender: username,
+            receiver: currentPersonnel.sender,
             content: type === 'TYPING' ? value : value,
             type: type
     
           }
-          stompClient.send('/app/sendPrivateMessage', {}, JSON.stringify(chatMessage));
+          stompClient.send('/app/sendPrivateMessage', {}, JSON.stringify(chatMessage))
         }
     }
 
@@ -230,6 +226,22 @@ class MyChat extends Component {
         object.scrollTop = object.scrollHeight;
     }
 
+    handleSendOnClick = (disable) => {
+        if (!disable) {
+            const {currentPersonnelMessages, message, username} = this.state
+            const newMessage = {
+                id: currentPersonnelMessages.length + 1, 
+                src: avatar, 
+                sender: username, 
+                message, 
+                dateTime: moment(new Date()).format("hh:mm a")
+            }
+            currentPersonnelMessages.push(newMessage)
+            this.setState({ currentPersonnelMessages, message: "" })
+            this.sendPrivateMessage('CHAT', message)
+        }
+    }
+
     handleSearchOnChange = (event) => {
         this.setState({
             [event.target.name]: event.traget.value
@@ -251,8 +263,7 @@ class MyChat extends Component {
     handleListItemOnClick = (item) => {
         this.setState({
             currentPersonnel: item,
-        })
-        this.handlePrivateConnection()
+        }, this.handlePrivateConnection())
     }
 
     handleChatNewOnClick = () => {
@@ -261,24 +272,27 @@ class MyChat extends Component {
         })
     }
 
-    handleVideoCamOnClick = () => {
-
-    }
-
     handleMoreOnClick = () => {
 
     }
 
-    handleEmojiOnClick = () => {
-
+    handleEmojiOnClick = (disable) => {
+        if (!disable) {
+            
+        }
     }
 
-    handleAttachmentOnClick = () => {
-
-    }
-
-    handleMicOnClick = () => {
-
+    attachmentOnChange = (e) => {
+        const { files } = e.target
+        if (files && files.length) {
+            let file = files[0]
+            let reader = new FileReader()
+            reader.onloadend = () => {
+                 this.setState({ cover: reader.result, file })
+            }
+            reader.readAsDataURL(file)
+        }
+        this.setState({ attachemTitle: files[0].name })
     }
 
     setUserImage = () => {
@@ -294,224 +308,10 @@ class MyChat extends Component {
         return `data:image/jpeg;base64,${blob}`
     }
 
-    renderChatListTop = () => {
-        const {userImg} = this.state
-        return (
-            <div className = "chat_list_top">
-                <div className = "own_avatar_div">
-                    <Avatar src = {userImg}/>
-                    <span/>
-                </div>
-                <div className = "flex_grow"/>
-                <div className = "icon_button" onClick = {this.handleLeftPanel}>
-                    <ChevronLeftIcon />
-                </div>
-                <div className = "icon_button" onClick = {this.handleChatNewOnClick}>
-                    <Edit style = {{width: "15px", height: "15px"}}/>
-                </div> 
-            </div>
-        )
-    }
-
-    renderChatListTopAlt = () => {
-        return (
-            <div className = "chat_list_top">
-                <div className = "icon_button" onClick = {this.handleLeftPanel}>
-                    <ChevronRight/>
-                </div>               
-            </div>
-        )
-    }
-
-    renderSearchField = (label) => {
-        return (
-            <TextField 
-                id = {`input-with-icon-adornment_${label}`}
-                label= {label}
-                variant="outlined" 
-                onChange = {this.handleSearchOnChange}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <Search />
-                        </InputAdornment>
-                    )
-                }}
-                size="small"
-                name = {label.toLowerCase()}
-            />
-        )
-    }
-
-    renderChatListCard = (item) => {
-        const currentPersonnel = this.state.currentPersonnel
-        return (
-            <div 
-                className = {[
-                    "chat_list_card_alt", 
-                    currentPersonnel && currentPersonnel === item && "chat_list_card_alt_active"
-                ].join(" ")}
-                onClick = {() => this.handleListItemOnClick(item)}
-            >
-                <div className = "list_tem_avatar">
-                    <Avatar src = {avatar}/>
-                </div>
-                <div className = "list_item_text">
-                    <span>{item.sender.split('~')[0]}</span>
-                    <p>{item.message}</p>
-                </div>
-                <div className = "list_item_time">
-                    <div className = "list_item_time_val">13 minutes</div>
-                    <span/>
-                </div>
-            </div>
-        )
-    }
-
-    renderChatLists = () => {
-        const {roomNotification, username} = this.state
-        return (
-            <Grid container direction="row" justify="center" alignItems="center">
-            {
-                roomNotification.map((item) => {
-                    if ( username.toLowerCase().trim() !== item.sender.split('~')[0].toLowerCase().trim()) {
-                        return this.renderChatListCard(item)
-                    }
-                    return null
-                })
-            }
-            </Grid>
-        )
-    }
-
-    renderMessangerTopSearch = () => {
-        return (
-            <div className = "messanger_top_search">
-                <h6>To:</h6>
-                { this.renderSearchField("Recipients", this.state.recipients) }
-            </div>
-        )
-    }
-
-    renderMessangerTopItem = () => {
-        const currentPersonnel = this.state.currentPersonnel
-        return (
-            <div className = "messanger_top_item">
-                <div className = "messanger_top_item_left">
-                    <div className = "list_tem_avatar">
-                        <Avatar src = {currentPersonnel && currentPersonnel.src}/>
-                    </div>
-                    <div className = "list_item_text">
-                        <span>{currentPersonnel && currentPersonnel.sender.split('~')[0]}</span>
-                        <p>less than minute ago</p>
-                    </div>
-                </div>
-                <div className = "messanger_top_item_right">
-                    <div className = "icon_button" onClick = {this.handleVideoCamOnClick}>
-                        <Videocam/>
-                    </div>
-                    <div className = "icon_button" onClick = {this.handleMoreOnClick}>
-                        <More/>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    renderMainChatFooter = () => {
-        const {message} = this.state
-        return (
-            <div className = "main_chat__footer">
-                <div className = "main_input_base">
-                    <div className = "icon_button" onClick = {this.handleEmojiOnClick}>
-                        <InsertEmoticon/>
-                    </div>
-                    <TextField
-                        id="outlined-margin-normal"
-                        placeholder="write something...."
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                        variant="outlined"
-                        size="small"
-                        onChange = {this.handleTypingMessage}
-                        value = {message}
-                    />
-                    <div className = "icon_button" onClick = {this.handleAttachmentOnClick}>
-                        <AttachFile/>
-                    </div>
-                    <div className = "icon_button" onClick = {this.handleMicOnClick}>
-                        <Mic/>
-                    </div>
-                </div>
-                <div className = "send_base">
-                    <div className = "icon_button" onClick = {() => this.sendPrivateMessage('CHAT', message)}>
-                        <Send/>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    renderMyMessage = (msg, i) => {
-        return (
-            <li className = "chat_list_item_mine" key={i}>
-                <div>
-                    <div className = "message_box_mine">
-                        {msg.message}
-                    </div>
-                    <div className = "message_dateTime">
-                        {msg.dateTime}
-                    </div>
-                </div>
-            </li>
-        )
-    }
-
-    renderSenderMessage = (msg, i) => {
-        return (
-            <li className = "chat_list_item_other" key={i}>
-                <div className = "chat_list_item_other_box">
-                    <div className = "message_box_other">
-                        {msg.message}
-                    </div>
-                    <div className = "message_dateTime">
-                        {msg.dateTime}
-                    </div>
-                </div>
-            </li>
-        )
-    }
-
-    renderMainChatList = () => {
-        const {username, broadcastMessages, currentPersonnel} = this.state
-        return (
-            <div className = "main_chat_lists">
-                <ul id="chat" ref="messageBox">
-                    {
-                        currentPersonnel && broadcastMessages.map((msg, i) => {
-                            if (username === msg.sender) {
-                                return this.renderMyMessage(msg, i)
-                            } else {
-                                return this.renderSenderMessage(msg, i)
-                            }
-                        })
-                    }
-                </ul>
-            </div>
-        )
-    }
-
-    renderMainChatContainer = () => {
-        return (
-            <div className = "main_chat_container">
-                { this.renderMainChatList() }
-                { this.renderMainChatFooter() }
-            </div>
-        )
-    }
-
     renderChat = () => {
-        const {leftPanelOpen, currentPersonnel, search} = this.state
+        const {leftPanelOpen, currentPersonnel, roomNotification, username, 
+            search, userImg, recipients, broadcastMessages, message
+        } = this.state
         return (
             <div className = "chat_alt_root">
                 <Collapse in={true} timeout="auto" unmountOnExit 
@@ -520,28 +320,32 @@ class MyChat extends Component {
                         borderRight: '1px solid rgba(145, 158, 171, 0.24)'
                     }}
                 >
-                    <Box margin={1}>
-                        {
-                            leftPanelOpen ? 
-                             <div className = "chat_list_block_inside">
-                                { this.renderChatListTop() }
-                                { this.renderSearchField("Search", search) }
-                            </div>
-                            :
-                            <div className = "chat_list_block_inside">
-                                { this.renderChatListTopAlt() }
-                            </div>
-                        }
-                        <div className = "chat_lists_container">
-                            { this.renderChatLists() }
-                        </div>
-                    </Box>
+                <Aside
+                    leftPanelOpen = {leftPanelOpen}
+                    roomNotification = {roomNotification}
+                    username = {username}
+                    currentPersonnel = {currentPersonnel}
+                    handleListItemOnClick = {this.handleListItemOnClick}
+                    search = {search}
+                    handleLeftPanel = {this.handleLeftPanel}
+                    userImg = {userImg}
+                    handleChatNewOnClick = {this.handleChatNewOnClick}
+                    handleSearchOnChange = {this.handleSearchOnChange}
+                />
                 </Collapse>
-                <div className = "chat_messanger">
-                    { currentPersonnel ? this.renderMessangerTopItem() : this.renderMessangerTopSearch() }
-                    <Divider/>
-                    { this.renderMainChatContainer() }
-                </div>
+                <Messanger
+                    currentPersonnel = {currentPersonnel}
+                    handleMoreOnClick = {this.handleMoreOnClick}
+                    recipients = {recipients}
+                    handleSearchOnChange = {this.handleSearchOnChange}
+                    broadcastMessages = {broadcastMessages}
+                    username = {username}
+                    message = {message}
+                    handleEmojiOnClick = {this.handleEmojiOnClick}
+                    handleTypingMessage = {this.handleTypingMessage}
+                    attachmentOnChange = {this.attachmentOnChange}
+                    handleSendOnClick = {this.handleSendOnClick}
+                />
             </div>
         )
     }

@@ -63,9 +63,19 @@ const TopBar = ({
     handleMobileMenuClose, 
     handleMobileMenuOpen,
     src,
-    handleProfileRoute
+    handleProfileRoute,
+    auth
 }) => {
-    const classes = useStyles();
+    const classes = useStyles()
+
+    const handleProfileRouteOnClick = () => {
+      const role = auth.role
+      if (role === "ROLE_STUDENT") {
+        handleProfileRoute("MY_PROFILE")
+      } else if (role === "ROLE_STUDENT") {
+        handleProfileRoute("TUTOR_PROFILE")
+      }
+    }
 
     const renderMenuItem = (content, icon, title) => {
         return (
@@ -112,7 +122,7 @@ const TopBar = ({
 
                 <div className = {classes.profile_image}>
                   <Tooltip title="Profile" aria-label="back">
-                      <Avatar src = {src} onClick = {() => handleProfileRoute("TUTOR_PROFILE")}/>
+                      <Avatar src = {src} onClick = {handleProfileRouteOnClick}/>
                   </Tooltip>
                 </div>
 
