@@ -8,6 +8,7 @@ import Pagination from '../../components/Pagination/Paginator'
 import EnrolledCourseFullPreview from './EnrolledCourseFullPreview'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter'
 import { getEnrolledCourses, getFilterCategories, filterEnrolledCourses, searchEnrolledCourses } from '../../api/course'
+import {startLesson} from '../../api/lesson'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
@@ -45,7 +46,8 @@ class MyCourses extends Component {
         joinIdValueError: null,
         joinLoading: false,
         filterCourse: false,
-        btnDisabled: true
+        btnDisabled: true,
+        joinError: null
     }
 
     componentDidMount() {
@@ -126,8 +128,38 @@ class MyCourses extends Component {
         }
     }
 
-    handleJoin = (joinId) => {
-        return joinId === "user"
+    handleJoin = async(courseId, tutorId) => {
+        const {joinId} = this.state
+        let verified = false
+        if (joinId) {
+            const auth = this.props.auth
+            const body = { tutorId, courseId, joinId }
+            try {
+                await startLesson(auth.accessToken, body)
+                this.setState({ 
+                    connected: true,
+                    startError: null,
+                    joinId: ""
+                })
+                verified =  true
+            } catch (err) {
+                let joinError = null
+                if (err.message === "JOIN_ID_NOT_FOUND") {
+                    joinError = "You not created yet, wait until tutor create it"
+                } 
+                else if (err.message === "JOIN_ID_MISMATCH") {
+                    joinError = "Oops! sorry id is incorrect, try again"
+                }
+                else {
+                    joinError = "server error, please try again later"
+                }
+                this.setState({ 
+                    connected: false,
+                    joinError
+                })
+            }
+        }
+        return verified
     }
 
     handleSearchApi = (page) => {
@@ -444,6 +476,7 @@ class MyCourses extends Component {
                         values = {this.state}
                         handleInputOnChange = {this.handleInputOnChange}
                         handleJoin = {this.handleJoin}
+                        auth = {this.props.auth}
                     />
                 }
             </div>

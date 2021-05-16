@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
       height: 60,
       padding: '20px 30px',
       color: "white",
-      backgroundColor: "#2E86C1"
+      backgroundColor: "#EB984E"
     },
 }));
 
@@ -191,8 +191,8 @@ const LandingContents = ({history, auth, countsData, feedbacks}) => {
                 <div className = "content_top__container">
                     <div className = "col-lg__1">
                         <div className = "content_top_block">
-                            <h1 class="mb-4">{headerJson.mainContent}</h1>
-                            <p class="mb-4">{headerJson.context}</p>
+                            <h1 className = "mb-4">{headerJson.mainContent}</h1>
+                            <p className = "mb-4">{headerJson.context}</p>
                             <p>
                                 <Button size="large" className = {styles.margin} onClick = {handleGettingStartRoute}>
                                     Get Started Now!
@@ -341,7 +341,7 @@ const LandingContents = ({history, auth, countsData, feedbacks}) => {
     const renderSectionSubsribe = () => {
         return (
             <div className = "landing_subscribe_newsletter">
-                <Grid container spacing={5}>
+                <Grid container>
                     <Grid item xs={12} sm={12} md={1}/>
                     <Grid item xs={12} sm={12} md={5}>
                         <div className = "newsletter_text">
