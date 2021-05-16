@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 import {connect} from 'react-redux'
 
 import { logout } from '../../redux/actions/authAction'
-import CustomButton from '../../components/Button/CustomButton'
 
 //Boostrap
 import Navbar from 'react-bootstrap/Navbar'
@@ -112,7 +111,7 @@ const AppBar = ({auth, history, logoutUser}) => {
                     )
                     :
                     <div className = "setion_desktop_container">
-                      <Button variant="outline-primary" onClick = {handleLogout}> LOG OUT </Button>
+                      <Button variant="outlined" style = {{borderColor: "#EB984E", color: "#EB984E"}} onClick = {handleLogout}> LOG OUT </Button>
                     </div>
                   }
                 </div>

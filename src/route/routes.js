@@ -6,6 +6,7 @@ import GettingStarted from '../screens/GettingStarted/GettingStarted'
 import PublicCourses from '../screens/LandingPage/PublicCourse'
 import Staffs from '../screens/LandingPage/Staffs'
 import Contact from '../screens/LandingPage/Contact'
+import FAQ from "../screens/LandingPage/FAQ";
 
 const routes = {
     data: [
@@ -64,7 +65,13 @@ const routes = {
         component: Contact,
         type: "main",
         children: [],
-      },
+      },{
+        name: "FAQ",
+        path: "/FAQ",
+        component: FAQ,
+        type: "main",
+        children: [],
+      }
     ],
 
     sidebarNav : [

@@ -37,17 +37,19 @@ class LandingPage extends Component {
         const {counts, feedbacks, loading} = this.state
         return (
             <div className = "landing_root_div">
-                <AppBar history = {history}/>
                 {
                     loading ? <Loading open = {loading}/> 
                     :
+                    <>
+                    <AppBar history = {history}/>
                     <LandingContents 
                         history = {history}
                         countsData = {counts}
                         feedbacks = {feedbacks}    
                     />
+                     <Footer history = {history}/>
+                    </>
                 }
-                <Footer history = {history}/>
             </div>
         )
     }
