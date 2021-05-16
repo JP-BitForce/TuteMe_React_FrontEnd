@@ -5,6 +5,16 @@ import json from '../../json/Footer.json'
 
 const Footer = () => {
 
+    const HREF = {
+        "Contact us": '/contact',
+        "our services": '/',
+        "privacy policy": '/',
+        "FAQ": '/',
+        "Payment options": '/',
+        "Courses": '/PublicCourses',
+        "tutors": '/staffs',
+    }
+
     return (
         <footer className = "footer">
             <div className = "container">
@@ -19,7 +29,7 @@ const Footer = () => {
                                         {
                                             children.map(item => {
                                                 return (
-                                                    <li><a href = "/">{item}</a></li>
+                                                    <li><a href = {HREF[item]}>{item}</a></li>
                                                 )
                                             })
                                         }
@@ -37,7 +47,7 @@ const Footer = () => {
                                 json.social_content.map(item => {
                                     const {content, style} = item
                                     return(
-                                        <a href = {content}><i className = {style}></i></a>
+                                        <a href = {content} target ="_blank" rel="noreferrer noopener"><i className = {style}></i></a>
                                     )
                                 })
                             }

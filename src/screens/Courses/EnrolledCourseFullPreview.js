@@ -1,31 +1,32 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import moment from 'moment';
 
 import ReadOnlyRating from '../../components/Rating/ReadOnlyRating'
 import OnlineLessonAlt from '../../components/OnlineLesson/OnlineLessonAlt'
+import {getJoinId} from '../../api/lesson'
 
 //React-Boostarp
 import Card from 'react-bootstrap/Card'
 
 //Material-UI
-import { makeStyles } from '@material-ui/core/styles';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
-import Slide from '@material-ui/core/Slide';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import { makeStyles } from '@material-ui/core/styles'
+import Dialog from '@material-ui/core/Dialog'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import ArrowBackIos from '@material-ui/icons/ArrowBackIos'
+import Slide from '@material-ui/core/Slide'
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Avatar from '@material-ui/core/Avatar'
+import Divider from '@material-ui/core/Divider'
+import Breadcrumbs from '@material-ui/core/Breadcrumbs'
 
 import fileSrc from '../../assets/images/shared/file.png'
 import videoSrc from '../../assets/images/shared/video.png'
@@ -81,10 +82,10 @@ const useStyles = makeStyles({
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
-});
+})
 
-const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, values, handleInputOnChange}) => {
-    const {title, courseImg, description, rating, duration, enrolledAt, tutorName, id, schedules, resources} = course
+const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, values, handleInputOnChange, auth}) => {
+    const {title, courseImg, description, rating, duration, enrolledAt, tutorName, id, schedules, resources, tutorId} = course
     const classes = useStyles({ img: `data:image/jpeg;base64,${courseImg}` })
 
     const filters = ["Home", "Resources", "Upcoming Events"]
@@ -93,6 +94,20 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, value
 
     const [nav, setNav] = useState(0)
     const [daySelected, setDaySelected] = useState(schedules[0])
+    const [joinId, setJoinId] = useState("")
+
+    useEffect(()=> {
+        getJoinIdApi()
+         // eslint-disable-next-line
+    },[])
+
+    const getJoinIdApi = () => {
+        getJoinId(auth.accessToken, id).then(response => {
+            setJoinId(response.message)
+        }).catch(err => {
+            setJoinId("")
+        })
+    }
 
     const getActive = (day) => {
         let active = false
@@ -171,10 +186,11 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, value
                     }
                 </Grid>
                 <div className = "en_course_prev_main_content_day">
-                    <Typography variant="h4"><span>{daySelected.day}</span></Typography>
+                    { joinId && <h6> JOINING ID: <span className = "new_join_id">{joinId}</span></h6> }
+                    <Typography variant="h4"><span>{daySelected && daySelected.day}</span></Typography>
                     <div className = "en_course_prev_main_content_cal_item">
-                        <span>Starts: {daySelected.startTime}</span>
-                        <span>Ends: {daySelected.endTime}</span>
+                        <span>Starts: {daySelected && daySelected.startTime}</span>
+                        <span>Ends: {daySelected && daySelected.endTime}</span>
                     </div>
                 </div>
                 <Divider/>
@@ -187,6 +203,8 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, value
                                 handleInputOnChange = {handleInputOnChange}
                                 joinId = {values["joinId"]}
                                 handleJoin = {handleJoin}
+                                courseId = {id}
+                                tutorId = {tutorId}
                             />
                         }
                     </Paper>
@@ -203,7 +221,6 @@ const EnrolledCourseFullPreview = ({open, handleClose, course, handleJoin, value
                     resources.length === 0 ? 
                     <div className = "no_up_events_root">
                         <span>No resources right now</span>
-                        <p>will be coming soon...</p>
                     </div>
                     :
                     <List>

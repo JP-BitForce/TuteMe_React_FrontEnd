@@ -8,11 +8,13 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import CardContent from '@material-ui/core/CardContent';
 
+import './LandingPage.css'
+
 const FeatureCard = ({src, title, description}) => {
     return (
         <Grid item xs={6} sm={6} md={4}>
             <Paper elevation = {0}>
-                <CardContent style = {{textAlign:"left"}}>
+                <CardContent style = {{textAlign:"left"}} className = "card_offer">
                     <div className = "feature_card_head">
                         <RoundedCategory src = {src}/>
                         <span>{title}</span>

@@ -34,24 +34,20 @@ function CustomInterestCard () {
     const handleAddToolsAndTechnologies = (data) => {
         setToolsTechSkillData([...toolsTechSkillData,...data])
     }
+
     const getUserSkillsDetails = async () =>{
         const auth = JSON.parse(localStorage.getItem('LOGIN_RESPONSE'))
-
         getUserSkills(auth.accessToken, auth.userId).then(response => {
             setSubjectData(response.subjectSkills)
             setTopSkillData(response.topSkills)
             setToolsTechSkillData(response.techSkills)
-    
-            
         }).catch(err => {
-            console.log(err,'skillsDataskillsDataskillsData')
-
+            
         })
     }
-    const handleSave = async () => {
-        // // const auth = this.props.auth
-        const auth = JSON.parse(localStorage.getItem('LOGIN_RESPONSE'))
 
+    const handleSave = async () => {
+        const auth = JSON.parse(localStorage.getItem('LOGIN_RESPONSE'))
         const request = {
             userId: auth.userId,
             subjectSkills: subjectData,
@@ -60,11 +56,10 @@ function CustomInterestCard () {
              
         }
         await addSkills(auth.accessToken, request).then(response => {
-            console.log(response,'skillsDataskillsDataskillsData')
+            
         }).catch(err => {
-            console.log(err,'skillsDataskillsDataskillsData')
+            
         })
-        
     }
 
     return(

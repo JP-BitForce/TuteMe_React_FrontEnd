@@ -6,11 +6,14 @@ import InfoCard from '../../components/Card/InfoCard'
 import FeatureCard from './FeatureCard'
 import Slick from '../../components/Slider/Slick'
 import SnackBar from '../../components/SnackBar/SnackBar'
+import ReadOnlyRating from '../../components/Rating/ReadOnlyRating'
+import {subscribe} from '../../api/landing'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import './LandingPage.css'
 import headerJson from '../../json/Header.json'
@@ -36,7 +39,7 @@ import consult from '../../assets/images/Home/consult.png'
 import global from '../../assets/images/Home/global.png'
 import search from '../../assets/images/Home/search.png'
 import payment from '../../assets/images/Home/payment.png'
-import minimal_avatar from '../../assets/images/shared/minimal_avatar.jpg'
+import avatar from '../../assets/images/shared/avatar.png'
 
 const useStyles = makeStyles((theme) => ({
     margin: {
@@ -46,23 +49,25 @@ const useStyles = makeStyles((theme) => ({
       height: 60,
       padding: '20px 30px',
       color: "white",
-      backgroundColor: "#2E86C1"
+      backgroundColor: "#EB984E"
     },
 }));
 
-const LandingContents = ({history, auth}) => {
+const LandingContents = ({history, auth, countsData, feedbacks}) => {
     const styles = useStyles()
     const [snackBarOpen, setSnackBar] = useState({
         open: false,
         message: "",
         severity: "warning"
     })
+    const [email, setEmail] = useState("")
+    const [subLoading, setSubLoading] = useState(false)
 
     const counts = [
-        {start: 0, end : 524, duration : 6, src : studentCount, title : "Students"},
-        {start: 0, end : 88, duration : 6, src : teacherCount, title : "Trusted Tutors"},
-        {start: 0, end : 101, duration : 6, src : courses, title : "Courses"},
-        {start: 0, end : 375, duration : 6, src : schedules, title : "Schedules"}
+        {start: 0, end : countsData && countsData.students, duration : 8, src : studentCount, title : "Students"},
+        {start: 0, end : countsData && countsData.tutors, duration : 8, src : teacherCount, title : "Trusted Tutors"},
+        {start: 0, end : countsData && countsData.courses, duration : 8, src : courses, title : "Courses"},
+        {start: 0, end : countsData && countsData.schedules, duration : 8, src : schedules, title : "Schedules"}
     ]
 
     const detailCard = [
@@ -89,6 +94,29 @@ const LandingContents = ({history, auth}) => {
         "features-icon-6": payment,
     }
 
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        setSubLoading(true)
+        subscribe(email).then(response => {
+            setSnackBar({
+                open: true,
+                message: response.message,
+                severity: "success",
+            })
+            setEmail("")
+            setSubLoading(false)
+        }).catch(err => {
+            setSnackBar({
+                open: true,
+                message: err.message,
+                severity: "error"
+            })
+            setEmail("")
+            setSubLoading(false)
+        })
+    }
+
     const handleGettingStartRoute = () => {
         if (auth) {
             history.push('/gettingStarted')
@@ -105,23 +133,31 @@ const LandingContents = ({history, auth}) => {
         setSnackBar(false)
     }
 
+    const handleInputOnChange = (event) => {
+        setEmail(event.target.value)
+    }
+
+    const getImageSource = (blob) => {
+        return `data:image/jpeg;base64,${blob}`
+    }
+
     const renderStudentCard = (item) => {
+        const {feedback, rating, userName, userType, imageUrl} = item
         return (
             <div className = "student_feedback_card">
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={12} md={3}/>
                     <Grid item xs={12} sm={12} md={2}>
-                        <img src = {minimal_avatar} alt = "user_image" className = "feedback_user_image"/>
+                        <img src = {imageUrl ? getImageSource(imageUrl) : avatar} alt = "user_image" className = "feedback_user_image"/>
                     </Grid>
                     <Grid item xs={12} sm={12} md={6}>
                         <div className = "feedback_text_block">
                             <p>
-                                When setting up a site for your university or school, 
-                                Course free education website template is an ideal tool to start. 
-                                It has a professional look to it, is entirely responsive, optimized for speed and search engines.
+                                {feedback}
+                                <ReadOnlyRating rate = {rating}/>
                             </p>
-                            <span>Hendry Dee</span>
-                            <p>Level: Ordinary</p>
+                            <span>{userName}</span>
+                            <p>Level: {userType}</p>
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={12} md={1}/>
@@ -155,8 +191,8 @@ const LandingContents = ({history, auth}) => {
                 <div className = "content_top__container">
                     <div className = "col-lg__1">
                         <div className = "content_top_block">
-                            <h1 class="mb-4">{headerJson.mainContent}</h1>
-                            <p class="mb-4">{headerJson.context}</p>
+                            <h1 className = "mb-4">{headerJson.mainContent}</h1>
+                            <p className = "mb-4">{headerJson.context}</p>
                             <p>
                                 <Button size="large" className = {styles.margin} onClick = {handleGettingStartRoute}>
                                     Get Started Now!
@@ -285,17 +321,13 @@ const LandingContents = ({history, auth}) => {
             <div className = "student_feedback_root">
                 <div className = "student_feedback__top">
                     <div className = "student_feedback__top_block">
-                        <h1>Students says about us</h1>
-                        <p>
-                            Separated they live in. 
-                            A small river named Duden flows by their place and supplies it with the necessary regelialia. 
-                            It is a paradisematic country.
-                        </p>
+                        <h1>Users says about us</h1>
+                        <p> Both students and tutors provide their custom feedback about our website & services </p>
                     </div>
                     <div className = "student_fedback_slider">
                         <Slick>
                             {
-                                ["1", "2"].map(item => {
+                                feedbacks && feedbacks.data.map(item => {
                                     return renderStudentCard(item)
                                 })
                             }
@@ -309,7 +341,7 @@ const LandingContents = ({history, auth}) => {
     const renderSectionSubsribe = () => {
         return (
             <div className = "landing_subscribe_newsletter">
-                <Grid container spacing={5}>
+                <Grid container>
                     <Grid item xs={12} sm={12} md={1}/>
                     <Grid item xs={12} sm={12} md={5}>
                         <div className = "newsletter_text">
@@ -318,9 +350,11 @@ const LandingContents = ({history, auth}) => {
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={12} md={5}>
-                        <form className = "newsletter_form">
-                            <input type = "email" placeholder = "Email address"/>
-                            <button type = "submit">Subscribe Now</button>
+                        <form className = "newsletter_form" onSubmit = {handleSubmit}>
+                            <input type = "email" placeholder = "Email address" onChange = {handleInputOnChange} value = {email}/>
+                            <button type = "submit">
+                                { subLoading ? <CircularProgress/> : "Subscribe Now"}
+                            </button>
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={12} md={1}/>
@@ -328,7 +362,6 @@ const LandingContents = ({history, auth}) => {
             </div>
         )
     }
-
 
     const renderMainContents = () => {
         return (

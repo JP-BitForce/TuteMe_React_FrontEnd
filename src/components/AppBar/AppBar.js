@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {connect} from 'react-redux'
 
 import { logout } from '../../redux/actions/authAction'
+import CustomButton from '../../components/Button/CustomButton'
 
 //Boostrap
 import Navbar from 'react-bootstrap/Navbar'
@@ -22,14 +23,14 @@ import GrainIcon from '@material-ui/icons/Grain';
 import './AppBar.css'
 
 const AppBar = ({auth, history, logoutUser}) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null)
 
     const nav = [
       {label:"Home", href:"/", icon: <HomeIcon className = "icon" />},
-      {label:"Courses", href:"/", icon: <GrainIcon className = "icon" />},
-      {label:"Staffs", href:"/", icon: <WhatshotIcon className = "icon" />},
-      {label:"Contact", href:"/", icon: <InboxIcon className = "icon" />},
-    ];
+      {label:"Courses", href:"/PublicCourses", icon: <GrainIcon className = "icon" />},
+      {label:"Staffs", href:"/staffs", icon: <WhatshotIcon className = "icon" />},
+      {label:"Contact", href:"/contact", icon: <InboxIcon className = "icon" />},
+    ]
 
     const handleLoginRoute = () => {
         history.push('/signIn')
@@ -103,9 +104,9 @@ const AppBar = ({auth, history, logoutUser}) => {
                   {
                     !auth ? (
                       <div className = "setion_desktop_container">
-                        <Button variant="outline-primary" onClick = {handleLoginRoute}> SIGN IN </Button>
+                        <Button variant="outlined" onClick = {handleLoginRoute} style = {{borderColor: "#EB984E", color: "#EB984E"}}> SIGN IN </Button>
                         <div className = "horizontal_seperator"/>
-                        <Button variant="outline-primary" onClick = {handleSignUpRoute}> SIGN UP</Button>
+                        <Button variant="outlined" onClick = {handleSignUpRoute} style = {{borderColor: "#EB984E", color: "#EB984E"}}> SIGN UP</Button>
                         <div className = "horizontal_seperator"/>
                       </div>
                     )
