@@ -8,7 +8,7 @@ const Footer = () => {
     const HREF = {
         "Contact us": '/contact',
         "our services": '/',
-        "privacy policy": '/',
+        "privacy policy": '/privacypolicy',
         "FAQ": '/FAQ',
         "Payment options": '/',
         "Courses": '/PublicCourses',
