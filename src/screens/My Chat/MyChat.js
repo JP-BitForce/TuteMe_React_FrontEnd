@@ -67,26 +67,23 @@ class MyChat extends Component {
         window.removeEventListener("resize", this.resize.bind(this))
     }
 
-    componentDidUpdate() {
-        if (!this.state.error) {
-            this.scrollToBottom()
-        }
-    }
-
-    connect = () => {
-        this.setState({ channelConnected: false, loading: true, error: null })
+    setStompClient = () => {
         const Stomp = require('stompjs')
         var SockJS = require('sockjs-client')
         SockJS = new SockJS('http://localhost:8080/ws')
         stompClient = Stomp.over(SockJS)
+        return stompClient
+    }
+
+    connect = () => {
+        this.setState({ channelConnected: false, loading: true, error: null })
+        stompClient = this.setStompClient()
         stompClient.connect({}, this.onConnected, this.onError)
     }
 
     onConnected = () => {
         this.setState({ channelConnected: true, loading: false, error: null })
-        // Subscribing to the public topic
         stompClient.subscribe('/topic/pubic', this.onMessageReceived)
-        // Registering user to server as a public chat user
         stompClient.send("/app/addUser", {}, JSON.stringify({ sender: this.state.username, type: 'JOIN' }))
     }
 
@@ -94,7 +91,7 @@ class MyChat extends Component {
         const {roomNotification, broadcastMessages} = this.state
         var message = JSON.parse(payload.body)
         if (message.type === 'JOIN') {
-            roomNotification.push({ 'sender': message.sender + " ~ joined", 'status': 'online', 'dateTime': message.dateTime })
+            roomNotification.push({ 'sender': message.sender, 'status': 'online', 'dateTime': message.dateTime })
             this.setState({
                 roomNotification: roomNotification,
                 bellRing: true
@@ -102,9 +99,9 @@ class MyChat extends Component {
         }
         else if (message.type === 'LEAVE') {
             roomNotification.map((notification, i) => {
-                if (notification.sender === message.sender + " ~ joined") {
+                if (notification.sender === message.sender) {
                     notification.status = "offline"
-                    notification.sender = message.sender + " ~ left"
+                    notification.sender = message.sender
                     notification.dateTime = message.dateTime
                 }
                 return 1
@@ -116,7 +113,7 @@ class MyChat extends Component {
         }
         else if (message.type === 'TYPING') {
             roomNotification.map((notification, i) => {
-                if (notification.sender === message.sender + " ~ joined") {
+                if (notification.sender === message.sender) {
                     if (message.content)
                         notification.status = "typing..."
                     else
@@ -130,7 +127,7 @@ class MyChat extends Component {
         }
         else if (message.type === 'CHAT') {
             roomNotification.map((notification, i) => {
-                if (notification.sender === message.sender + " ~ joined") {
+                if (notification.sender === message.sender) {
                     notification.status = "online"
                 }
                 return 1
@@ -160,35 +157,15 @@ class MyChat extends Component {
     }
 
     handlePrivateConnection = () => {
-        const Stomp = require('stompjs')
-        var SockJS = require('sockjs-client')
-        SockJS = new SockJS('http://localhost:8080/ws')
-        stompClient = Stomp.over(SockJS)
+        stompClient = this.setStompClient()
         stompClient.connect({}, this.onPrivateConnected, this.onError)
     }
 
     onPrivateConnected = () => {
         const {currentPersonnel} = this.state
         const name = currentPersonnel && currentPersonnel.sender
-        // Subscribing to the private topic
         stompClient.subscribe('/user/' + name + '/reply', this.onPrivateMessageReceived)
-
-        // Registering user to server as a private chat user
         stompClient.send('/app/addPrivateUser', {}, JSON.stringify({ sender: name, type: 'JOIN' }))
-    }
-
-    sendPrivateMessage = (type, value) => {
-        const {username, currentPersonnel} = this.state
-        if (stompClient) {
-          var chatMessage = {
-            sender: username,
-            receiver: currentPersonnel.sender,
-            content: type === 'TYPING' ? value : value,
-            type: type
-    
-          }
-          stompClient.send('/app/sendPrivateMessage', {}, JSON.stringify(chatMessage))
-        }
     }
 
     onPrivateMessageReceived = (payload) => {
@@ -202,6 +179,20 @@ class MyChat extends Component {
           this.setState({
             privateMessages: this.state.privateMessages,
           })
+        }
+    }
+
+    sendPrivateMessage = (type, value) => {
+        const {username, currentPersonnel} = this.state
+        if (stompClient) {
+          var chatMessage = {
+            sender: username,
+            receiver: currentPersonnel.sender,
+            content: type === 'TYPING' ? value : value,
+            type: type
+    
+          }
+          stompClient.send('/app/sendPrivateMessage', {}, JSON.stringify(chatMessage))
         }
     }
 
@@ -220,24 +211,46 @@ class MyChat extends Component {
         })
     }
 
-    scrollToBottom = () => {
-        var object = this.refs.messageBox;
-        if (object)
-        object.scrollTop = object.scrollHeight;
+    handleAddMessage = (privateMessage) => {
+        const {roomNotification} = this.state
+        let newBroadcastMessages = []
+        for (let i = 0 ; i < privateMessage.length ; i++) {
+            const message = privateMessage[i]
+            let exist = false
+            roomNotification.filter(item => {
+                if (item && item.sender === message.sender) {
+                    exist = true
+                    return 1
+                }
+                return 0
+            })
+            if (!exist) {
+                roomNotification.push({ 
+                    sender: message.sender, 
+                    status: 'online', 
+                    dateTime: message.dateTime 
+                })
+            }
+            const broadcastMessage = {
+                id: Math.random(),
+                message: message.message,
+                sender: message.sender,
+                dateTime: moment(message.dateTime).format("hh:mm a")
+            }
+            newBroadcastMessages.push(broadcastMessage)
+        }
+        this.setState({ broadcastMessages: newBroadcastMessages, roomNotification })
     }
 
     handleSendOnClick = (disable) => {
         if (!disable) {
-            const {currentPersonnelMessages, message, username} = this.state
-            const newMessage = {
-                id: currentPersonnelMessages.length + 1, 
-                src: avatar, 
-                sender: username, 
-                message, 
-                dateTime: moment(new Date()).format("hh:mm a")
-            }
-            currentPersonnelMessages.push(newMessage)
-            this.setState({ currentPersonnelMessages, message: "" })
+            const {message, broadcastMessages, username} = this.state
+            this.setState({ message: "" })
+            broadcastMessages.push({
+                message: message,
+                sender: username,
+                dateTime: moment(message.dateTime).format("hh:mm a")
+            })
             this.sendPrivateMessage('CHAT', message)
         }
     }
@@ -345,6 +358,7 @@ class MyChat extends Component {
                     handleTypingMessage = {this.handleTypingMessage}
                     attachmentOnChange = {this.attachmentOnChange}
                     handleSendOnClick = {this.handleSendOnClick}
+                    handleAddMessage = {this.handleAddMessage}
                 />
             </div>
         )

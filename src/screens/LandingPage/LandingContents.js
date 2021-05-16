@@ -343,12 +343,13 @@ const LandingContents = ({history, auth, countsData, feedbacks}) => {
             <div className = "landing_subscribe_newsletter">
                 <Grid container>
                     <Grid item xs={12} sm={12} md={1}/>
-                    <Grid item xs={12} sm={12} md={5}>
+                    <Grid item xs={12} sm={12} md={4}>
                         <div className = "newsletter_text">
                             <h3>Subcribe to our Newsletter</h3>
                             <p>{json.main_section_5.newsletter_text}</p>
                         </div>
                     </Grid>
+                    <Grid item xs={12} sm={12} md={1}/>
                     <Grid item xs={12} sm={12} md={5}>
                         <form className = "newsletter_form" onSubmit = {handleSubmit}>
                             <input type = "email" placeholder = "Email address" onChange = {handleInputOnChange} value = {email}/>
