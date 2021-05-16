@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 
 //Material-UI
 import Avatar from '@material-ui/core/Avatar'
@@ -15,6 +15,7 @@ import Send from '@material-ui/icons/Send'
 import avatar from '../../assets/images/shared/avatar.png'
 import './Chat.css'
 
+var stompClient = null;
 const Messanger = ({
     currentPersonnel,
     handleMoreOnClick,
@@ -26,10 +27,46 @@ const Messanger = ({
     handleEmojiOnClick,
     handleTypingMessage,
     attachmentOnChange,
-    handleSendOnClick
+    handleSendOnClick,
+    handleAddMessage
 }) => {
-
     const attachment = useRef()
+    const [privateMessages, setPrivateMessages] = useState([])
+
+    useEffect(()=> {
+        connect()
+        // eslint-disable-next-line
+    }, [])
+
+    const connect = () => {
+        const Stomp = require('stompjs')
+        var SockJS = require('sockjs-client')
+        SockJS = new SockJS('http://localhost:8080/ws')
+        stompClient = Stomp.over(SockJS)
+        stompClient.connect({}, onConnected, onError)
+    }
+    
+    const onConnected = () => {
+        stompClient.subscribe('/user/' + username.toString().toLowerCase() + '/reply', onMessageReceived)
+        stompClient.send('/app/addPrivateUser', {}, JSON.stringify({ sender: username, type: 'JOIN' }))
+    }
+    
+    const onMessageReceived = (payload) => {
+        var message = JSON.parse(payload.body)
+        if (message.type === 'CHAT') {
+          privateMessages.push({
+            message: message.content,
+            sender: message.sender,
+            dateTime: message.dateTime
+          })
+          setPrivateMessages(privateMessages)
+          handleAddMessage(privateMessages)
+        }
+    }
+
+    const onError = (error) => {
+
+    }
 
     const handleAttachmentOnClick = (disable) => {
         if (!disable) {
