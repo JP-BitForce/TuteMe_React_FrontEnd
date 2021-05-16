@@ -135,11 +135,11 @@ const Aside = ({
             { renderChatListCard(SYSTEM_MESSAGE) }
             {
                 roomNotification.map((item, idx) => {
-                    if ( username.toLowerCase().trim() !== item.sender.split('~')[0].toLowerCase().trim()) {
+                    if ( username.toLowerCase().trim() !== item.sender.toLowerCase().trim()) {
                         const chatItem = {
                             id: idx, 
                             src: avatar,
-                            sender: item.sender.split('~')[0],
+                            sender: item.sender,
                             message: item.message,
                             dateTime: moment(item.dateTime).format("hh:mm a"),
                             status: item.status

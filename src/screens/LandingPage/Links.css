@@ -173,12 +173,11 @@
     margin-bottom: 10px;
 }
 .faq-qst{
-    font-size: 2em;
-    font-weight: bold;
+    font-size: 1.75em;
     color: #ffc535;
 }
 .faq-ans{
-    font-size: 1.5em;
+    font-size: 1.25em;
 }
 
 /* Privacy policy*/

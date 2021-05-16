@@ -252,7 +252,7 @@ h1::before {
     position: relative;
     width: 100%;
     display: block;
-    height: 100vh;
+    height: 85vh;
 }
 
 .content_top__container {
