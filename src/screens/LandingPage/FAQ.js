@@ -9,12 +9,11 @@ import Card from "react-bootstrap/Card";
 const FAQ = (props) => {
     const history = props.history
     const faqs = [
-        {id:1,question:"How do I change my password?",answer:"You can change your password by visiting your profile and go to settings and select changed password."},
-        {id:2,question:"How do I change my password?",answer:"You can change your password by visiting your profile and go to settings and select changed password."},
-        {id:3,question:"How do I change my password?",answer:"You can change your password by visiting your profile and go to settings and select changed password."},
-        {id:4,question:"How do I change my password?",answer:"You can change your password by visiting your profile and go to settings and select changed password."},
-        {id:5,question:"How do I change my password?",answer:"You can change your password by visiting your profile and go to settings and select changed password."},
-        {id:6,question:"How do I change my password?",answer:"You can change your password by visiting your profile and go to settings and select changed password."}
+        {id:1,question:"What do TuteMe courses include?",answer:"Each TuteMe course is created, owned and managed by the instructor(s). The foundation of each TuteMe course are its lectures, which can include videos, slides, and text. In addition, instructors can add resources and various types of practice activities, as a way to enhance the learning experience of students. "},
+        {id:2,question:"How do I take a TuteMe course?",answer:"TuteMe courses are entirely on-demand. You can begin the course whenever you like."},
+        {id:3,question:"How can I pay for a course?",answer:"TuteMe supports several different payment methods, depending on your account country and location. "},
+        {id:4,question:"Where can I go for help?",answer:"If you find you have a question about a topic, you can search for answers to your question in our One-step platform."},
+        {id:5,question:"How do I change my password?",answer:"You can change your password by visiting your profile and go to settings and select changed password."}
         ]
 
 
