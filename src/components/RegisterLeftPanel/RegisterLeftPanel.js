@@ -2,6 +2,7 @@ import React from 'react'
 import IconButton from '@material-ui/core/IconButton';
 
 import './RegisterLeftPanel.css'
+import HomeIcon from '@material-ui/icons/Home';
 
 const RegisterLeftPanel = ({tag}) => {
 
@@ -41,6 +42,12 @@ const RegisterLeftPanel = ({tag}) => {
     }
 
     return (
+        <>
+            <div className="homeIcon">
+                <a href="/">
+                    <HomeIcon  style={{ fontSize: 45, color: "gray" }}/>
+                </a>
+            </div>
         <div className = "login_paper_left">
             {
                 renderMessagesRoot()
@@ -49,21 +56,26 @@ const RegisterLeftPanel = ({tag}) => {
                 <span className = "login_paper_left_message03">Follow Us</span>
                 <div className = "follow-us-content">
                     <div className = "social_block">
+                        <a href = "https://www.instagram.com/" target ="_blank" rel="noreferrer noopener">
                         <IconButton aria-label="goole">
                                 <div className = "login-ins"/>
                         </IconButton>
+                        </a>
                         <span className = "social-btn-label">Instagram</span>
                     </div>
                                         
                     <div className = "social_block">
+                        <a href = "https://www.facebook.com/" target ="_blank" rel="noreferrer noopener">
                         <IconButton aria-label="goole">
                             <div className = "login-fb"/>
                         </IconButton>
+                        </a>
                         <span className = "social-btn-label">Facebook</span>
                     </div>
                 </div>
             </div>
         </div>
+            </>
     )
 }
 
