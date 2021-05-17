@@ -282,6 +282,15 @@
     background-color: yellowgreen;
 }
 
+.message_box_mine_emoji {
+    padding: 5px 25px 5px 30px;
+	line-height: 25px;
+	max-width: 100%;
+	display: inline-block;
+	border-radius: 5px;
+	word-wrap: break-word;
+}
+
 .message_box_other {
 	color:#fff;
 	line-height: 25px;
@@ -290,6 +299,15 @@
 	border-radius: 5px;
 	word-wrap: break-word;
     background-color: teal;
+    padding: 5px 25px 5px 30px;
+}
+
+.message_box_other_emoji {
+	line-height: 25px;
+	max-width: 90%;
+	display: inline-block;
+	border-radius: 5px;
+	word-wrap: break-word;
     padding: 5px 25px 5px 30px;
 }
 
