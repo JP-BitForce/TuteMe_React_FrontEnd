@@ -7,6 +7,8 @@ import PublicCourses from '../screens/LandingPage/PublicCourse'
 import Staffs from '../screens/LandingPage/Staffs'
 import Contact from '../screens/LandingPage/Contact'
 import FAQ from "../screens/LandingPage/FAQ";
+import PrivacyPolicy from "../screens/LandingPage/PrivacyPolicy";
+
 
 const routes = {
     data: [
@@ -69,6 +71,12 @@ const routes = {
         name: "FAQ",
         path: "/FAQ",
         component: FAQ,
+        type: "main",
+        children: [],
+      },{
+        name: "PrivacyPolicy",
+        path: "/privacypolicy",
+        component: PrivacyPolicy,
         type: "main",
         children: [],
       }
