@@ -6,6 +6,7 @@ import SnackBar from '../../components/SnackBar/SnackBar'
 import Selector from '../../components/Input/Selector'
 import { signUpUser } from '../../api/auth'
 import './SignUpForm'
+import { getOAuthRedirectURI } from '../../Utils/getOAuthRedirectURI'
 
 //Material-UI
 import Grid from '@material-ui/core/Grid';
@@ -183,16 +184,20 @@ class SignUp extends Component {
             <div className = "social_signup_block">
                 <div className = "social_signup_blocks">
                     <div className = "social_signup_item">
-                        <div className = "social_signup_item_card">
+                        <a type="button" className="social_signup_item_card btn btn-inline btn-ico btn-social btn-social--google"
+                            href= {getOAuthRedirectURI('google')} target ="_blank" rel="noreferrer noopener"
+                        >
                             <Avatar src = {google} style = {{width: "25px", height: "25px", marginRight: "5px"}}/>
                             Google
-                        </div>
+                        </a>
                     </div>
                     <div className = "social_signup_item">
-                        <div className = "social_signup_item_card">
+                        <a type="button" className="social_signup_item_card btn btn-inline btn-ico btn-social btn-social--google"
+                            href= {getOAuthRedirectURI('facebook')} target ="_blank" rel="noreferrer noopener"
+                        >
                             <Avatar src = {facebook} style = {{width: "26px", height: "25px", marginRight: "5px"}}/>
-                            Facebook
-                        </div>
+                        Facebook
+                        </a>
                     </div>
                 </div>
                 <div className = "divider">
