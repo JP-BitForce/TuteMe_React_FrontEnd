@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 import {connect} from 'react-redux'
 
 import Countup from '../../components/CountUp/Countup'
@@ -9,11 +9,14 @@ import SnackBar from '../../components/SnackBar/SnackBar'
 import ReadOnlyRating from '../../components/Rating/ReadOnlyRating'
 import {subscribe} from '../../api/landing'
 
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
+import Container from '@material-ui/core/Container'
+import Grid from '@material-ui/core/Grid'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import SpeedDial from '@material-ui/lab/SpeedDial'
+import NavigationIcon from '@material-ui/icons/Navigation'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import './LandingPage.css'
 import headerJson from '../../json/Header.json'
@@ -51,7 +54,21 @@ const useStyles = makeStyles((theme) => ({
       color: "white",
       backgroundColor: "#EB984E"
     },
-}));
+    exampleWrapper: {
+        position: 'relative',
+    },
+    speedDial: {
+        position: 'absolute',
+        '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+          bottom: theme.spacing(2),
+          right: theme.spacing(2),
+        },
+        '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
+          top: theme.spacing(2),
+          left: theme.spacing(2),
+        },
+    },
+}))
 
 const LandingContents = ({history, auth, countsData, feedbacks}) => {
     const styles = useStyles()
@@ -62,6 +79,8 @@ const LandingContents = ({history, auth, countsData, feedbacks}) => {
     })
     const [email, setEmail] = useState("")
     const [subLoading, setSubLoading] = useState(false)
+
+    const topRef = useRef(null)
 
     const counts = [
         {start: 0, end : countsData && countsData.students, duration : 8, src : studentCount, title : "Students"},
@@ -93,6 +112,10 @@ const LandingContents = ({history, auth, countsData, feedbacks}) => {
         "features-icon-5": search,
         "features-icon-6": payment,
     }
+
+    const scrollToRef = () => {
+        window.scrollTo(0, topRef.current.offsetTop)
+    }  
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -187,7 +210,7 @@ const LandingContents = ({history, auth, countsData, feedbacks}) => {
 
     const renderTopContent = () => {
         return (
-            <div className = "content_top_root">
+            <div className = "content_top_root" ref={topRef}>
                 <div className = "content_top__container">
                     <div className = "col-lg__1">
                         <div className = "content_top_block">
@@ -377,10 +400,27 @@ const LandingContents = ({history, auth, countsData, feedbacks}) => {
         )
     }
 
+    const floatingButton = () => {
+        return (
+            <div className={styles.exampleWrapper}>
+                <Tooltip title = "Go Up">
+                    <SpeedDial
+                        ariaLabel = "go up"
+                        className = {styles.speedDial}
+                        hidden = {false}
+                        icon = {<NavigationIcon />}
+                        onClick = {scrollToRef}
+                    />
+                </Tooltip>
+            </div>
+        )
+    }
+
     return (
         <div className = "landing__content__root">
             { renderTopContent() }
             { renderMainContents() }
+            { floatingButton() }
             <SnackBar
                 open = {snackBarOpen.open}
                 autoHideDuration = {4000}

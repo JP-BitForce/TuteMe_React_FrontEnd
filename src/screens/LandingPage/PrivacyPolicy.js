@@ -67,9 +67,6 @@ const PrivacyPolicy = (props) => {
             <AppBar history={history}/>
             {renderTopContent()}
             {renderPolicyListHead()}
-            <div className="FAQ">
-                
-            </div>
             <Footer history={history}/>
         </div>
     )
