@@ -47,7 +47,7 @@ class LandingPage extends Component {
                         countsData = {counts}
                         feedbacks = {feedbacks}    
                     />
-                     <Footer history = {history}/>
+                    <Footer history = {history}/>
                     </>
                 }
             </div>

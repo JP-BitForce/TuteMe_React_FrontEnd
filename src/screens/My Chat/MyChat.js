@@ -41,7 +41,9 @@ class MyChat extends Component {
         attachemTitle: "",
         cover: null,
         file: null,
-        currentPersonnelMessages: []
+        currentPersonnelMessages: [],
+        chosenEmoji: null,
+        showEmojis: false
     }
 
     componentDidMount() {
@@ -182,15 +184,15 @@ class MyChat extends Component {
         }
     }
 
-    sendPrivateMessage = (type, value) => {
+    sendPrivateMessage = (type, value, messageType) => {
         const {username, currentPersonnel} = this.state
         if (stompClient) {
           var chatMessage = {
             sender: username,
             receiver: currentPersonnel.sender,
             content: type === 'TYPING' ? value : value,
-            type: type
-    
+            type: type,
+            messageType
           }
           stompClient.send('/app/sendPrivateMessage', {}, JSON.stringify(chatMessage))
         }
@@ -235,23 +237,25 @@ class MyChat extends Component {
                 id: Math.random(),
                 message: message.message,
                 sender: message.sender,
-                dateTime: moment(message.dateTime).format("hh:mm a")
+                dateTime: moment(message.dateTime).format("hh:mm a"),
+                messageType: message.messageType
             }
             newBroadcastMessages.push(broadcastMessage)
         }
         this.setState({ broadcastMessages: newBroadcastMessages, roomNotification })
     }
 
-    handleSendOnClick = (disable) => {
+    handleSendOnClick = (disable, messageType, value) => {
         if (!disable) {
-            const {message, broadcastMessages, username} = this.state
-            this.setState({ message: "" })
+            const {broadcastMessages, username} = this.state
             broadcastMessages.push({
-                message: message,
+                message: value,
                 sender: username,
-                dateTime: moment(message.dateTime).format("hh:mm a")
+                dateTime: moment(new Date()).format("hh:mm a"),
+                messageType
             })
-            this.sendPrivateMessage('CHAT', message)
+            this.sendPrivateMessage('CHAT', value, messageType)
+            this.setState({ message: "", chosenEmoji: null })
         }
     }
 
@@ -289,10 +293,16 @@ class MyChat extends Component {
 
     }
 
-    handleEmojiOnClick = (disable) => {
-        if (!disable) {
-            
-        }
+    handleEmojiOnClick = () => {
+        this.setState({ showEmojis: !this.state.showEmojis})
+    }
+
+    onEmojiClick = (event, emojiObject) => {
+        this.setState({ 
+            chosenEmoji: emojiObject,
+            showEmojis: false 
+        })
+        this.handleSendOnClick(false, "emoji", emojiObject.emoji)
     }
 
     attachmentOnChange = (e) => {
@@ -323,7 +333,7 @@ class MyChat extends Component {
 
     renderChat = () => {
         const {leftPanelOpen, currentPersonnel, roomNotification, username, 
-            search, userImg, recipients, broadcastMessages, message
+            search, userImg, recipients, broadcastMessages, message, showEmojis
         } = this.state
         return (
             <div className = "chat_alt_root">
@@ -359,6 +369,8 @@ class MyChat extends Component {
                     attachmentOnChange = {this.attachmentOnChange}
                     handleSendOnClick = {this.handleSendOnClick}
                     handleAddMessage = {this.handleAddMessage}
+                    onEmojiClick = {this.onEmojiClick}
+                    showEmojis = {showEmojis}
                 />
             </div>
         )

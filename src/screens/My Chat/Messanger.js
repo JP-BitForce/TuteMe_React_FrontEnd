@@ -1,4 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react'
+import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react'
 
 //Material-UI
 import Avatar from '@material-ui/core/Avatar'
@@ -28,7 +29,9 @@ const Messanger = ({
     handleTypingMessage,
     attachmentOnChange,
     handleSendOnClick,
-    handleAddMessage
+    handleAddMessage,
+    onEmojiClick,
+    showEmojis
 }) => {
     const attachment = useRef()
     const [privateMessages, setPrivateMessages] = useState([])
@@ -57,7 +60,8 @@ const Messanger = ({
           privateMessages.push({
             message: message.content,
             sender: message.sender,
-            dateTime: message.dateTime
+            dateTime: message.dateTime,
+            messageType: message.messageType
           })
           setPrivateMessages(privateMessages)
           handleAddMessage(privateMessages)
@@ -68,10 +72,30 @@ const Messanger = ({
 
     }
 
+    const handleEmojiOnSelect = (e, emojiObject, disable) => {
+        if (!disable) {
+            onEmojiClick(e, emojiObject)
+        }
+    }
+
     const handleAttachmentOnClick = (disable) => {
         if (!disable) {
             attachment.current.click()
         }
+    }
+
+    const renderEmojiPicker = (disable) => {
+        return (
+            <div style = {{position: "absolute", left: "0", bottom: "50px"}}>
+                <Picker
+                    onEmojiClick={(e, emojiObject) => handleEmojiOnSelect(e, emojiObject, disable)}
+                    disableAutoFocus={true}
+                    skinTone={SKIN_TONE_MEDIUM_DARK}
+                    groupNames={{ smileys_people: "PEOPLE" }}
+                    native
+                />
+          </div>
+        )
     }
 
     const renderSearchField = (label) => {
@@ -98,9 +122,12 @@ const Messanger = ({
         return (
             <li className = "chat_list_item_mine" key={i}>
                 <div>
-                    <div className = "message_box_mine">
-                        {msg.message}
-                    </div>
+                    {
+                        msg.messageType === "emoji" ?
+                        <div className = "message_box_mine_emoji"> {msg.message} </div>
+                        :
+                        <div className = "message_box_mine"> {msg.message} </div>
+                    }
                     <div className = "message_dateTime">
                         {msg.dateTime}
                     </div>
@@ -113,9 +140,12 @@ const Messanger = ({
         return (
             <li className = "chat_list_item_other" key={i}>
                 <div className = "chat_list_item_other_box">
-                    <div className = "message_box_other">
-                        {msg.message}
-                    </div>
+                    {
+                        msg.messageType === "emoji" ?
+                        <div className = "message_box_other_emoji"> {msg.message} </div>
+                        :
+                        <div className = "message_box_other"> {msg.message} </div>
+                    }
                     <div className = "message_dateTime">
                         {msg.dateTime}
                     </div>
@@ -166,9 +196,10 @@ const Messanger = ({
         return (
             <div className = "main_chat__footer">
                 <div className = "main_input_base">
-                    <div className = "icon_button" onClick = {() => handleEmojiOnClick(disable)}>
+                    <div className = "icon_button" onClick = {handleEmojiOnClick}>
                         <InsertEmoticon/>
                     </div>
+                    { showEmojis && renderEmojiPicker(disable)}
                     <TextField
                         id = "outlined-margin-normal"
                         placeholder = "write something...."
@@ -193,7 +224,7 @@ const Messanger = ({
                     </div>
                 </div>
                 <div className = "send_base">
-                    <div className = "icon_button" onClick = {() => handleSendOnClick(disable)}>
+                    <div className = "icon_button" onClick = {() => handleSendOnClick(disable, "msg", message)}>
                         <Send/>
                     </div>
                 </div>
